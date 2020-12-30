@@ -1,3 +1,7 @@
+## INFO
+
+This is the repository for the Mr COD 2020-2021 season. If you need help with anything, ask Steve.
+
 ## NOTICE
 
 This repository contains the public FTC SDK for the SKYSTONE (2019-2020) competition season.  If you are looking for the current season's FTC SDK software, please visit the new and permanent home of the public FTC SDK:
