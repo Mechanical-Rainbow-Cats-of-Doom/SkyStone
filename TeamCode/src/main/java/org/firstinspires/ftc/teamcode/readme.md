@@ -10,6 +10,9 @@ process for adding OpModes is straightforward.
 
 The easiest way to create your own OpMode is to copy a Sample OpMode and make it your own.
 
+There is also a base opmode if you would like to start from scratch.
+It is called StartingCodeChangeClassName.
+
 Sample opmodes exist in the FtcRobotController module.
 To locate these samples, find the FtcRobotController module in the "Project/Android" tab.
 
