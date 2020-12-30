@@ -20,7 +20,7 @@ import java.lang.Math;  //This is the standard Java package for a variety of mat
 
 @TeleOp
 
-public class PatrickTestCode extends LinearOpMode{
+public class StrippedSteveBasicOPMode extends LinearOpMode{
     private Blinker expansion_Hub_1;
     private Blinker expansion_Hub_2;
     //Declaration for the servo for the puller
@@ -118,9 +118,9 @@ public class PatrickTestCode extends LinearOpMode{
         double drive;  //Power for forward and back motion
         double strafe; //Power for left and right motion
         double rotate; //Power for rotating the robot
-        PatrickTestCode.Chassis superRobot = new PatrickTestCode.Chassis(); //instantiation of chassis class
+        StrippedSteveBasicOPMode.Chassis superRobot = new StrippedSteveBasicOPMode.Chassis(); //instantiation of chassis class
         double rotationAngle = 0;  //passed as state argument for the set position in driveOpState
-        PatrickTestCode.OperState driveOpState = PatrickTestCode.OperState.NORMALDRIVE; //instantiation of the state variable
+        StrippedSteveBasicOPMode.OperState driveOpState = StrippedSteveBasicOPMode.OperState.NORMALDRIVE; //instantiation of the state variable
 
 
         while (opModeIsActive()) {
@@ -145,3 +145,4 @@ public class PatrickTestCode extends LinearOpMode{
         }
     }
 }
+
