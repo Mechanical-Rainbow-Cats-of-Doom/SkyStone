@@ -20,7 +20,22 @@ import java.lang.Math;  //This is the standard Java package for a variety of mat
 
 @TeleOp
 
-public class EthanTestCode extends LinearOpMode{
+public class EthanTestCode extends LinearOpMode {
+    //declarations of everything
+    private Blinker expansion_Hub_1;
+    private Blinker expansion_Hub_2;
+    private Servo back_foundation_puller;
+    private DcMotor back_left_wheel;
+    private DcMotor back_right_wheel;
+    private DcMotor front_left_wheel;
+    private DcMotor front_right_wheel;
+    private DistanceSensor color_sensor;
+    private DistanceSensor distance_sensor;
+    private ColorSensor front_color_sensor;
+    private BNO055IMU imu;
+    private DcMotor lift_motor;
+    private DcMotor clamp_motor;
+    private DigitalChannel switch_;
 
     public EthanTestCode() {
     }
