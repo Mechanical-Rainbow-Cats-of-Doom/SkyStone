@@ -156,8 +156,8 @@ public class PatrickTestCode extends LinearOpMode{
                     break;
                 case CLAMPANDLIFT:
                     if (this.gamepad1.right_trigger != 0) {
-                        liftPower = -this.gamepad1.left_stick_y;
-                        clampPower = -this.gamepad1.right_stick_y;
+                        liftPower = -this.gamepad1.left_stick_y * 0.5;
+                        clampPower = -this.gamepad1.right_stick_y * 0.25;
                         LCTool.Lift(liftPower);
                         LCTool.Clamp(clampPower);
                     }
