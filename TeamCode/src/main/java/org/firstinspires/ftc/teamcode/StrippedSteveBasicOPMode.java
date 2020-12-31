@@ -72,8 +72,11 @@ public class StrippedSteveBasicOPMode extends LinearOpMode{
         }
     }
 
+
+
     enum OperState {
-        NORMALDRIVE
+        NORMALDRIVE,
+        Example1
     }
 
     @Override
@@ -138,7 +141,16 @@ public class StrippedSteveBasicOPMode extends LinearOpMode{
                     superRobot.SetMotors (drive, strafe, rotate);
                     superRobot.Drive();
 
+                    if (this.gamepad1.right_bumper) {
+                        driveOpState = OperState.Example1;
+                    }
+
                     break;
+
+                case Example1:
+                    driveOpState = OperState.NORMALDRIVE;
+                    break;
+
                 default :
                     break;
             }
