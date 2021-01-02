@@ -23,8 +23,6 @@ import java.lang.Math;  //This is the standard Java package for a variety of mat
 public class PatrickTestCode extends LinearOpMode{
     private Blinker expansion_Hub_1;
     private Blinker expansion_Hub_2;
-    //Declaration for the servo for the puller
-    private Servo back_foundation_puller;
     //Declaration for the four drive motors
     private DcMotor back_left_wheel;
     private DcMotor back_right_wheel;
@@ -72,8 +70,19 @@ public class PatrickTestCode extends LinearOpMode{
         }
     }
 
+    private class LiftClampTest {
+        private void Lift (double liftPower) {
+            lift_motor.setPower(liftPower);
+        }
+
+        private void Clamp (double clampPower) {
+            clamp_motor.setPower(clampPower);
+        }
+    }
+
     enum OperState {
-        NORMALDRIVE
+        NORMALDRIVE,
+        CLAMPANDLIFT
     }
 
     @Override
@@ -81,7 +90,6 @@ public class PatrickTestCode extends LinearOpMode{
 
         expansion_Hub_1 = hardwareMap.get(Blinker.class, "Expansion Hub 1");
         expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
-        back_foundation_puller = hardwareMap.get(Servo.class, "back foundation puller");
         back_left_wheel = hardwareMap.get(DcMotor.class, "back left wheel");
         back_right_wheel = hardwareMap.get(DcMotor.class, "back right wheel");
         clamp_motor = hardwareMap.get(DcMotor.class, "clamp motor");
@@ -115,10 +123,13 @@ public class PatrickTestCode extends LinearOpMode{
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        double liftPower;
+        double clampPower;
         double drive;  //Power for forward and back motion
         double strafe; //Power for left and right motion
         double rotate; //Power for rotating the robot
-        PatrickTestCode.Chassis superRobot = new PatrickTestCode.Chassis(); //instantiation of chassis class
+        Chassis superRobot = new Chassis(); //instantiation of chassis class
+        LiftClampTest LCTool = new LiftClampTest();
         double rotationAngle = 0;  //passed as state argument for the set position in driveOpState
         PatrickTestCode.OperState driveOpState = PatrickTestCode.OperState.NORMALDRIVE; //instantiation of the state variable
 
@@ -135,13 +146,31 @@ public class PatrickTestCode extends LinearOpMode{
                     drive = -this.gamepad1.left_stick_y;
                     strafe = -this.gamepad1.left_stick_x;
                     rotate = -this.gamepad1.right_stick_x;
-                    superRobot.SetMotors (drive, strafe, rotate);
+                    superRobot.SetMotors(drive, strafe, rotate);
                     superRobot.Drive();
 
+                    if (this.gamepad1.right_trigger != 0) {
+                        driveOpState = OperState.CLAMPANDLIFT;
+                    }
+
+                    break;
+                case CLAMPANDLIFT:
+                    if (this.gamepad1.right_trigger != 0) {
+                        liftPower = -this.gamepad1.left_stick_y * 0.5;
+                        clampPower = -this.gamepad1.right_stick_y * 0.25;
+                        LCTool.Lift(liftPower);
+                        LCTool.Clamp(clampPower);
+                    }
+                    else {
+                        driveOpState = OperState.NORMALDRIVE;
+                    }
                     break;
                 default :
                     break;
             }
+
+            telemetry.addData("right trigger status", gamepad1.right_bumper);
         }
+
     }
 }
