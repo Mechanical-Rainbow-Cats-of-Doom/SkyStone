@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -39,10 +40,58 @@ public class ChassisMovementCode extends LinearOpMode {
         double frontRight;
         double backLeft;
         double backRight;
+        double rightEncoder;
+        double leftEncoder;
+        double backEncoder;
+        double clearRight = 0;
+        double clearLeft = 0;
+        double clearBack = 0;
+        double fieldLength = 141;
+        double robotLength = 17.25;
+        double robotWidth = 17.375;
+        double countsPerRotation = 360;
+        double trueDrive;
+        double drivePreset;
 
+        private void SetAxisMovement () {
+            trueDrive = (rightEncoder+leftEncoder)/2;
+        }
+
+        private void Forward (double forwardLength) {
+            drivePreset = trueDrive;
+            while (drivePreset > trueDrive + forwardLength) {
+                front_right_wheel.setPower(50);
+                front_left_wheel.setPower(50);
+                back_left_wheel.setPower(50);
+                back_right_wheel.setPower(50);
+                trueDrive = (rightEncoder+leftEncoder)/2;
+            }
+        }
+
+        private void ZeroEncoders () {
+            clearRight = back_right_wheel.getCurrentPosition()/360*1.173150521;
+            clearLeft = -front_right_wheel.getCurrentPosition()/360*1.178221633;
+            clearBack = front_left_wheel.getCurrentPosition()/360*1.17584979;
+        }
+
+        private void Encoders () {
+            rightEncoder = back_right_wheel.getCurrentPosition()/360*1.173150521-clearRight;
+            leftEncoder = -front_right_wheel.getCurrentPosition()/360*1.178221633-clearLeft;
+            backEncoder = front_left_wheel.getCurrentPosition()/360*1.17584979-clearBack;
+            telemetry.addData("True back", backEncoder/360*1.17584979);
+            telemetry.addData("True right", rightEncoder/360*1.173150521);
+            telemetry.addData("True left", leftEncoder/360*1.178221633);
+            telemetry.addData("Right Encoder CM", rightEncoder);
+            telemetry.addData("Left Encoder CM", leftEncoder);
+            telemetry.addData("Back Encoder CM", backEncoder);
+            telemetry.addData("Right Encoder",back_right_wheel.getCurrentPosition());
+            telemetry.addData("Left Encoder",front_right_wheel.getCurrentPosition());
+            telemetry.addData("Back Encoder",front_left_wheel.getCurrentPosition());
+            telemetry.update();
+        }
 
         private void SetMotors (double drive, double strafe, double rotate) {
-            this.frontLeft = -drive + strafe + rotate;
+            this.frontLeft = drive - strafe - rotate;
             this.backLeft = -drive - strafe + rotate;
             this.frontRight = drive + strafe + rotate;
             this.backRight = drive - strafe + rotate;
@@ -58,7 +107,9 @@ public class ChassisMovementCode extends LinearOpMode {
     }
 
     enum OperState {
-        NORMALDRIVE
+        NORMALDRIVE,
+        NORMALROTATE,
+        FORWARD
     }
 
     @Override
@@ -94,11 +145,56 @@ public class ChassisMovementCode extends LinearOpMode {
                 case NORMALDRIVE:
                     drive = -this.gamepad1.left_stick_y;
                     strafe = -this.gamepad1.left_stick_x;
-                    rotate = -this.gamepad1.right_stick_x;
+                    rotate = 0;
 
                     chasty.SetMotors (drive, strafe, rotate);
                     chasty.Drive();
+                    chasty.Encoders();
+                    chasty.SetAxisMovement();
 
+                    if (this.gamepad1.left_trigger != 0) {
+                        chasty.ZeroEncoders();
+                    }
+
+                    if (this.gamepad1.right_trigger != 0) {
+                        driveOpState = ChassisMovementCode.OperState.NORMALROTATE;
+                    }
+
+                    if (this.gamepad1.a) {
+                        driveOpState = ChassisMovementCode.OperState.FORWARD;
+                    }
+
+                    break;
+
+                case NORMALROTATE:
+                    if (this.gamepad1.right_trigger != 0) {
+                        rotate = -this.gamepad1.right_stick_x;
+                        drive = 0;
+                        strafe = 0;
+
+                        chasty.SetMotors(drive, strafe, rotate);
+                        chasty.Drive();
+                        chasty.Encoders();
+                        chasty.SetAxisMovement();
+
+                        if (this.gamepad1.left_trigger != 0) {
+                            chasty.ZeroEncoders();
+                        }
+                    }
+                    else {
+                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
+                    break;
+
+                case FORWARD:
+
+                    double forwardLength = 5;
+                    chasty.SetAxisMovement();
+                    chasty.Forward(forwardLength);
+
+                    if (this.gamepad1.a) {
+                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
                     break;
 
                 default :
