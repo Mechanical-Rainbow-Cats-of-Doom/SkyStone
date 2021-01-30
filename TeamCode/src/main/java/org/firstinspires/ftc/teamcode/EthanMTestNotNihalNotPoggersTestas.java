@@ -234,9 +234,7 @@ public class EthanMTestNotNihalNotPoggersTestas extends LinearOpMode {
             telemetry.update();
             telemetry.addData("does it work", this.gamepad1.right_stick_y);
             StickValue = this.gamepad1.right_stick_y;
-            if (StickValue >= 0) {
-                ServoPower.setPower(this.gamepad1.right_stick_y);
-            }
+            ServoPower.setPower(this.gamepad1.right_stick_y);
 
 
 
