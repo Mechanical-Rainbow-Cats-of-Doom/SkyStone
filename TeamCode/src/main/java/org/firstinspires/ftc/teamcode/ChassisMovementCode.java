@@ -58,14 +58,21 @@ public class ChassisMovementCode extends LinearOpMode {
         }
 
         private void Forward (double forwardLength) {
-            drivePreset = trueDrive;
-            while (drivePreset > trueDrive + forwardLength) {
-                front_right_wheel.setPower(50);
-                front_left_wheel.setPower(50);
-                back_left_wheel.setPower(50);
-                back_right_wheel.setPower(50);
+            drivePreset = trueDrive + forwardLength;
+            while (trueDrive < drivePreset) {
+
+                front_right_wheel.setPower(Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)));
+                front_left_wheel.setPower(Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)));
+                back_left_wheel.setPower(-(Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset))));
+                back_right_wheel.setPower(Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)));
+                this.Encoders();
                 trueDrive = (rightEncoder+leftEncoder)/2;
+
             }
+            front_left_wheel.setPower(0);
+            front_right_wheel.setPower(0);
+            back_right_wheel.setPower(0);
+            back_left_wheel.setPower(0);
         }
 
         private void ZeroEncoders () {
@@ -87,6 +94,7 @@ public class ChassisMovementCode extends LinearOpMode {
             telemetry.addData("Right Encoder",back_right_wheel.getCurrentPosition());
             telemetry.addData("Left Encoder",front_right_wheel.getCurrentPosition());
             telemetry.addData("Back Encoder",front_left_wheel.getCurrentPosition());
+            telemetry.addData("Drive",trueDrive);
             telemetry.update();
         }
 
@@ -188,13 +196,12 @@ public class ChassisMovementCode extends LinearOpMode {
 
                 case FORWARD:
 
-                    double forwardLength = 5;
+                    double forwardLength = 40;
                     chasty.SetAxisMovement();
                     chasty.Forward(forwardLength);
 
-                    if (this.gamepad1.a) {
-                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
-                    }
+                    driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+
                     break;
 
                 default :
