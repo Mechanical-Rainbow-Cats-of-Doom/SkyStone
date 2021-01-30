@@ -188,12 +188,13 @@ public class ChassisMovementCode extends LinearOpMode {
 
                 case FORWARD:
 
-                    double forwardLength = 50;
+                    double forwardLength = 5;
                     chasty.SetAxisMovement();
                     chasty.Forward(forwardLength);
 
-                    driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
-
+                    if (this.gamepad1.a) {
+                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
                     break;
 
                 default :
