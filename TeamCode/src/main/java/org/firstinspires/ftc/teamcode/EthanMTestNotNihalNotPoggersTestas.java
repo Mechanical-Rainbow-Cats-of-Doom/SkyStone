@@ -39,7 +39,7 @@ public class EthanMTestNotNihalNotPoggersTestas extends LinearOpMode {
             telemetry.update();
             LeftStickValue = this.gamepad1.left_stick_y;
             if (LeftStickValue == 0) {
-                BigMotor.setPower(0.001);
+                BigMotor.setPower(0.1);
             }
             else {
                 BigMotor.setPower(LeftStickValue*0.5);
