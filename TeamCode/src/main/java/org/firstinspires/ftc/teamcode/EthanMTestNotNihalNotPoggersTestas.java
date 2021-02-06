@@ -81,11 +81,8 @@ public class EthanMTestNotNihalNotPoggersTestas extends LinearOpMode {
     //Declaration of the two expansion hubs
     private Blinker expansion_Hub_1;
     private DcMotor BigMotor;
-    private Servo ServoRotation;
-    private double StickValue;
     private CRServo ServoPower;
-
-
+    private double LeftStickValue;
     //Declaration for the sensors.  These classes were created to work with the default/supported
     //sensors on the robot.  Technically, if we ever run into a sensor that has the same interface
     //as one of the ports on the Expansion Hub, you could design your own interface.
@@ -175,7 +172,6 @@ public class EthanMTestNotNihalNotPoggersTestas extends LinearOpMode {
          */
         expansion_Hub_1 = hardwareMap.get(Blinker.class, "Nihal");
         BigMotor = hardwareMap.get(DcMotor.class, "Big Motor");
-        ServoRotation = hardwareMap.get(Servo.class,"ServoRotation");
         ServoPower = hardwareMap.get(CRServo.class,"ServoPower");
 
         /*
@@ -228,12 +224,17 @@ public class EthanMTestNotNihalNotPoggersTestas extends LinearOpMode {
         ***This concern is a major reason for using a state machine in the loop--that way, you're
         only ever looking at the stuff you really care about.
          */
-        while (opModeIsActive()) {
-            BigMotor.setPower(this.gamepad1.left_stick_y*1.0);
-            telemetry.addData("does it work", this.gamepad1.left_stick_y);
+        while (opModeIsActive())
+            telemetry.addData("left stick y axis", this.gamepad1.left_stick_y);
+            telemetry.addData("right stick y axis", this.gamepad1.right_stick_y);
             telemetry.update();
-            telemetry.addData("does it work", this.gamepad1.right_stick_y);
-            StickValue = this.gamepad1.right_stick_y;
+            LeftStickValue = this.gamepad1.left_stick_y;
+            if (LeftStickValue == 0) {
+                BigMotor.setPower(0.001);
+            }
+            else {
+                BigMotor.setPower(LeftStickValue);
+            }
             ServoPower.setPower(this.gamepad1.right_stick_y);
 
 
@@ -258,4 +259,3 @@ public class EthanMTestNotNihalNotPoggersTestas extends LinearOpMode {
 
         }
     }
-}
