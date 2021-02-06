@@ -53,11 +53,17 @@ public class ChassisMovementCode extends LinearOpMode {
         double trueDrive;
         double drivePreset;
         double trueStrafe;
-        double slowIntensity = 5;
+        double slowIntensity = 7;
+        double trueRotate;
+        double backRightMultiplier = 1;
+        double backLeftMultiplier = 1;
+        double frontRightMultiplier = 1;
+        double frontLeftMultiplier = 1;
 
         private void SetAxisMovement () {
             trueDrive = (rightEncoder+leftEncoder)/2;
             trueStrafe = backEncoder - (rightEncoder-leftEncoder)/2;
+            trueRotate = (rightEncoder-leftEncoder)/2;
         }
 
         private void ForwardAndBackward (double forwardLength) {
@@ -116,6 +122,7 @@ public class ChassisMovementCode extends LinearOpMode {
             telemetry.addData("Back Encoder",front_left_wheel.getCurrentPosition());
             telemetry.addData("Drive",trueDrive);
             telemetry.addData("Strafe", trueStrafe);
+            telemetry.addData("Rotate", trueRotate);
             telemetry.update();
         }
 
@@ -128,10 +135,10 @@ public class ChassisMovementCode extends LinearOpMode {
 
 
         private void Drive () {
-            front_right_wheel.setPower(this.frontRight);
-            front_left_wheel.setPower(this.frontLeft);
-            back_left_wheel.setPower(this.backLeft);
-            back_right_wheel.setPower(this.backRight);
+            front_right_wheel.setPower(this.frontRight*frontRightMultiplier);
+            front_left_wheel.setPower(this.frontLeft*frontLeftMultiplier);
+            back_left_wheel.setPower(this.backLeft*backLeftMultiplier);
+            back_right_wheel.setPower(this.backRight*backRightMultiplier);
         }
     }
 
@@ -258,21 +265,34 @@ public class ChassisMovementCode extends LinearOpMode {
                     telemetry.addData("Current movement per press", movementLength);
                     telemetry.addData("Amount increased per increase", increaseIntensity);
                     telemetry.update();
-                    if ((upWait = true) & (this.gamepad1.dpad_up = false)) {
+                    if ((upWait) & (!this.gamepad1.dpad_up)) {
                         movementLength = movementLength + increaseIntensity;
                         upWait = false;
                     }
-                    if ((this.gamepad1.dpad_down = false) & (downWait = true)) {
+                    if ((!this.gamepad1.dpad_down) & (downWait)) {
                         movementLength = movementLength - increaseIntensity;
                         downWait = false;
                     }
-                    if ((this.gamepad1.dpad_right) & (rightWait = true)) {
+                    if ((!this.gamepad1.dpad_right) & (rightWait)) {
                         increaseIntensity = increaseIntensity + 1;
                         rightWait = false;
                     }
-                    if ((this.gamepad1.dpad_left) & (leftWait = true)) {
+                    if ((!this.gamepad1.dpad_left) & (leftWait)) {
                         increaseIntensity = increaseIntensity - 1;
                         leftWait = false;
+                    }
+
+                    if (this.gamepad1.dpad_up) {
+                        upWait = true;
+                    }
+                    if (this.gamepad1.dpad_down) {
+                        downWait = true;
+                    }
+                    if (this.gamepad1.dpad_right) {
+                        rightWait =true;
+                    }
+                    if (this.gamepad1.dpad_left) {
+                        leftWait = true;
                     }
 
                     if (this.gamepad1.x) {
