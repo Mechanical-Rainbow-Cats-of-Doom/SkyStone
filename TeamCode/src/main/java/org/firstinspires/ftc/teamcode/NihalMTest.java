@@ -133,9 +133,12 @@ public class NihalMTest extends LinearOpMode {
                         driveOpState = OperState.Pressed;
                     }
                     break;
+                case Pressed :
                     if (this.gamepad1.b == false) {
                         driveOpState = OperState.Load;
                     }
+                case Load:
+
                 case ButtonPushed :
                     if (this.gamepad1.a == false) {
                         driveOpState = OperState.ToggleLauncher;
