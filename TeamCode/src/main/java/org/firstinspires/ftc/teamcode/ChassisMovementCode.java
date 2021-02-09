@@ -52,21 +52,47 @@ public class ChassisMovementCode extends LinearOpMode {
         double countsPerRotation = 360;
         double trueDrive;
         double drivePreset;
+        double trueStrafe;
+        double slowIntensity = 7;
+        double trueRotate;
+        double backRightMultiplier = 1;
+        double backLeftMultiplier = 1;
+        double frontRightMultiplier = 1;
+        double frontLeftMultiplier = 1;
 
         private void SetAxisMovement () {
             trueDrive = (rightEncoder+leftEncoder)/2;
+            trueStrafe = backEncoder - (rightEncoder-leftEncoder)/2;
+            trueRotate = (rightEncoder-leftEncoder)/2;
         }
 
-        private void Forward (double forwardLength) {
+        private void ForwardAndBackward (double forwardLength) {
             drivePreset = trueDrive + forwardLength;
             while (trueDrive < drivePreset) {
 
-                front_right_wheel.setPower(Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)));
-                front_left_wheel.setPower(Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)));
-                back_left_wheel.setPower(-(Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset))));
-                back_right_wheel.setPower(Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)));
+                front_right_wheel.setPower(Math.signum(forwardLength)*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)*Math.abs(drivePreset/slowIntensity)));
+                front_left_wheel.setPower(Math.signum(forwardLength)*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)*Math.abs(drivePreset/slowIntensity)));
+                back_left_wheel.setPower(-(Math.signum(forwardLength)*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset))*Math.abs(drivePreset/slowIntensity)));
+                back_right_wheel.setPower(Math.signum(forwardLength)*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)*Math.abs(drivePreset/slowIntensity)));
+                this.SetAxisMovement();
                 this.Encoders();
-                trueDrive = (rightEncoder+leftEncoder)/2;
+            }
+            front_left_wheel.setPower(0);
+            front_right_wheel.setPower(0);
+            back_right_wheel.setPower(0);
+            back_left_wheel.setPower(0);
+        }
+
+        private void LeftAndRight (double lateralMovement) {
+            drivePreset = trueStrafe + lateralMovement;
+            while (trueStrafe < drivePreset) {
+
+                front_right_wheel.setPower(Math.signum(lateralMovement)*-1*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)*Math.abs(drivePreset/slowIntensity)));
+                front_left_wheel.setPower(Math.signum(lateralMovement)*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)*Math.abs(drivePreset/slowIntensity)));
+                back_left_wheel.setPower(Math.signum(lateralMovement)*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset))*Math.abs(drivePreset/slowIntensity));
+                back_right_wheel.setPower(Math.signum(lateralMovement)*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)*Math.abs(drivePreset/slowIntensity)));
+                this.SetAxisMovement();
+                this.Encoders();
 
             }
             front_left_wheel.setPower(0);
@@ -95,6 +121,8 @@ public class ChassisMovementCode extends LinearOpMode {
             telemetry.addData("Left Encoder",front_right_wheel.getCurrentPosition());
             telemetry.addData("Back Encoder",front_left_wheel.getCurrentPosition());
             telemetry.addData("Drive",trueDrive);
+            telemetry.addData("Strafe", trueStrafe);
+            telemetry.addData("Rotate", trueRotate);
             telemetry.update();
         }
 
@@ -107,17 +135,19 @@ public class ChassisMovementCode extends LinearOpMode {
 
 
         private void Drive () {
-            front_right_wheel.setPower(this.frontRight);
-            front_left_wheel.setPower(this.frontLeft);
-            back_left_wheel.setPower(this.backLeft);
-            back_right_wheel.setPower(this.backRight);
+            front_right_wheel.setPower(this.frontRight*frontRightMultiplier);
+            front_left_wheel.setPower(this.frontLeft*frontLeftMultiplier);
+            back_left_wheel.setPower(this.backLeft*backLeftMultiplier);
+            back_right_wheel.setPower(this.backRight*backRightMultiplier);
         }
     }
 
     enum OperState {
         NORMALDRIVE,
         NORMALROTATE,
-        FORWARD
+        FORWARD,
+        LATERALMOVEMENT,
+        SETMOVEMENTDISTANCE
     }
 
     @Override
@@ -144,6 +174,14 @@ public class ChassisMovementCode extends LinearOpMode {
         double drive;
         double strafe;
         double rotate;
+        double movementLength = 0;
+        double forwardLength;
+        double lateralMovement;
+        double increaseIntensity = 5;
+        boolean upWait = false;
+        boolean downWait = false;
+        boolean rightWait = false;
+        boolean leftWait = false;
         ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
 
@@ -172,6 +210,14 @@ public class ChassisMovementCode extends LinearOpMode {
                         driveOpState = ChassisMovementCode.OperState.FORWARD;
                     }
 
+                    if (this.gamepad1.b) {
+                        driveOpState = ChassisMovementCode.OperState.LATERALMOVEMENT;
+                    }
+
+                    if (this.gamepad1.y) {
+                        driveOpState = ChassisMovementCode.OperState.SETMOVEMENTDISTANCE;
+                    }
+
                     break;
 
                 case NORMALROTATE:
@@ -196,11 +242,62 @@ public class ChassisMovementCode extends LinearOpMode {
 
                 case FORWARD:
 
-                    double forwardLength = 40;
+                    forwardLength = movementLength;
                     chasty.SetAxisMovement();
-                    chasty.Forward(forwardLength);
+                    chasty.ForwardAndBackward(forwardLength);
 
                     driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+
+                    break;
+
+                case LATERALMOVEMENT:
+
+                    lateralMovement = movementLength;
+                    chasty.SetAxisMovement();
+                    chasty.LeftAndRight(lateralMovement);
+
+                    driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+
+                    break;
+                case SETMOVEMENTDISTANCE:
+                    telemetry.addLine("Press up and down on the d-pad to increase movement per press");
+                    telemetry.addLine("Press right and left on the d-pad to increase or decrease the increased amount added");
+                    telemetry.addData("Current movement per press", movementLength);
+                    telemetry.addData("Amount increased per increase", increaseIntensity);
+                    telemetry.update();
+                    if ((upWait) & (!this.gamepad1.dpad_up)) {
+                        movementLength = movementLength + increaseIntensity;
+                        upWait = false;
+                    }
+                    if ((!this.gamepad1.dpad_down) & (downWait)) {
+                        movementLength = movementLength - increaseIntensity;
+                        downWait = false;
+                    }
+                    if ((!this.gamepad1.dpad_right) & (rightWait)) {
+                        increaseIntensity = increaseIntensity + 1;
+                        rightWait = false;
+                    }
+                    if ((!this.gamepad1.dpad_left) & (leftWait)) {
+                        increaseIntensity = increaseIntensity - 1;
+                        leftWait = false;
+                    }
+
+                    if (this.gamepad1.dpad_up) {
+                        upWait = true;
+                    }
+                    if (this.gamepad1.dpad_down) {
+                        downWait = true;
+                    }
+                    if (this.gamepad1.dpad_right) {
+                        rightWait =true;
+                    }
+                    if (this.gamepad1.dpad_left) {
+                        leftWait = true;
+                    }
+
+                    if (this.gamepad1.x) {
+                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
 
                     break;
 
