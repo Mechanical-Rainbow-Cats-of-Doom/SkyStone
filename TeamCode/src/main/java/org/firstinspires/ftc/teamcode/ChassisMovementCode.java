@@ -53,7 +53,7 @@ public class ChassisMovementCode extends LinearOpMode {
         double trueDrive;
         double drivePreset;
         double trueStrafe;
-        double slowIntensity = 7;
+        double slowIntensity = 10;
         double trueRotate;
         double backRightMultiplier = 1;
         double backLeftMultiplier = 1;
@@ -66,39 +66,41 @@ public class ChassisMovementCode extends LinearOpMode {
             trueRotate = (rightEncoder-leftEncoder)/2;
         }
 
-        private void ForwardAndBackward (double forwardLength) {
-            drivePreset = trueDrive + forwardLength;
-            while (trueDrive < drivePreset) {
+        private void ForwardAndBackward (double drivePreset) {
+            front_right_wheel.setPower(Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
+            front_left_wheel.setPower(Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
+            back_left_wheel.setPower(-1*Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
+            back_right_wheel.setPower(Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
 
-                front_right_wheel.setPower(Math.signum(forwardLength)*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)*Math.abs(drivePreset/slowIntensity)));
-                front_left_wheel.setPower(Math.signum(forwardLength)*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)*Math.abs(drivePreset/slowIntensity)));
-                back_left_wheel.setPower(-(Math.signum(forwardLength)*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset))*Math.abs(drivePreset/slowIntensity)));
-                back_right_wheel.setPower(Math.signum(forwardLength)*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)*Math.abs(drivePreset/slowIntensity)));
-                this.SetAxisMovement();
-                this.Encoders();
-            }
-            front_left_wheel.setPower(0);
-            front_right_wheel.setPower(0);
-            back_right_wheel.setPower(0);
-            back_left_wheel.setPower(0);
         }
 
         private void LeftAndRight (double lateralMovement) {
-            drivePreset = trueStrafe + lateralMovement;
-            while (trueStrafe < drivePreset) {
+            if (lateralMovement >= 0) {
+                while (trueDrive < drivePreset) {
 
-                front_right_wheel.setPower(Math.signum(lateralMovement)*-1*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)*Math.abs(drivePreset/slowIntensity)));
-                front_left_wheel.setPower(Math.signum(lateralMovement)*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)*Math.abs(drivePreset/slowIntensity)));
-                back_left_wheel.setPower(Math.signum(lateralMovement)*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset))*Math.abs(drivePreset/slowIntensity));
-                back_right_wheel.setPower(Math.signum(lateralMovement)*Math.max(0.15, Math.signum(drivePreset-trueDrive)*(Math.abs(drivePreset-trueDrive)/drivePreset)*Math.abs(drivePreset/slowIntensity)));
-                this.SetAxisMovement();
-                this.Encoders();
-
+                    front_right_wheel.setPower(-1*Math.signum(lateralMovement - trueDrive) * Math.max(0.15, Math.abs(lateralMovement - trueDrive) / lateralMovement) * Math.signum(lateralMovement));
+                    front_left_wheel.setPower(Math.signum(lateralMovement - trueDrive) * Math.max(0.15, Math.abs(lateralMovement - trueDrive) / lateralMovement) * Math.signum(lateralMovement));
+                    back_left_wheel.setPower(Math.signum(lateralMovement - trueDrive) * Math.max(0.15, Math.abs(lateralMovement - trueDrive) / lateralMovement) * Math.signum(lateralMovement));
+                    back_right_wheel.setPower(Math.signum(lateralMovement - trueDrive) * Math.max(0.15, Math.abs(lateralMovement - trueDrive) / lateralMovement) * Math.signum(lateralMovement));
+                    this.SetAxisMovement();
+                    this.Encoders();
+                }
             }
-            front_left_wheel.setPower(0);
-            front_right_wheel.setPower(0);
-            back_right_wheel.setPower(0);
-            back_left_wheel.setPower(0);
+            if (lateralMovement < 0) {
+                while (trueDrive > drivePreset) {
+
+                    front_right_wheel.setPower(-1*Math.signum(lateralMovement - trueDrive) * Math.max(0.15, Math.abs(lateralMovement - trueDrive) / lateralMovement) * Math.signum(lateralMovement));
+                    front_left_wheel.setPower(Math.signum(lateralMovement - trueDrive) * Math.max(0.15, Math.abs(lateralMovement - trueDrive) / lateralMovement) * Math.signum(lateralMovement));
+                    back_left_wheel.setPower(-1*Math.signum(lateralMovement - trueDrive) * Math.max(0.15, Math.abs(lateralMovement - trueDrive) / lateralMovement) * Math.signum(lateralMovement));
+                    back_right_wheel.setPower(Math.signum(lateralMovement - trueDrive) * Math.max(0.15, Math.abs(lateralMovement - trueDrive) / lateralMovement) * Math.signum(lateralMovement));
+                    this.SetAxisMovement();
+                    this.Encoders();
+                }
+            }
+            front_left_wheel.setPower(0.15);
+            front_right_wheel.setPower(0.15);
+            back_right_wheel.setPower(0.15);
+            back_left_wheel.setPower(0.15);
         }
 
         private void ZeroEncoders () {
@@ -182,6 +184,7 @@ public class ChassisMovementCode extends LinearOpMode {
         boolean downWait = false;
         boolean rightWait = false;
         boolean leftWait = false;
+        double drivePreset;
         ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
 
@@ -207,6 +210,7 @@ public class ChassisMovementCode extends LinearOpMode {
                     }
 
                     if (this.gamepad1.a) {
+                        drivePreset = chasty.trueDrive + movementLength;
                         driveOpState = ChassisMovementCode.OperState.FORWARD;
                     }
 
@@ -242,11 +246,22 @@ public class ChassisMovementCode extends LinearOpMode {
 
                 case FORWARD:
 
-                    forwardLength = movementLength;
                     chasty.SetAxisMovement();
-                    chasty.ForwardAndBackward(forwardLength);
+                    chasty.Encoders();
+                    chasty.ForwardAndBackward(drivePreset);
 
-                    driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    if (this.gamepad1.right_trigger != 0) {
+                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
+
+                    if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
+                        front_left_wheel.setPower(0.01);
+                        front_right_wheel.setPower(0.01);
+                        back_right_wheel.setPower(0.01);
+                        back_left_wheel.setPower(0.01);
+                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
+
 
                     break;
 
