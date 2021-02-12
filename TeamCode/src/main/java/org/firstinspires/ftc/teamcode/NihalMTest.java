@@ -30,19 +30,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;  //This is the package for controlling the IMU
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.lang.Math;  //This is the standard Java package for a variety of math functions
 import java.math.BigDecimal;
@@ -54,9 +47,11 @@ public class NihalMTest extends LinearOpMode {
 
     private Blinker expansion_Hub_1;
     private DcMotor BigMotor;
-    private DcMotor IntakeMotor;
     private Servo ServoRotation;
-    private double StickValue;
+    ElapsedTime mytimer = new ElapsedTime();
+
+
+
 
     enum OperState {
         Start,
@@ -65,6 +60,9 @@ public class NihalMTest extends LinearOpMode {
         Pressed,
         Load,
         ResetPosition,
+        firsttimer,
+        secondtimer
+
 
 
 
@@ -98,6 +96,12 @@ public class NihalMTest extends LinearOpMode {
          */
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        telemetry.addData("testing A button:", this.gamepad1.a);
+        telemetry.addData("testing LauncherOn:", LauncherOn);
+        telemetry.update();
+
+
+
 
 
         /*
@@ -123,50 +127,77 @@ public class NihalMTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             switch (driveOpState) {
-                case Start :
+                case Start:
 
-                    if (this.gamepad1.a == true) {
+                    if (this.gamepad1.a) {
                         driveOpState = OperState.ButtonPushed;
                     }
-                    break;
-                    if (this.gamepad1.b == true) {
+
+                    if (this.gamepad1.b) {
                         driveOpState = OperState.Pressed;
                     }
                     break;
-                case Pressed :
-                    if (this.gamepad1.b == false) {
-                        driveOpState = OperState.Load;
-                    }
-                case Load:
+                case Pressed:
+                    if (!this.gamepad1.b) {
+                        driveOpState = OperState.firsttimer;
 
-                case ButtonPushed :
-                    if (this.gamepad1.a == false) {
+                    }
+                    break;
+                case firsttimer:
+                    mytimer.reset();
+                    driveOpState = OperState.Load;
+                    break;
+
+                case Load:
+                    ServoRotation.setPosition(0.8);
+                    if (mytimer.time() >= 0.15){
+                        driveOpState = OperState.secondtimer;
+                    }
+                    break;
+
+                case secondtimer:
+                    mytimer.reset();
+                    driveOpState = OperState.ResetPosition;
+
+                    break;
+
+                case ResetPosition:
+                    ServoRotation.setPosition(1.0);
+                    if (mytimer.time() >= 0.15) {
+                        driveOpState = OperState.Start;
+                    }
+
+                    break;
+
+
+                case ButtonPushed:
+                    if (!this.gamepad1.a) {
                         driveOpState = OperState.ToggleLauncher;
 
                     }
                     break;
-                case ToggleLauncher :
+                case ToggleLauncher:
                     LauncherOn = !LauncherOn;
                     driveOpState = OperState.Start;
+                    break;
+            }
 
 
+            if (LauncherOn) {
+                BigMotor.setPower(-1.0);
+            } else {
+                BigMotor.setPower(0);
+            }
+            telemetry.addData("State", driveOpState);
+            telemetry.addData("testing A button:", this.gamepad1.a);
+            telemetry.addData("testing LauncherOn:", LauncherOn);
+            telemetry.addData("testing B button:", this.gamepad1.b);
+            telemetry.update();
         }
 
 
-            }
-            if (LauncherOn){
-                BigMotor.setPower(1.0);
-            } else{
-                BigMotor.setPower(0);
-            }
-            telemetry.addData("testing A button:", this.gamepad1.a);
-            telemetry.addData("testing LauncherOn:", LauncherOn);
-            telemetry.update();
 
 
-            StickValue = this.gamepad1.left_trigger;
-            if (StickValue >= 0) {
-                ServoRotation.setPosition(this.gamepad1.left_trigger);
 
 
 
@@ -185,4 +216,5 @@ public class NihalMTest extends LinearOpMode {
             The IMU is actually pretty powerful--you can also measure acceleration and some other
             things.  As an example, you might be able to use the IMU to detect when you hit a wall
             at full speed.
-             */}}}
+             */}}
+
