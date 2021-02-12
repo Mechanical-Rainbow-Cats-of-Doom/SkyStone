@@ -48,6 +48,8 @@ public class EhtanLifterThingyVeryPogchamp extends LinearOpMode {
         ServoPower = hardwareMap.get(CRServo.class, "ServoPower");
         waitForStart();
         while (opModeIsActive()) {
+            LeftStickValue = gamepad1.left_stick_y;
+            RightStickValue = gamepad1.right_stick_y;
             lift.MoveLift();
             lift.MoveServo();
             telemetry.update();
