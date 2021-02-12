@@ -17,7 +17,7 @@ public class EhtanLifterThingyVeryPogchamp extends LinearOpMode {
     private class Lifter {
         private void MoveLift(double LeftStick) {
             if (LeftStick == 0) { // Do not complain about my use of multiple if statements or you will perish
-                LiftMotor.setPower(1);
+                LiftMotor.setPower(0.09);
             }
 
             if (LeftStick < 0) {
