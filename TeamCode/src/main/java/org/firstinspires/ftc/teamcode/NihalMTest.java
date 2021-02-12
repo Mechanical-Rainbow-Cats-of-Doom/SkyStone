@@ -51,6 +51,31 @@ public class NihalMTest extends LinearOpMode {
     ElapsedTime mytimer = new ElapsedTime();
 
 
+    private class Launcher {
+        boolean launcherOn = false;
+
+        private void LauncherToggle () {
+            launcherOn = !launcherOn;
+        }
+
+        private void LauncherRun () {
+            if (launcherOn) {
+                BigMotor.setPower(-1);
+            }
+            else {
+                BigMotor.setPower(0);
+            }
+        }
+
+        private void Shoot () {
+            ServoRotation.setPosition(0.8);
+        }
+
+        private void Reload () {
+            ServoRotation.setPosition(1.0);
+        }
+
+    }
 
 
     enum OperState {
@@ -127,6 +152,7 @@ public class NihalMTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             switch (driveOpState) {
+                /*
                 case Start:
 
                     if (this.gamepad1.a) {
@@ -180,14 +206,23 @@ public class NihalMTest extends LinearOpMode {
                     LauncherOn = !LauncherOn;
                     driveOpState = OperState.Start;
                     break;
+
+                 */
+                case Start:
+                    if (this.gamepad1.a){
+
+                    }
+
             }
 
-
+            /*
             if (LauncherOn) {
                 BigMotor.setPower(-1.0);
             } else {
                 BigMotor.setPower(0);
             }
+            */
+
             telemetry.addData("State", driveOpState);
             telemetry.addData("testing A button:", this.gamepad1.a);
             telemetry.addData("testing LauncherOn:", LauncherOn);
