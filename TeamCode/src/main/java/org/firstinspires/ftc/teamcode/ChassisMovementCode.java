@@ -57,8 +57,8 @@ public class ChassisMovementCode extends LinearOpMode {
         double trueRotate;
         double backRightMultiplier = 1;
         double backLeftMultiplier = 1;
-        double frontRightMultiplier = 0.8;
-        double frontLeftMultiplier = 0.8;
+        double frontRightMultiplier = 0.9;
+        double frontLeftMultiplier = 0.9;
 
         private void SetAxisMovement () {
             trueDrive = (rightEncoder+leftEncoder)/2;
@@ -128,7 +128,8 @@ public class ChassisMovementCode extends LinearOpMode {
         NORMALROTATE,
         FORWARD,
         LATERALMOVEMENT,
-        SETMOVEMENTDISTANCE
+        SETMOVEMENTDISTANCE,
+        SETMOTORMULTIPLE
     }
 
     @Override
@@ -164,6 +165,8 @@ public class ChassisMovementCode extends LinearOpMode {
         boolean rightWait = false;
         boolean leftWait = false;
         double drivePreset = 0;
+        double increaseDecrease = 1;
+        boolean aWait = false;
         ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
 
@@ -179,6 +182,8 @@ public class ChassisMovementCode extends LinearOpMode {
                     chasty.Drive();
                     chasty.Encoders();
                     chasty.SetAxisMovement();
+
+
 
                     if (this.gamepad1.left_trigger != 0) {
                         chasty.ZeroEncoders();
@@ -200,6 +205,10 @@ public class ChassisMovementCode extends LinearOpMode {
 
                     if (this.gamepad1.y) {
                         driveOpState = ChassisMovementCode.OperState.SETMOVEMENTDISTANCE;
+                    }
+
+                    if (this.gamepad1.x) {
+                        driveOpState = ChassisMovementCode.OperState.SETMOTORMULTIPLE;
                     }
 
                     break;
@@ -300,7 +309,74 @@ public class ChassisMovementCode extends LinearOpMode {
                         leftWait = true;
                     }
 
-                    if (this.gamepad1.x) {
+                    if (this.gamepad1.b) {
+                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
+
+                    break;
+
+                case SETMOTORMULTIPLE:
+                    telemetry.addLine("Press A to change increase/decrease");
+                    if (increaseDecrease == 1) {
+                        telemetry.addLine("INCREASING");
+                    }
+                    if (increaseDecrease == -1) {
+                        telemetry.addLine("DECREASING");
+                    }
+                    telemetry.addLine("Press right dpad to change FR wheel multiplier");
+                    telemetry.addData("FR wheel multiplier: ", chasty.frontRightMultiplier);
+                    telemetry.addLine("Press right dpad to change FL wheel multiplier");
+                    telemetry.addData("FL wheel multiplier: ", chasty.frontLeftMultiplier);
+                    telemetry.addLine("Press right dpad to change BR wheel multiplier");
+                    telemetry.addData("BR wheel multiplier: ", chasty.backRightMultiplier);
+                    telemetry.addLine("Press right dpad to change BL wheel multiplier");
+                    telemetry.addData("BL wheel multiplier: ", chasty.backLeftMultiplier);
+
+                    if ((increaseDecrease == 1) & (!this.gamepad1.a) & (aWait)) {
+                        increaseDecrease = -1;
+                        aWait = false;
+                    }
+                    if ((increaseDecrease == -1) & (!this.gamepad1.a) & (aWait)) {
+                        increaseDecrease = 1;
+                        aWait = false;
+                    }
+
+
+
+                    if ((upWait) & (!this.gamepad1.dpad_up)) {
+                        chasty.frontLeftMultiplier = chasty.frontLeftMultiplier + (0.05 * increaseDecrease);
+                        upWait = false;
+                    }
+                    if ((!this.gamepad1.dpad_down) & (downWait)) {
+                        chasty.backRightMultiplier = chasty.backRightMultiplier + (0.05 * increaseDecrease);
+                        downWait = false;
+                    }
+                    if ((!this.gamepad1.dpad_right) & (rightWait)) {
+                        chasty.frontRightMultiplier = chasty.frontRightMultiplier + (0.05 * increaseDecrease);
+                        rightWait = false;
+                    }
+                    if ((!this.gamepad1.dpad_left) & (leftWait)) {
+                        chasty.backLeftMultiplier = chasty.backLeftMultiplier + (0.05 * increaseDecrease);
+                        leftWait = false;
+                    }
+
+                    if (this.gamepad1.dpad_up) {
+                        upWait = true;
+                    }
+                    if (this.gamepad1.dpad_down) {
+                        downWait = true;
+                    }
+                    if (this.gamepad1.dpad_right) {
+                        rightWait =true;
+                    }
+                    if (this.gamepad1.dpad_left) {
+                        leftWait = true;
+                    }
+                    if (this.gamepad1.a) {
+                        aWait = true;
+                    }
+
+                    if (this.gamepad1.b) {
                         driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
                     }
 
