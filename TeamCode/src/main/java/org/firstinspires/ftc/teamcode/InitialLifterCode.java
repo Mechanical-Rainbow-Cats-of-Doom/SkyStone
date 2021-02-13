@@ -19,16 +19,16 @@ public class InitialLifterCode extends LinearOpMode {
         private double ForkPower;
         private void MoveLift(double LeftStick) {
             if (LeftStick == 0) {
-                LiftMotor.setPower(0.07);
-                this.LiftPower = 0.07;
+                LiftMotor.setPower(-0.08);
+                this.LiftPower = -0.08;
             }
 
             if (LeftStick < 0) {
-                    LiftMotor.setPower(LeftStick * 0.46);
-                    this.LiftPower = LeftStick * 0.46;
+                    LiftMotor.setPower(LeftStick * -0.46);
+                    this.LiftPower = LeftStick * -0.46;
                 } else {
-                    LiftMotor.setPower(LeftStick);
-                    this.LiftPower = LeftStick;
+                    LiftMotor.setPower(-LeftStick);
+                    this.LiftPower = -LeftStick;
                 }
             }
 
