@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp
 
-public class EhtanLifterThingyVeryPogchamp extends LinearOpMode {
+public class InitialLifterCode extends LinearOpMode {
     private Blinker expansion_Hub_1;
     private DcMotor LiftMotor;
     private CRServo ServoPower;
@@ -42,8 +42,7 @@ public class EhtanLifterThingyVeryPogchamp extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        EhtanLifterThingyVeryPogchamp.Lifter lift = new EhtanLifterThingyVeryPogchamp.Lifter();
-
+        InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
         expansion_Hub_1 = hardwareMap.get(Blinker.class, "Nihal");
         LiftMotor = hardwareMap.get(DcMotor.class, "Big Motor");
         ServoPower = hardwareMap.get(CRServo.class, "ServoPower");
