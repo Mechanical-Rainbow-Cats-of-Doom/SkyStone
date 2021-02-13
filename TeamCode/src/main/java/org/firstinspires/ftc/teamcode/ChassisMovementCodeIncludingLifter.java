@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 
@@ -12,13 +13,14 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 public class ChassisMovementCodeIncludingLifter extends LinearOpMode {
 
     private Blinker Control_Hub;
-
+    private Blinker Expansion_Hub_2;
     //motors
     private DcMotor back_right_wheel;
     private DcMotor front_right_wheel;
     private DcMotor back_left_wheel;
     private DcMotor front_left_wheel;
-
+    private double NewLeftStickValue;
+    private double NewRightStickValue;
     private BNO055IMU imu;
 
     private DigitalChannel switch_;
@@ -123,12 +125,11 @@ public class ChassisMovementCodeIncludingLifter extends LinearOpMode {
     public void runOpMode(){
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
-
+        Expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub");
         front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
         front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
         back_left_wheel = hardwareMap.get(DcMotor.class, "back left wheel");
         back_right_wheel = hardwareMap.get(DcMotor.class, "back right wheel");
-
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();  //in wrong spot--where is better?
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -154,9 +155,17 @@ public class ChassisMovementCodeIncludingLifter extends LinearOpMode {
         double drivePreset = 0;
         ChassisMovementCodeIncludingLifter.Chassis chasty = new ChassisMovementCodeIncludingLifter.Chassis();
         ChassisMovementCodeIncludingLifter.OperState driveOpState = ChassisMovementCodeIncludingLifter.OperState.NORMALDRIVE;
-        InitialLifterCode.
+        InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
+        lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
+        lift.ServoPower = hardwareMap.get(CRServo.class, "LiftServo");
         while (opModeIsActive()) {
-
+            NewLeftStickValue = -gamepad2.left_stick_y;
+            NewRightStickValue = -gamepad2.right_stick_y;
+            lift.MoveLift(this.NewLeftStickValue);
+            lift.MoveServo(this.NewRightStickValue);
+            telemetry.addData("Lift Power", lift.LiftPower);
+            telemetry.addData("Fork Power", lift.ForkPower);
+            telemetry.update();
             switch (driveOpState) {
                 case NORMALDRIVE:
                     drive = -this.gamepad1.left_stick_y;

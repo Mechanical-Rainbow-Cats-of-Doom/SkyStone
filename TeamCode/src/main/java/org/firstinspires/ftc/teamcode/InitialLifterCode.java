@@ -9,31 +9,31 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class InitialLifterCode extends LinearOpMode {
     private Blinker expansion_Hub_1;
-    private DcMotor LiftMotor;
-    private CRServo ServoPower;
     private double LeftStickValue;
     private double RightStickValue;
 
-    public class Lifter {
-        private double LiftPower;
-        private double ForkPower;
-        private void MoveLift(double LeftStick) {
+    public static class Lifter {
+        public double LiftPower;
+        public double ForkPower;
+        public DcMotor LiftMotor;
+        public CRServo ServoPower;
+        public void MoveLift(double LeftStick) {
             if (LeftStick == 0) {
-                LiftMotor.setPower(-0.16);
-                this.LiftPower = -0.16;
+                this.LiftMotor.setPower(-0.215);
+                this.LiftPower = -0.215;
             }
 
             if (LeftStick < 0) {
-                    LiftMotor.setPower(LeftStick * -0.46);
+                   this.LiftMotor.setPower(LeftStick * -0.46);
                     this.LiftPower = (LeftStick * -0.46);
                 } else {
-                    LiftMotor.setPower(LeftStick * -0.8);
-                    this.LiftPower = (LeftStick * -0.8);
+                    this.LiftMotor.setPower(-LeftStick);
+                    this.LiftPower = (LeftStick * -1);
                 }
             }
 
         public void MoveServo(double RightStick) {
-            ServoPower.setPower(RightStick);
+            this.ServoPower.setPower(RightStick);
             this.ForkPower = RightStick;
         }
     }
@@ -42,14 +42,14 @@ public class InitialLifterCode extends LinearOpMode {
     public void runOpMode() {
         InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
         expansion_Hub_1 = hardwareMap.get(Blinker.class, "Nihal");
-        LiftMotor = hardwareMap.get(DcMotor.class, "Big Motor");
-        ServoPower = hardwareMap.get(CRServo.class, "ServoPower");
+        lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
+        lift.ServoPower = hardwareMap.get(CRServo.class, "LiftServo");
         waitForStart();
         while (opModeIsActive()) {
-            LeftStickValue = -gamepad1.left_stick_y;
-            RightStickValue = -gamepad1.right_stick_y;
-            lift.MoveLift(LeftStickValue);
-            lift.MoveServo(RightStickValue);
+            this.LeftStickValue = -gamepad2.left_stick_y;
+            this.RightStickValue = -gamepad2.right_stick_y;
+            lift.MoveLift(this.LeftStickValue);
+            lift.MoveServo(this.RightStickValue);
             telemetry.addData("Lift Power", lift.LiftPower);
             telemetry.addData("Fork Power", lift.ForkPower);
             telemetry.update();
