@@ -14,13 +14,13 @@ public class InitialLifterCode extends LinearOpMode {
     private double LeftStickValue;
     private double RightStickValue;
 
-    private class Lifter {
+    public class Lifter {
         private double LiftPower;
         private double ForkPower;
         private void MoveLift(double LeftStick) {
             if (LeftStick == 0) {
-                LiftMotor.setPower(-0.1);
-                this.LiftPower = -0.1;
+                LiftMotor.setPower(-0.16);
+                this.LiftPower = -0.16;
             }
 
             if (LeftStick < 0) {
