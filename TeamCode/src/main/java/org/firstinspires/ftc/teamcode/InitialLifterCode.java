@@ -19,7 +19,7 @@ public class InitialLifterCode extends LinearOpMode {
 
     private class Lifter {
         private void MoveLift(double LeftStick, double InLiftPower) {
-            if (LeftStick == 0) { // Do not complain about my use of multiple if statements or you will perish
+            if (LeftStick == 0) {
                 LiftMotor.setPower(0.07);
                 InLiftPower = 0.07;
             }
