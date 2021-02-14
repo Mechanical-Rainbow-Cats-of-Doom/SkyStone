@@ -344,19 +344,19 @@ public class ChassisMovementCode extends LinearOpMode {
 
 
                     if ((upWait) & (!this.gamepad1.dpad_up)) {
-                        chasty.frontLeftMultiplier = chasty.frontLeftMultiplier + (0.05 * increaseDecrease);
+                        chasty.frontLeftMultiplier = chasty.frontLeftMultiplier + (0.01 * increaseDecrease);
                         upWait = false;
                     }
                     if ((!this.gamepad1.dpad_down) & (downWait)) {
-                        chasty.backRightMultiplier = chasty.backRightMultiplier + (0.05 * increaseDecrease);
+                        chasty.backRightMultiplier = chasty.backRightMultiplier + (0.01 * increaseDecrease);
                         downWait = false;
                     }
                     if ((!this.gamepad1.dpad_right) & (rightWait)) {
-                        chasty.frontRightMultiplier = chasty.frontRightMultiplier + (0.05 * increaseDecrease);
+                        chasty.frontRightMultiplier = chasty.frontRightMultiplier + (0.01 * increaseDecrease);
                         rightWait = false;
                     }
                     if ((!this.gamepad1.dpad_left) & (leftWait)) {
-                        chasty.backLeftMultiplier = chasty.backLeftMultiplier + (0.05 * increaseDecrease);
+                        chasty.backLeftMultiplier = chasty.backLeftMultiplier + (0.01 * increaseDecrease);
                         leftWait = false;
                     }
 
