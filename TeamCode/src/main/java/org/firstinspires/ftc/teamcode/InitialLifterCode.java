@@ -18,7 +18,7 @@ public class InitialLifterCode {
 
         public void MoveLift(double LeftStick) {
             if (LeftStick == 0) {
-                this.LiftMotor.setPower(-0.215);
+                this.LiftMotor.setPower(-0.275);
                 this.LiftPower = -0.215;
             }
 

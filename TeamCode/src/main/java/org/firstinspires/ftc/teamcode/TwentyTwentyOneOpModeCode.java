@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.content.ContentResolver;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
@@ -10,7 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     private double LeftStickValue;
     private double RightStickValue;
-    private Blinker expansion_Hub_1;
+    private Blinker Control_Hub;
     private Blinker expansion_Hub_2;
 
     @Override
@@ -18,7 +20,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     public void runOpMode() {
         InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
         NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
-        expansion_Hub_1 = hardwareMap.get(Blinker.class, "Expansion Hub 1");
+        Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
         expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
         lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
         lift.ForkServo = hardwareMap.get(CRServo.class, "LiftServo");
