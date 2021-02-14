@@ -28,50 +28,43 @@ FUNCTION:
 package org.firstinspires.ftc.teamcode;
 
 
-
-import com.qualcomm.hardware.bosch.BNO055IMU;  //This is the package for controlling the IMU
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
-import java.lang.Math;  //This is the standard Java package for a variety of math functions
-import java.math.BigDecimal;
-
 @TeleOp
 
-public class NihalMTest extends LinearOpMode {
+public class NihalEthanTest extends LinearOpMode {
 
     private Blinker expansion_Hub_1;
-    private DcMotor BigMotor;
-    private Servo ServoRotation;
     ElapsedTime mytimer = new ElapsedTime();
 
-    private class Launcher {
+    public static class Launcher {
         boolean launcherOn = false;
-
-        private void LauncherToggle () {
+        public DcMotor LaunchMotor;
+        public Servo LaunchServo;
+        public void LauncherToggle () {
             launcherOn = !launcherOn;
         }
 
-        private void LauncherRun () {
+        public void LauncherRun () {
             if (launcherOn) {
-                BigMotor.setPower(-1);
+                LaunchMotor.setPower(-1);
             }
             else {
-                BigMotor.setPower(0);
+                LaunchMotor.setPower(0);
             }
         }
 
-        private void Shoot () {
-            ServoRotation.setPosition(0.8);
+        public void Shoot () {
+            LaunchServo.setPosition(0.8);
         }
 
-        private void Reload () {
-            ServoRotation.setPosition(1.0);
+        public void Reload () {
+            LaunchServo.setPosition(1.0);
         }
 
     }
@@ -89,11 +82,11 @@ public class NihalMTest extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        NihalMTest.Launcher NihalLauncher = new NihalMTest.Launcher();
+        NihalEthanTest.Launcher NihalLauncher = new NihalEthanTest.Launcher();
 
         expansion_Hub_1 = hardwareMap.get(Blinker.class, "Nihal");
-        BigMotor = hardwareMap.get(DcMotor.class, "Big Motor");
-        ServoRotation = hardwareMap.get(Servo.class,"ServoRotation");
+        NihalLauncher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
+        NihalLauncher.LaunchServo = hardwareMap.get(Servo.class,"LaunchServo");
         //boolean LauncherOn = false;
 
         waitForStart();
