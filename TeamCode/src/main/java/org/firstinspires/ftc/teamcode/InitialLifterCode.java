@@ -14,7 +14,7 @@ public class InitialLifterCode {
         public double LiftPower;
         public double ForkPower;
         public DcMotor LiftMotor;
-        public CRServo ServoPower;
+        public CRServo ForkServo;
 
         public void MoveLift(double LeftStick) {
             if (LeftStick == 0) {
@@ -32,7 +32,7 @@ public class InitialLifterCode {
         }
 
         public void MoveServo(double RightStick) {
-            this.ServoPower.setPower(RightStick);
+            this.ForkServo.setPower(RightStick);
             this.ForkPower = RightStick;
         }
     }
