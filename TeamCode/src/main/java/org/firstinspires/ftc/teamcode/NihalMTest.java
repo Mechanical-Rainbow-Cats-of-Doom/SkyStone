@@ -28,6 +28,7 @@ FUNCTION:
 package org.firstinspires.ftc.teamcode;
 
 
+
 import com.qualcomm.hardware.bosch.BNO055IMU;  //This is the package for controlling the IMU
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -40,7 +41,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.Math;  //This is the standard Java package for a variety of math functions
 import java.math.BigDecimal;
 
-
 @TeleOp
 
 public class NihalMTest extends LinearOpMode {
@@ -49,7 +49,6 @@ public class NihalMTest extends LinearOpMode {
     private DcMotor BigMotor;
     private Servo ServoRotation;
     ElapsedTime mytimer = new ElapsedTime();
-
 
     private class Launcher {
         boolean launcherOn = false;
@@ -77,7 +76,6 @@ public class NihalMTest extends LinearOpMode {
 
     }
 
-
     enum OperState {
         Start,
         ButtonPushed,
@@ -87,74 +85,30 @@ public class NihalMTest extends LinearOpMode {
         ResetPosition,
         firsttimer,
         secondtimer
-
-
-
-
-
-
     }
-
-
-
-
-
 
     @Override
     public void runOpMode() {
+        NihalMTest.Launcher NihalLauncher = new NihalMTest.Launcher();
 
         expansion_Hub_1 = hardwareMap.get(Blinker.class, "Nihal");
         BigMotor = hardwareMap.get(DcMotor.class, "Big Motor");
         ServoRotation = hardwareMap.get(Servo.class,"ServoRotation");
-        boolean LauncherOn = false;
+        //boolean LauncherOn = false;
 
-
-
-
-
-
-
-        // Send telemetry message to alert driver that we are calibrating;
-
-        /*
-        END OF INITIALIZATION SECTION
-         */
-        // Wait for the game to start (driver presses PLAY)
         waitForStart();
         telemetry.addData("testing A button:", this.gamepad1.a);
-        telemetry.addData("testing LauncherOn:", LauncherOn);
+        telemetry.addData("testing LauncherOn:", NihalLauncher.launcherOn);
+
         telemetry.update();
 
 
-
-
-
-        /*
-        MAIN SECTION FOR MATCH
-         */
-
-        /*
-        MAIN WHILE LOOP
-        This is the main loop where all of the work is done.
-        ONE KEY CONSIDERATION:
-        This loop will be traversed continuously--it represents a slice of time of the robot's overall
-        performance.  Keep in mind that we want this loop to take as close to 0 time as possible.
-        Running most code will take nearly 0 time.  Each sensor you read will take between 3-7 ms.
-        Again, that's not much unless you start reading everything every time you go through a loop.
-        The faster this loop is, the more responsive your code will be.
-        If you start seeing slow response from your robot when you're using it, it's probably
-        because it takes too much time to process the code in this loop.
-        ***This concern is a major reason for using a state machine in the loop--that way, you're
-        only ever looking at the stuff you really care about.
-
-         */
         OperState driveOpState = OperState.Start;
+        telemetry.addData("State", driveOpState);
 
         while (opModeIsActive()) {
             switch (driveOpState) {
-                /*
                 case Start:
-
                     if (this.gamepad1.a) {
                         driveOpState = OperState.ButtonPushed;
                     }
@@ -175,7 +129,7 @@ public class NihalMTest extends LinearOpMode {
                     break;
 
                 case Load:
-                    ServoRotation.setPosition(0.8);
+                    NihalLauncher.Shoot();
                     if (mytimer.time() >= 0.15){
                         driveOpState = OperState.secondtimer;
                     }
@@ -184,72 +138,34 @@ public class NihalMTest extends LinearOpMode {
                 case secondtimer:
                     mytimer.reset();
                     driveOpState = OperState.ResetPosition;
-
                     break;
 
                 case ResetPosition:
-                    ServoRotation.setPosition(1.0);
+                    NihalLauncher.Reload();
                     if (mytimer.time() >= 0.15) {
                         driveOpState = OperState.Start;
                     }
-
                     break;
-
 
                 case ButtonPushed:
                     if (!this.gamepad1.a) {
                         driveOpState = OperState.ToggleLauncher;
-
                     }
                     break;
+
                 case ToggleLauncher:
-                    LauncherOn = !LauncherOn;
+                    NihalLauncher.LauncherToggle();
                     driveOpState = OperState.Start;
                     break;
-
-                 */
-                case Start:
-                    if (this.gamepad1.a){
-
                     }
-
             }
-
-            /*
-            if (LauncherOn) {
-                BigMotor.setPower(-1.0);
-            } else {
-                BigMotor.setPower(0);
-            }
-            */
-
             telemetry.addData("State", driveOpState);
             telemetry.addData("testing A button:", this.gamepad1.a);
-            telemetry.addData("testing LauncherOn:", LauncherOn);
+            telemetry.addData("testing LauncherOn:", NihalLauncher.launcherOn);
             telemetry.addData("testing B button:", this.gamepad1.b);
             telemetry.update();
         }
 
+    }
 
-
-
-
-
-
-
-
-            /*
-            void set
-            UNIVERSAL ACTIONS
-            These actions will happen every time you go through the while loop.
-            As noted above, keep in mind that we'll want to keep these to a minimum.
-             */
-            /*
-            IMU angle reading
-            There are more things that can be done than just reading the angles--and I only use the
-            Z angle for this example.
-            The IMU is actually pretty powerful--you can also measure acceleration and some other
-            things.  As an example, you might be able to use the IMU to detect when you hit a wall
-            at full speed.
-             */}}
 
