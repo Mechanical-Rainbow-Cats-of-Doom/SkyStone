@@ -36,6 +36,8 @@ public class ChassisMovementCode extends LinearOpMode {
     private DigitalChannel switch_;
 
     private class Chassis {
+
+        double rotation;
         double frontLeft;
         double frontRight;
         double backLeft;
@@ -72,6 +74,12 @@ public class ChassisMovementCode extends LinearOpMode {
             back_left_wheel.setPower(-1*backLeftMultiplier*Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
             back_right_wheel.setPower(backRightMultiplier*Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
 
+        }
+
+        private double CorrectRotation (double currentRotation, double rotationGoal) {
+
+            rotation = Math.signum(rotationGoal - currentRotation) * (Math.max(0.2, Math.abs(rotationGoal - currentRotation) / 180));
+            return(rotation);
         }
 
         private void LeftAndRight (double drivePreset) {
@@ -129,7 +137,8 @@ public class ChassisMovementCode extends LinearOpMode {
         FORWARD,
         LATERALMOVEMENT,
         SETMOVEMENTDISTANCE,
-        SETMOTORMULTIPLE
+        SETMOTORMULTIPLE,
+        AUTONOMOUSTEST
     }
 
     @Override
@@ -167,19 +176,32 @@ public class ChassisMovementCode extends LinearOpMode {
         double drivePreset = 0;
         double increaseDecrease = 1;
         boolean aWait = false;
+        double autonomousTestStep = 0;
+        double rotationGoal = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;;
         ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
 
         while (opModeIsActive()) {
 
+            double zAngle = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
+            double yAngle = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).secondAngle;
+            double xAngle = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).thirdAngle;
+
             switch (driveOpState) {
                 case NORMALDRIVE:
                     drive = -this.gamepad1.left_stick_y;
                     strafe = -this.gamepad1.left_stick_x;
-                    rotate = 0;
+                    if ((Math.abs(zAngle - rotationGoal) >= 2)) {
+                        rotate = chasty.CorrectRotation(zAngle,rotationGoal);
+                    }
+                    else {
+                        rotate = 0;
+                    }
 
                     chasty.SetMotors (drive, strafe, rotate);
                     chasty.Drive();
+
+
                     chasty.Encoders();
                     chasty.SetAxisMovement();
 
@@ -195,12 +217,14 @@ public class ChassisMovementCode extends LinearOpMode {
 
                     if (this.gamepad1.a) {
                         drivePreset = chasty.trueDrive + movementLength;
+                        rotationGoal = zAngle;
                         driveOpState = ChassisMovementCode.OperState.FORWARD;
                     }
 
                     if (this.gamepad1.b) {
-                        driveOpState = ChassisMovementCode.OperState.LATERALMOVEMENT;
                         drivePreset = chasty.trueStrafe + movementLength;
+                        rotationGoal = zAngle;
+                        driveOpState = ChassisMovementCode.OperState.LATERALMOVEMENT;
                     }
 
                     if (this.gamepad1.y) {
@@ -221,12 +245,16 @@ public class ChassisMovementCode extends LinearOpMode {
 
                         chasty.SetMotors(drive, strafe, rotate);
                         chasty.Drive();
-                        chasty.Encoders();
+
                         chasty.SetAxisMovement();
+
+                        rotationGoal = zAngle;
 
                         if (this.gamepad1.left_trigger != 0) {
                             chasty.ZeroEncoders();
                         }
+                        telemetry.addData("IMU rotation", this.imu.getAngularOrientation());
+                        telemetry.update();
                     }
                     else {
                         driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
@@ -241,6 +269,11 @@ public class ChassisMovementCode extends LinearOpMode {
 
                     if (this.gamepad1.right_trigger != 0) {
                         driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
+
+                    if ((Math.abs(zAngle - rotationGoal) >= 2)) {
+                        chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
+                        chasty.Drive();
                     }
 
                     if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
@@ -263,6 +296,12 @@ public class ChassisMovementCode extends LinearOpMode {
                     if (this.gamepad1.right_trigger != 0) {
                         driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
                     }
+
+                    if ((Math.abs(zAngle - rotationGoal) >= 2)) {
+                        chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
+                        chasty.Drive();
+                    }
+
 
                     if (Math.abs(drivePreset - chasty.trueStrafe) <= 0.2) {
                         front_left_wheel.setPower(0.01);
@@ -309,7 +348,7 @@ public class ChassisMovementCode extends LinearOpMode {
                         leftWait = true;
                     }
 
-                    if (this.gamepad1.b) {
+                    if (this.gamepad1.left_trigger != 0) {
                         driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
                     }
 
@@ -331,6 +370,7 @@ public class ChassisMovementCode extends LinearOpMode {
                     telemetry.addData("BR wheel multiplier: ", chasty.backRightMultiplier);
                     telemetry.addLine("Press right dpad to change BL wheel multiplier");
                     telemetry.addData("BL wheel multiplier: ", chasty.backLeftMultiplier);
+                    telemetry.update();
 
                     if ((increaseDecrease == 1) & (!this.gamepad1.a) & (aWait)) {
                         increaseDecrease = -1;
@@ -376,11 +416,48 @@ public class ChassisMovementCode extends LinearOpMode {
                         aWait = true;
                     }
 
-                    if (this.gamepad1.b) {
+                    if (this.gamepad1.left_trigger != 0) {
                         driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
                     }
 
                     break;
+
+
+                case AUTONOMOUSTEST:
+                    if (autonomousTestStep == 0) {
+                        drivePreset = chasty.trueDrive + 40;
+                        rotationGoal = zAngle;
+                        autonomousTestStep = 1;
+                        if (this.gamepad1.left_trigger != 0) {
+                            driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                        }
+                    }
+                    if (autonomousTestStep == 1) {
+                        chasty.SetAxisMovement();
+                        chasty.Encoders();
+                        chasty.ForwardAndBackward(drivePreset);
+
+                        if (this.gamepad1.left_trigger != 0) {
+                            driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                        }
+
+                        if ((Math.abs(zAngle - rotationGoal) >= 2)) {
+                            chasty.SetMotors(0, 0, chasty.CorrectRotation(zAngle, rotationGoal));
+                            chasty.Drive();
+                        }
+
+                        if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
+                            front_left_wheel.setPower(0.01);
+                            front_right_wheel.setPower(0.01);
+                            back_right_wheel.setPower(0.01);
+                            back_left_wheel.setPower(0.01);
+                            autonomousTestStep = 2;
+                        }
+                    }
+
+
+                    break;
+
 
                 default :
                     break;
