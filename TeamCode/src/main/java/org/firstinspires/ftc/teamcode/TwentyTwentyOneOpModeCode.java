@@ -10,6 +10,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     private double LeftStickValue;
     private double RightStickValue;
     private Blinker expansion_Hub_1;
+    private Blinker expansion_Hub_2;
 
     @Override
 
