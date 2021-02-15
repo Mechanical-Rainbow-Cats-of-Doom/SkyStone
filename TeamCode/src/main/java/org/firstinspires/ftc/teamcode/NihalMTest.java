@@ -158,6 +158,7 @@ public class NihalMTest extends LinearOpMode {
                     driveOpState = OperState.Start;
                     break;
                     }
+                    NihalLauncher.LauncherRun();
             }
             telemetry.addData("State", driveOpState);
             telemetry.addData("testing A button:", this.gamepad1.a);
