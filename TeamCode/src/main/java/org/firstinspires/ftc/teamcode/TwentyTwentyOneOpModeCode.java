@@ -37,6 +37,10 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             this.RightStickValue = -gamepad2.right_stick_y;
             lift.MoveLift(this.LeftStickValue);
             lift.MoveServo(this.RightStickValue);
+            telemetry.addData("testing LauncherOn:", launcher.launcherOn);
+            telemetry.addData("Lift Power", lift.LiftPower);
+            telemetry.addData("Fork Power", lift.ForkPower);
+            telemetry.update();
             switch (driveOpState) {
                 case Start:
                     if (this.gamepad2.a) {
@@ -90,13 +94,6 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             }
             launcher.LauncherRun();
         }
-        telemetry.addData("State", driveOpState);
-        telemetry.addData("testing A button:", this.gamepad2.a);
-        telemetry.addData("testing LauncherOn:", launcher.launcherOn);
-        telemetry.addData("testing B button:", this.gamepad2.b);
-        telemetry.addData("Lift Power", lift.LiftPower);
-        telemetry.addData("Fork Power", lift.ForkPower);
-        telemetry.update();
         }
     }
 
