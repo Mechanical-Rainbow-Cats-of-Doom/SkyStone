@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 public class ChassisMovementCodeIncludingLifter extends LinearOpMode {
 
-    private Blinker Control_Hub;
+    private Blinker Expansion_Hub_1;
     private Blinker Expansion_Hub_2;
     //motors
     private DcMotor back_right_wheel;
@@ -124,7 +124,7 @@ public class ChassisMovementCodeIncludingLifter extends LinearOpMode {
     @Override
     public void runOpMode(){
         imu = hardwareMap.get(BNO055IMU.class, "imu");
-        Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
+        Expansion_Hub_1 = hardwareMap.get(Blinker.class, "Control Hub");
         Expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub");
         front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
         front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
@@ -157,7 +157,7 @@ public class ChassisMovementCodeIncludingLifter extends LinearOpMode {
         ChassisMovementCodeIncludingLifter.OperState driveOpState = ChassisMovementCodeIncludingLifter.OperState.NORMALDRIVE;
         InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
         lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
-        lift.ServoPower = hardwareMap.get(CRServo.class, "LiftServo");
+        lift.ForkServo = hardwareMap.get(CRServo.class, "LiftServo");
         while (opModeIsActive()) {
             NewLeftStickValue = -gamepad2.left_stick_y;
             NewRightStickValue = -gamepad2.right_stick_y;
