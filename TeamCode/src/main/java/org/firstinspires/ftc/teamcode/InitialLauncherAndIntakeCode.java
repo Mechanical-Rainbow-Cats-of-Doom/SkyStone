@@ -36,7 +36,7 @@ import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 // @TeleOp
-public class InitialLauncherCode {
+public class InitialLauncherAndIntakeCode {
 
     private Blinker expansion_Hub_1;
     ElapsedTime mytimer = new ElapsedTime();
@@ -44,11 +44,14 @@ public class InitialLauncherCode {
     public static class Launcher {
         public DcMotor LaunchMotor;
         public Servo LaunchServo;
-        boolean launcherOn = false;
-
+        public DcMotor IntakeMotor;
+        public boolean launcherOn = false;
+        public boolean intakeOn = false;
         public void LauncherToggle () {
             launcherOn = !launcherOn;
         }
+
+        public void IntakeToggle () { intakeOn = !intakeOn; }
 
         public void LauncherRun () {
             if (launcherOn) {
@@ -56,6 +59,15 @@ public class InitialLauncherCode {
             }
             else {
                 LaunchMotor.setPower(0);
+            }
+        }
+
+        public void IntakeRun () {
+            if (intakeOn) {
+                IntakeMotor.setPower(-1);
+            }
+            else {
+                IntakeMotor.setPower(0);
             }
         }
 
@@ -72,6 +84,8 @@ public class InitialLauncherCode {
     public enum LauncherStates {
         Start,
         ButtonPushed,
+        ButtonPushed2,
+        ToggleIntake,
         ToggleLauncher,
         Pressed,
         Load,
@@ -82,7 +96,7 @@ public class InitialLauncherCode {
 /*
     @Override
     public void runOpMode() {
-        InitialLauncherCode.Launcher launcher = new InitialLauncherCode.Launcher();
+        InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
 
         expansion_Hub_1 = hardwareMap.get(Blinker.class, "Nihal");
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");

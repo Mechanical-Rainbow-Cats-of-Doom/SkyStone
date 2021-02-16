@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.content.ContentResolver;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
@@ -20,8 +18,8 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     @Override
 
     public void runOpMode() {
-        InitialLauncherCode.Launcher launcher = new InitialLauncherCode.Launcher();
-        InitialLauncherCode.LauncherStates driveOpState = InitialLauncherCode.LauncherStates.Start;
+        InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
+        InitialLauncherAndIntakeCode.LauncherStates driveOpState = InitialLauncherAndIntakeCode.LauncherStates.Start;
         InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
         NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
@@ -44,52 +42,64 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             switch (driveOpState) {
                 case Start:
                     if (this.gamepad2.a) {
-                        driveOpState = InitialLauncherCode.LauncherStates.ButtonPushed;
+                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed;
                     }
 
                     if (this.gamepad2.b) {
-                        driveOpState = InitialLauncherCode.LauncherStates.Pressed;
+                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.Pressed;
+                    }
+                    if (this.gamepad2.x) {
+                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed2;
                     }
                     break;
                 case Pressed:
                     if (!this.gamepad2.b) {
-                        driveOpState = InitialLauncherCode.LauncherStates.firsttimer;
+                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.firsttimer;
 
                     }
                     break;
                 case firsttimer:
                     mytimer.reset();
-                    driveOpState = InitialLauncherCode.LauncherStates.Load;
+                    driveOpState = InitialLauncherAndIntakeCode.LauncherStates.Load;
                     break;
 
                 case Load:
                     launcher.Shoot();
                     if (mytimer.time() >= 0.15){
-                        driveOpState = InitialLauncherCode.LauncherStates.secondtimer;
+                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.secondtimer;
                     }
                     break;
 
                 case secondtimer:
                     mytimer.reset();
-                    driveOpState = InitialLauncherCode.LauncherStates.ResetPosition;
+                    driveOpState = InitialLauncherAndIntakeCode.LauncherStates.ResetPosition;
                     break;
 
                 case ResetPosition:
                     launcher.Reload();
                     if (mytimer.time() >= 0.15) {
-                        driveOpState = InitialLauncherCode.LauncherStates.Start;
+                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.Start;
                     }
                     break;
 
                 case ButtonPushed:
-                    if (!this.gamepad1.a) {
-                        driveOpState = InitialLauncherCode.LauncherStates.ToggleLauncher;
+                    if (!this.gamepad2.a) {
+                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.ToggleLauncher;
                     }
                     break;
+                case ButtonPushed2:
+                    if (!this.gamepad2.x) {
+                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.ToggleIntake;
+                        break;
+                    }
 
+                case ToggleIntake:
+                    launcher.IntakeToggle();
+                    driveOpState = InitialLauncherAndIntakeCode.LauncherStates.Start;
+                    break;
                 case ToggleLauncher:
                     launcher.LauncherToggle();
-                    driveOpState = InitialLauncherCode.LauncherStates.Start;
+                    driveOpState = InitialLauncherAndIntakeCode.LauncherStates.Start;
                     break;
             }
             launcher.LauncherRun();
