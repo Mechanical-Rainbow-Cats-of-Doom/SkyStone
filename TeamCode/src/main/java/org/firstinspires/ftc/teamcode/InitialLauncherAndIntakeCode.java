@@ -27,58 +27,65 @@ FUNCTION:
 */
 package org.firstinspires.ftc.teamcode;
 
+//Created by Nihal Not Poggers Testa M
 
-
-import com.qualcomm.hardware.bosch.BNO055IMU;  //This is the package for controlling the IMU
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-
-import java.lang.Math;  //This is the standard Java package for a variety of math functions
-import java.math.BigDecimal;
-
-@TeleOp
-
-public class NihalMTest extends LinearOpMode {
+// @TeleOp
+public class InitialLauncherAndIntakeCode {
 
     private Blinker expansion_Hub_1;
-    private DcMotor BigMotor;
-    private Servo ServoRotation;
     ElapsedTime mytimer = new ElapsedTime();
 
-    private class Launcher {
-        boolean launcherOn = false;
-
-        private void LauncherToggle () {
+    public static class Launcher {
+        public DcMotor LaunchMotor;
+        public Servo LaunchServo;
+        public DcMotor IntakeMotor;
+        public boolean launcherOn = false;
+        public boolean intakeOn = false;
+        public void LauncherToggle () {
             launcherOn = !launcherOn;
         }
 
-        private void LauncherRun () {
+        public void IntakeToggle () { intakeOn = !intakeOn; }
+
+        public void LauncherRun () {
             if (launcherOn) {
-                BigMotor.setPower(-1);
+                LaunchMotor.setPower(-1);
             }
             else {
-                BigMotor.setPower(0);
+                LaunchMotor.setPower(0);
             }
         }
 
-        private void Shoot () {
-            ServoRotation.setPosition(0.8);
+        public void IntakeRun () {
+            if (intakeOn) {
+                IntakeMotor.setPower(-1);
+            }
+            else {
+                IntakeMotor.setPower(0);
+            }
         }
 
-        private void Reload () {
-            ServoRotation.setPosition(1.0);
+        public void Shoot () {
+            LaunchServo.setPosition(0.8);
+        }
+
+        public void Reload () {
+            LaunchServo.setPosition(1.0);
         }
 
     }
 
-    enum OperState {
+    public enum LauncherStates {
         Start,
         ButtonPushed,
+        ButtonPushed2,
+        ToggleIntake,
         ToggleLauncher,
         Pressed,
         Load,
@@ -86,86 +93,87 @@ public class NihalMTest extends LinearOpMode {
         firsttimer,
         secondtimer
     }
-
+/*
     @Override
     public void runOpMode() {
-        NihalMTest.Launcher NihalLauncher = new NihalMTest.Launcher();
+        InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
 
         expansion_Hub_1 = hardwareMap.get(Blinker.class, "Nihal");
-        BigMotor = hardwareMap.get(DcMotor.class, "Big Motor");
-        ServoRotation = hardwareMap.get(Servo.class,"ServoRotation");
+        launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
+        launcher.LaunchServo = hardwareMap.get(Servo.class,"LaunchServo");
         //boolean LauncherOn = false;
 
         waitForStart();
         telemetry.addData("testing A button:", this.gamepad1.a);
-        telemetry.addData("testing LauncherOn:", NihalLauncher.launcherOn);
+        telemetry.addData("testing LauncherOn:", launcher.launcherOn);
 
         telemetry.update();
 
 
-        OperState driveOpState = OperState.Start;
+        LauncherStates driveOpState = LauncherStates.Start;
         telemetry.addData("State", driveOpState);
 
         while (opModeIsActive()) {
             switch (driveOpState) {
                 case Start:
                     if (this.gamepad1.a) {
-                        driveOpState = OperState.ButtonPushed;
+                        driveOpState = LauncherStates.ButtonPushed;
                     }
 
                     if (this.gamepad1.b) {
-                        driveOpState = OperState.Pressed;
+                        driveOpState = LauncherStates.Pressed;
                     }
                     break;
                 case Pressed:
                     if (!this.gamepad1.b) {
-                        driveOpState = OperState.firsttimer;
+                        driveOpState = LauncherStates.firsttimer;
 
                     }
                     break;
                 case firsttimer:
                     mytimer.reset();
-                    driveOpState = OperState.Load;
+                    driveOpState = LauncherStates.Load;
                     break;
 
                 case Load:
-                    NihalLauncher.Shoot();
+                    launcher.Shoot();
                     if (mytimer.time() >= 0.15){
-                        driveOpState = OperState.secondtimer;
+                        driveOpState = LauncherStates.secondtimer;
                     }
                     break;
 
                 case secondtimer:
                     mytimer.reset();
-                    driveOpState = OperState.ResetPosition;
+                    driveOpState = LauncherStates.ResetPosition;
                     break;
 
                 case ResetPosition:
-                    NihalLauncher.Reload();
+                    launcher.Reload();
                     if (mytimer.time() >= 0.15) {
-                        driveOpState = OperState.Start;
+                        driveOpState = LauncherStates.Start;
                     }
                     break;
 
                 case ButtonPushed:
                     if (!this.gamepad1.a) {
-                        driveOpState = OperState.ToggleLauncher;
+                        driveOpState = LauncherStates.ToggleLauncher;
                     }
                     break;
 
                 case ToggleLauncher:
-                    NihalLauncher.LauncherToggle();
-                    driveOpState = OperState.Start;
+                    launcher.LauncherToggle();
+                    driveOpState = LauncherStates.Start;
                     break;
                     }
+                    launcher.LauncherRun();
             }
             telemetry.addData("State", driveOpState);
             telemetry.addData("testing A button:", this.gamepad1.a);
-            telemetry.addData("testing LauncherOn:", NihalLauncher.launcherOn);
+            telemetry.addData("testing LauncherOn:", launcher.launcherOn);
             telemetry.addData("testing B button:", this.gamepad1.b);
             telemetry.update();
+            */
         }
 
-    }
 
 
