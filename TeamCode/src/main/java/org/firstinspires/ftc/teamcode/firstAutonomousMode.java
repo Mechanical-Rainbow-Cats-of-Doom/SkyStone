@@ -100,6 +100,10 @@ public class firstAutonomousMode extends LinearOpMode {
             rightEncoder = back_right_wheel.getCurrentPosition()/360*1.173150521-clearRight;
             leftEncoder = -front_right_wheel.getCurrentPosition()/360*1.178221633-clearLeft;
             backEncoder = front_left_wheel.getCurrentPosition()/360*1.17584979-clearBack;
+
+        }
+
+        private void Telemetry () {
             telemetry.addData("True back", backEncoder/360*1.17584979);
             telemetry.addData("True right", rightEncoder/360*1.173150521);
             telemetry.addData("True left", leftEncoder/360*1.178221633);
