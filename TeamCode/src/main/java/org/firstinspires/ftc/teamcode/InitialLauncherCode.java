@@ -69,7 +69,7 @@ public class InitialLauncherCode {
 
     }
 
-    enum LauncherStates {
+    public enum LauncherStates {
         Start,
         ButtonPushed,
         ToggleLauncher,
