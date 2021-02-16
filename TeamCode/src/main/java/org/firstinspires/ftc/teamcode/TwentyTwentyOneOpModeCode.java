@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
@@ -7,8 +6,9 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 @TeleOp
+
+//Merging, lift, and part of intake done by Ethan, the rest done by Nihal.
 public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     private double LeftStickValue;
     private double RightStickValue;
@@ -16,7 +16,6 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     private Blinker expansion_Hub_2;
     ElapsedTime mytimer = new ElapsedTime();
     @Override
-
     public void runOpMode() {
         InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
         InitialLauncherAndIntakeCode.LauncherStates driveOpState = InitialLauncherAndIntakeCode.LauncherStates.Start;
@@ -65,7 +64,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
 
                 case Load:
                     launcher.Shoot();
-                    if (mytimer.time() >= 0.15){
+                    if (mytimer.time() >= 0.15) {
                         driveOpState = InitialLauncherAndIntakeCode.LauncherStates.secondtimer;
                     }
                     break;
@@ -104,6 +103,6 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             }
             launcher.LauncherRun();
         }
-        }
     }
+}
 
