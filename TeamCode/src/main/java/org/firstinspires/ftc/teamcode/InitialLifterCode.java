@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
+//Created by Ethan Sanders
 public class InitialLifterCode {
     private Blinker expansion_Hub_1;
     private double LeftStickValue;
