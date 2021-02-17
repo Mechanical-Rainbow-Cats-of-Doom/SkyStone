@@ -37,10 +37,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 // @TeleOp
 public class InitialLauncherAndIntakeCode {
-
     private Blinker expansion_Hub_1;
     ElapsedTime mytimer = new ElapsedTime();
-
     public static class Launcher {
         public DcMotor LaunchMotor;
         public Servo LaunchServo;
