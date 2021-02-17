@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.os.DropBoxManager;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;  //This is the package for controlling the IMU
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -21,22 +23,14 @@ import java.lang.Math;  //This is the standard Java package for a variety of mat
 
 @TeleOp
 
-public class ChassisMovementCode extends LinearOpMode {
-
-    private Blinker Control_Hub;
-
-    //motors
-    private DcMotor back_right_wheel;
-    private DcMotor front_right_wheel;
-    private DcMotor back_left_wheel;
-    private DcMotor front_left_wheel;
-
-    private BNO055IMU imu;
-
-    private DigitalChannel switch_;
-
-    private class Chassis {
-
+public class ChassisMovementCode {
+    public static class Chassis {
+        public DcMotor back_right_wheel;
+        public DcMotor front_right_wheel;
+        public DcMotor back_left_wheel;
+        public DcMotor front_left_wheel;
+        public BNO055IMU imu;
+        private DigitalChannel switch_;
         double rotation;
         double frontLeft;
         double frontRight;
@@ -62,60 +56,61 @@ public class ChassisMovementCode extends LinearOpMode {
         double frontRightMultiplier = 0.9;
         double frontLeftMultiplier = 0.9;
 
-        private void SetAxisMovement () {
-            trueDrive = (rightEncoder+leftEncoder)/2;
-            trueStrafe = backEncoder - (rightEncoder-leftEncoder)/2;
-            trueRotate = (rightEncoder-leftEncoder)/2;
+        public void SetAxisMovement() {
+            trueDrive = (rightEncoder + leftEncoder) / 2;
+            trueStrafe = backEncoder - (rightEncoder - leftEncoder) / 2;
+            trueRotate = (rightEncoder - leftEncoder) / 2;
         }
 
-        private void ForwardAndBackward (double drivePreset) {
-            front_right_wheel.setPower(frontRightMultiplier*Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
-            front_left_wheel.setPower(frontLeftMultiplier*Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
-            back_left_wheel.setPower(-1*backLeftMultiplier*Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
-            back_right_wheel.setPower(backRightMultiplier*Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
+        public void ForwardAndBackward(double drivePreset) {
+            front_right_wheel.setPower(frontRightMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
+            front_left_wheel.setPower(frontLeftMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
+            back_left_wheel.setPower(-1 * backLeftMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
+            back_right_wheel.setPower(backRightMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
 
         }
 
-        private double CorrectRotation (double currentRotation, double rotationGoal) {
+        public double CorrectRotation(double currentRotation, double rotationGoal) {
 
             rotation = Math.signum(rotationGoal - currentRotation) * (Math.max(0.2, Math.abs(rotationGoal - currentRotation) / 180));
-            return(rotation);
+            return (rotation);
         }
 
-        private void LeftAndRight (double drivePreset) {
-            front_right_wheel.setPower(-1*frontRightMultiplier*Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs(drivePreset - trueStrafe) / drivePreset));
-            front_left_wheel.setPower(frontLeftMultiplier*Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs(drivePreset - trueStrafe) / drivePreset));
-            back_left_wheel.setPower(backLeftMultiplier*Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs(drivePreset - trueStrafe) / drivePreset));
-            back_right_wheel.setPower(backRightMultiplier*Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs(drivePreset - trueStrafe) / drivePreset));
+        public void LeftAndRight(double drivePreset) {
+            front_right_wheel.setPower(-1 * frontRightMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs(drivePreset - trueStrafe) / drivePreset));
+            front_left_wheel.setPower(frontLeftMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs(drivePreset - trueStrafe) / drivePreset));
+            back_left_wheel.setPower(backLeftMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs(drivePreset - trueStrafe) / drivePreset));
+            back_right_wheel.setPower(backRightMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs(drivePreset - trueStrafe) / drivePreset));
 
         }
 
-        private void ZeroEncoders () {
-            clearRight = back_right_wheel.getCurrentPosition()/360*1.173150521;
-            clearLeft = -front_right_wheel.getCurrentPosition()/360*1.178221633;
-            clearBack = front_left_wheel.getCurrentPosition()/360*1.17584979;
+        public void ZeroEncoders() {
+            clearRight = back_right_wheel.getCurrentPosition() / 360 * 1.173150521;
+            clearLeft = -front_right_wheel.getCurrentPosition() / 360 * 1.178221633;
+            clearBack = front_left_wheel.getCurrentPosition() / 360 * 1.17584979;
         }
 
-        private void Encoders () {
-            rightEncoder = back_right_wheel.getCurrentPosition()/360*1.173150521-clearRight;
-            leftEncoder = -front_right_wheel.getCurrentPosition()/360*1.178221633-clearLeft;
-            backEncoder = front_left_wheel.getCurrentPosition()/360*1.17584979-clearBack;
-            telemetry.addData("True back", backEncoder/360*1.17584979);
-            telemetry.addData("True right", rightEncoder/360*1.173150521);
-            telemetry.addData("True left", leftEncoder/360*1.178221633);
+        public void Encoders() {
+            rightEncoder = back_right_wheel.getCurrentPosition() / 360 * 1.173150521 - clearRight;
+            leftEncoder = -front_right_wheel.getCurrentPosition() / 360 * 1.178221633 - clearLeft;
+            backEncoder = front_left_wheel.getCurrentPosition() / 360 * 1.17584979 - clearBack;
+            /*telemetry.addData("True back", backEncoder / 360 * 1.17584979);
+            telemetry.addData("True right", rightEncoder / 360 * 1.173150521);
+            telemetry.addData("True left", leftEncoder / 360 * 1.178221633);
             telemetry.addData("Right Encoder CM", rightEncoder);
             telemetry.addData("Left Encoder CM", leftEncoder);
             telemetry.addData("Back Encoder CM", backEncoder);
-            telemetry.addData("Right Encoder",back_right_wheel.getCurrentPosition());
-            telemetry.addData("Left Encoder",front_right_wheel.getCurrentPosition());
-            telemetry.addData("Back Encoder",front_left_wheel.getCurrentPosition());
-            telemetry.addData("Drive",trueDrive);
+            telemetry.addData("Right Encoder", back_right_wheel.getCurrentPosition());
+            telemetry.addData("Left Encoder", front_right_wheel.getCurrentPosition());
+            telemetry.addData("Back Encoder", front_left_wheel.getCurrentPosition());
+            telemetry.addData("Drive", trueDrive);
             telemetry.addData("Strafe", trueStrafe);
             telemetry.addData("Rotate", trueRotate);
             telemetry.update();
+            */
         }
 
-        private void SetMotors (double drive, double strafe, double rotate) {
+        public void SetMotors(double drive, double strafe, double rotate) {
             this.frontLeft = drive - strafe - rotate;
             this.backLeft = -drive - strafe + rotate;
             this.frontRight = drive + strafe + rotate;
@@ -123,11 +118,11 @@ public class ChassisMovementCode extends LinearOpMode {
         }
 
 
-        private void Drive () {
-            front_right_wheel.setPower(this.frontRight*frontRightMultiplier);
-            front_left_wheel.setPower(this.frontLeft*frontLeftMultiplier);
-            back_left_wheel.setPower(this.backLeft*backLeftMultiplier);
-            back_right_wheel.setPower(this.backRight*backRightMultiplier);
+        public void Drive() {
+            front_right_wheel.setPower(this.frontRight * frontRightMultiplier);
+            front_left_wheel.setPower(this.frontLeft * frontLeftMultiplier);
+            back_left_wheel.setPower(this.backLeft * backLeftMultiplier);
+            back_right_wheel.setPower(this.backRight * backRightMultiplier);
         }
     }
 
@@ -140,7 +135,7 @@ public class ChassisMovementCode extends LinearOpMode {
         SETMOTORMULTIPLE,
         AUTONOMOUSTEST
     }
-
+/*
     @Override
     public void runOpMode(){
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -176,6 +171,7 @@ public class ChassisMovementCode extends LinearOpMode {
         double drivePreset = 0;
         double increaseDecrease = 1;
         boolean aWait = false;
+        double autonomousTestStep = 0;
         double rotationGoal = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;;
         ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
@@ -222,6 +218,7 @@ public class ChassisMovementCode extends LinearOpMode {
 
                     if (this.gamepad1.b) {
                         drivePreset = chasty.trueStrafe + movementLength;
+                        rotationGoal = zAngle;
                         driveOpState = ChassisMovementCode.OperState.LATERALMOVEMENT;
                     }
 
@@ -422,23 +419,37 @@ public class ChassisMovementCode extends LinearOpMode {
 
 
                 case AUTONOMOUSTEST:
+                    if (autonomousTestStep == 0) {
+                        drivePreset = chasty.trueDrive + 40;
+                        rotationGoal = zAngle;
+                        autonomousTestStep = 1;
+                        if (this.gamepad1.left_trigger != 0) {
+                            driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                        }
+                    }
+                    if (autonomousTestStep == 1) {
+                        chasty.SetAxisMovement();
+                        chasty.Encoders();
+                        chasty.ForwardAndBackward(drivePreset);
 
-                    chasty.SetAxisMovement();
-                    chasty.Encoders();
-                    chasty.ForwardAndBackward(drivePreset);
+                        if (this.gamepad1.left_trigger != 0) {
+                            driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                        }
 
-                    if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                        chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
-                        chasty.Drive();
+                        if ((Math.abs(zAngle - rotationGoal) >= 2)) {
+                            chasty.SetMotors(0, 0, chasty.CorrectRotation(zAngle, rotationGoal));
+                            chasty.Drive();
+                        }
+
+                        if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
+                            front_left_wheel.setPower(0.01);
+                            front_right_wheel.setPower(0.01);
+                            back_right_wheel.setPower(0.01);
+                            back_left_wheel.setPower(0.01);
+                            autonomousTestStep = 2;
+                        }
                     }
 
-                    if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
-                        front_left_wheel.setPower(0.01);
-                        front_right_wheel.setPower(0.01);
-                        back_right_wheel.setPower(0.01);
-                        back_left_wheel.setPower(0.01);
-                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
-                    }
 
                     break;
 
@@ -447,5 +458,5 @@ public class ChassisMovementCode extends LinearOpMode {
                     break;
             }
         }
-    }
+    */
 }

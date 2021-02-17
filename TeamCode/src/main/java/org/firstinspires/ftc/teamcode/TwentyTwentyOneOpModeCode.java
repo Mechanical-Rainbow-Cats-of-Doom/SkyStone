@@ -1,14 +1,32 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.os.DropBoxManager;
+import com.qualcomm.hardware.bosch.BNO055IMU;  //This is the package for controlling the IMU
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+import java.lang.Math;  //This is the standard Java package for a variety of math functions
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+
 @TeleOp
+
+//Merging, lift, and part of intake done by Ethan, the rest done by Nihal.
+//back right front right front left back left
 public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     private double LeftStickValue;
     private double RightStickValue;
@@ -16,18 +34,48 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     private Blinker expansion_Hub_2;
     ElapsedTime mytimer = new ElapsedTime();
     @Override
-
     public void runOpMode() {
         InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
-        InitialLauncherAndIntakeCode.LauncherStates driveOpState = InitialLauncherAndIntakeCode.LauncherStates.Start;
+        InitialLauncherAndIntakeCode.LauncherStates launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
         InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
         NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
+        ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
+        ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
         expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
         lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
         lift.ForkServo = hardwareMap.get(CRServo.class, "LiftServo");
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
+        chasty.imu = hardwareMap.get(BNO055IMU.class, "imu");
+        chasty.front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
+        chasty.front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
+        chasty.back_left_wheel = hardwareMap.get(DcMotor.class, "back left wheel");
+        chasty.back_right_wheel = hardwareMap.get(DcMotor.class, "back right wheel");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();  //in wrong spot--where is better?
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        chasty.imu.initialize(parameters); double drive;
+        double strafe;
+        double rotate;
+        double movementLength = 0;
+        double forwardLength;
+        double lateralMovement;
+        double increaseIntensity = 5;
+        boolean upWait = false;
+        boolean downWait = false;
+        boolean rightWait = false;
+        boolean leftWait = false;
+        double drivePreset = 0;
+        double increaseDecrease = 1;
+        boolean aWait = false;
+        double autonomousTestStep = 0;
+        double rotationGoal = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
+        double banana2 = -1;
         waitForStart();
 
         while (opModeIsActive()) {
@@ -39,71 +87,343 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             telemetry.addData("Lift Power", lift.LiftPower);
             telemetry.addData("Fork Power", lift.ForkPower);
             telemetry.update();
-            switch (driveOpState) {
+            double zAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
+            double yAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).secondAngle;
+            double xAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).thirdAngle;
+            switch (launchStates) {
                 case Start:
                     if (this.gamepad2.a) {
-                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed;
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed;
                     }
 
                     if (this.gamepad2.b) {
-                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.Pressed;
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.Pressed;
                     }
                     if (this.gamepad2.x) {
-                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed2;
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed2;
                     }
                     break;
                 case Pressed:
                     if (!this.gamepad2.b) {
-                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.firsttimer;
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.firsttimer;
 
                     }
                     break;
                 case firsttimer:
                     mytimer.reset();
-                    driveOpState = InitialLauncherAndIntakeCode.LauncherStates.Load;
+                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.Load;
                     break;
 
                 case Load:
                     launcher.Shoot();
-                    if (mytimer.time() >= 0.15){
-                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.secondtimer;
+                    if (mytimer.time() >= 0.15) {
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.secondtimer;
                     }
                     break;
 
                 case secondtimer:
                     mytimer.reset();
-                    driveOpState = InitialLauncherAndIntakeCode.LauncherStates.ResetPosition;
+                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.ResetPosition;
                     break;
 
                 case ResetPosition:
                     launcher.Reload();
                     if (mytimer.time() >= 0.15) {
-                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.Start;
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
                     }
                     break;
 
                 case ButtonPushed:
                     if (!this.gamepad2.a) {
-                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.ToggleLauncher;
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ToggleLauncher;
                     }
                     break;
                 case ButtonPushed2:
                     if (!this.gamepad2.x) {
-                        driveOpState = InitialLauncherAndIntakeCode.LauncherStates.ToggleIntake;
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ToggleIntake;
                         break;
                     }
 
                 case ToggleIntake:
                     launcher.IntakeToggle();
-                    driveOpState = InitialLauncherAndIntakeCode.LauncherStates.Start;
+                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
                     break;
                 case ToggleLauncher:
                     launcher.LauncherToggle();
-                    driveOpState = InitialLauncherAndIntakeCode.LauncherStates.Start;
+                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
                     break;
             }
             launcher.LauncherRun();
-        }
+            switch (driveOpState) {
+                case NORMALDRIVE:
+                    drive = -this.gamepad1.left_stick_y;
+                    strafe = -this.gamepad1.left_stick_x;
+                    if ((Math.abs(zAngle - rotationGoal) >= 2)) {
+                        rotate = chasty.CorrectRotation(zAngle,rotationGoal);
+                    }
+                    else {
+                        rotate = 0;
+                    }
+
+                    chasty.SetMotors (drive, strafe, rotate);
+                    chasty.Drive();
+
+                    chasty.Encoders();
+                    chasty.SetAxisMovement();
+
+                    if (this.gamepad1.left_trigger != 0) {
+                        chasty.ZeroEncoders();
+                    }
+
+                    if (this.gamepad1.right_trigger != 0) {
+                        driveOpState = ChassisMovementCode.OperState.NORMALROTATE;
+                    }
+
+                    if (this.gamepad1.a) {
+                        drivePreset = chasty.trueDrive + movementLength;
+                        rotationGoal = zAngle;
+                        driveOpState = ChassisMovementCode.OperState.FORWARD;
+                    }
+
+                    if (this.gamepad1.b) {
+                        drivePreset = chasty.trueStrafe + movementLength;
+                        rotationGoal = zAngle;
+                        driveOpState = ChassisMovementCode.OperState.LATERALMOVEMENT;
+                    }
+
+                    if (this.gamepad1.y) {
+                        driveOpState = ChassisMovementCode.OperState.SETMOVEMENTDISTANCE;
+                    }
+
+                    if (this.gamepad1.x) {
+                        driveOpState = ChassisMovementCode.OperState.SETMOTORMULTIPLE;
+                    }
+
+                    break;
+
+                case NORMALROTATE:
+                    if (this.gamepad1.right_trigger != 0) {
+                        rotate = -this.gamepad1.right_stick_x;
+                        drive = 0;
+                        strafe = 0;
+
+                        chasty.SetMotors(drive, strafe, rotate);
+                        chasty.Drive();
+
+                        chasty.SetAxisMovement();
+
+                        rotationGoal = zAngle;
+
+                        if (this.gamepad1.left_trigger != 0) {
+                            chasty.ZeroEncoders();
+                        }
+                        telemetry.addData("IMU rotation", chasty.imu.getAngularOrientation());
+                        telemetry.update();
+                    }
+                    else {
+                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
+                    break;
+
+                case FORWARD:
+
+                    chasty.SetAxisMovement();
+                    chasty.Encoders();
+                    chasty.ForwardAndBackward(drivePreset);
+
+                    if (this.gamepad1.right_trigger != 0) {
+                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
+
+                    if ((Math.abs(zAngle - rotationGoal) >= 2)) {
+                        chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
+                        chasty.Drive();
+                    }
+
+                    if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
+                        chasty.front_left_wheel.setPower(0.01);
+                        chasty.front_right_wheel.setPower(0.01);
+                        chasty.back_right_wheel.setPower(0.01);
+                        chasty.back_left_wheel.setPower(0.01);
+                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
+
+
+                    break;
+
+                case LATERALMOVEMENT:
+
+                    chasty.SetAxisMovement();
+                    chasty.Encoders();
+                    chasty.LeftAndRight(drivePreset);
+
+                    if (this.gamepad1.right_trigger != 0) {
+                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
+
+                    if ((Math.abs(zAngle - rotationGoal) >= 2)) {
+                        chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
+                        chasty.Drive();
+                    }
+
+
+                    if (Math.abs(drivePreset - chasty.trueStrafe) <= 0.2) {
+                        chasty.front_left_wheel.setPower(0.01);
+                        chasty.front_right_wheel.setPower(0.01);
+                        chasty.back_right_wheel.setPower(0.01);
+                        chasty.back_left_wheel.setPower(0.01);
+                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
+
+                    break;
+                case SETMOVEMENTDISTANCE:
+                    telemetry.addLine("Press up and down on the d-pad to increase movement per press");
+                    telemetry.addLine("Press right and left on the d-pad to increase or decrease the increased amount added");
+                    telemetry.addData("Current movement per press", movementLength);
+                    telemetry.addData("Amount increased per increase", increaseIntensity);
+                    telemetry.update();
+                    if ((upWait) & (!this.gamepad1.dpad_up)) {
+                        movementLength = movementLength + increaseIntensity;
+                        upWait = false;
+                    }
+                    if ((!this.gamepad1.dpad_down) & (downWait)) {
+                        movementLength = movementLength - increaseIntensity;
+                        downWait = false;
+                    }
+                    if ((!this.gamepad1.dpad_right) & (rightWait)) {
+                        increaseIntensity = increaseIntensity + 1;
+                        rightWait = false;
+                    }
+                    if ((!this.gamepad1.dpad_left) & (leftWait)) {
+                        increaseIntensity = increaseIntensity - 1;
+                        leftWait = false;
+                    }
+
+                    if (this.gamepad1.dpad_up) {
+                        upWait = true;
+                    }
+                    if (this.gamepad1.dpad_down) {
+                        downWait = true;
+                    }
+                    if (this.gamepad1.dpad_right) {
+                        rightWait =true;
+                    }
+                    if (this.gamepad1.dpad_left) {
+                        leftWait = true;
+                    }
+
+                    if (this.gamepad1.left_trigger != 0) {
+                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
+
+                    break;
+
+                case SETMOTORMULTIPLE:
+                    telemetry.addLine("Press A to change increase/decrease");
+                    if (increaseDecrease == 1) {
+                        telemetry.addLine("INCREASING");
+                    }
+                    if (increaseDecrease == -1) {
+                        telemetry.addLine("DECREASING");
+                    }
+                    telemetry.addLine("Press right dpad to change FR wheel multiplier");
+                    telemetry.addData("FR wheel multiplier: ", chasty.frontRightMultiplier);
+                    telemetry.addLine("Press right dpad to change FL wheel multiplier");
+                    telemetry.addData("FL wheel multiplier: ", chasty.frontLeftMultiplier);
+                    telemetry.addLine("Press right dpad to change BR wheel multiplier");
+                    telemetry.addData("BR wheel multiplier: ", chasty.backRightMultiplier);
+                    telemetry.addLine("Press right dpad to change BL wheel multiplier");
+                    telemetry.addData("BL wheel multiplier: ", chasty.backLeftMultiplier);
+                    telemetry.update();
+
+                    if ((increaseDecrease == 1) & (!this.gamepad1.a) & (aWait)) {
+                        increaseDecrease = -1;
+                        aWait = false;
+                    }
+                    if ((increaseDecrease == -1) & (!this.gamepad1.a) & (aWait)) {
+                        increaseDecrease = 1;
+                        aWait = false;
+                    }
+
+
+
+                    if ((upWait) & (!this.gamepad1.dpad_up)) {
+                        chasty.frontLeftMultiplier = chasty.frontLeftMultiplier + (0.01 * increaseDecrease);
+                        upWait = false;
+                    }
+                    if ((!this.gamepad1.dpad_down) & (downWait)) {
+                        chasty.backRightMultiplier = chasty.backRightMultiplier + (0.01 * increaseDecrease);
+                        downWait = false;
+                    }
+                    if ((!this.gamepad1.dpad_right) & (rightWait)) {
+                        chasty.frontRightMultiplier = chasty.frontRightMultiplier + (0.01 * increaseDecrease);
+                        rightWait = false;
+                    }
+                    if ((!this.gamepad1.dpad_left) & (leftWait)) {
+                        chasty.backLeftMultiplier = chasty.backLeftMultiplier + (0.01 * increaseDecrease);
+                        leftWait = false;
+                    }
+
+                    if (this.gamepad1.dpad_up) {
+                        upWait = true;
+                    }
+                    if (this.gamepad1.dpad_down) {
+                        downWait = true;
+                    }
+                    if (this.gamepad1.dpad_right) {
+                        rightWait =true;
+                    }
+                    if (this.gamepad1.dpad_left) {
+                        leftWait = true;
+                    }
+                    if (this.gamepad1.a) {
+                        aWait = true;
+                    }
+
+                    if (this.gamepad1.left_trigger != 0) {
+                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
+
+                    break;
+
+
+                case AUTONOMOUSTEST:
+                    if (autonomousTestStep == 0) {
+                        drivePreset = chasty.trueDrive + 40;
+                        rotationGoal = zAngle;
+                        autonomousTestStep = 1;
+                        if (this.gamepad1.left_trigger != 0) {
+                            driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                        }
+                    }
+                    if (autonomousTestStep == 1) {
+                        chasty.SetAxisMovement();
+                        chasty.Encoders();
+                        chasty.ForwardAndBackward(drivePreset);
+
+                        if (this.gamepad1.left_trigger != 0) {
+                            driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                        }
+
+                        if ((Math.abs(zAngle - rotationGoal) >= 2)) {
+                            chasty.SetMotors(0, 0, chasty.CorrectRotation(zAngle, rotationGoal));
+                            chasty.Drive();
+                        }
+
+                        if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
+                            chasty.front_left_wheel.setPower(0.01);
+                            chasty.front_right_wheel.setPower(0.01);
+                            chasty.back_right_wheel.setPower(0.01);
+                            chasty.back_left_wheel.setPower(0.01);
+                            autonomousTestStep = 2;
+                        }
+                    }
+                    break;
+
+                default :
+                    break;
+            }
         }
     }
+}
 

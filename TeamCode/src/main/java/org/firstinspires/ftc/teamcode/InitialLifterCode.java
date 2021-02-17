@@ -20,9 +20,7 @@ public class InitialLifterCode {
             if (LeftStick == 0) {
                 this.LiftMotor.setPower(-0.1);
                 this.LiftPower = -0.1;
-            }
-
-            if (LeftStick < 0) {
+            } else if (LeftStick < 0) {
                 this.LiftMotor.setPower(LeftStick * -0.46);
                 this.LiftPower = (LeftStick * -0.46);
             } else {
