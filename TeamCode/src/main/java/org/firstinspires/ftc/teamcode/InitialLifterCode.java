@@ -16,24 +16,17 @@ public class InitialLifterCode {
         public DcMotor LiftMotor;
         public CRServo ForkServo;
 
-        public double MoveLift(double LeftStick) {
-            double banana = 0;
+        public void MoveLift(double LeftStick) {
             if (LeftStick == 0) {
-                this.LiftMotor.setPower(-0.3);
-                this.LiftPower = -0.3;
-                banana = 1;
-            }
-
-            if (LeftStick < 0) {
+                this.LiftMotor.setPower(-0.1);
+                this.LiftPower = -0.1;
+            } else if (LeftStick < 0) {
                 this.LiftMotor.setPower(LeftStick * -0.46);
                 this.LiftPower = (LeftStick * -0.46);
-                banana = 2;
             } else {
                 this.LiftMotor.setPower(-LeftStick);
                 this.LiftPower = (LeftStick * -1);
-                banana = 3;
             }
-            return banana;
         }
 
         public void MoveServo(double RightStick) {
