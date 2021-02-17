@@ -140,11 +140,18 @@ public class firstAutonomousMode extends LinearOpMode {
         SECONDMOVESETUP,
         SECONDMOVE,
         THIRDMOVESETUP,
-        THIRDMOVE
+        THIRDMOVE,
+        FOURTHMOVESETUP,
+        FOURTHMOVE,
+        FIFTHMOVESETUP,
+        FIFTHMOVE
     }
 
     @Override
     public void runOpMode() {
+        InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
+        launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
+        launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
 
@@ -173,7 +180,9 @@ public class firstAutonomousMode extends LinearOpMode {
         double xAngle = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).thirdAngle;
 
         autoChassis.ZeroEncoders();
-        double drivePreset = autoChassis.trueDrive + 40;
+        autoChassis.Encoders();
+        autoChassis.SetAxisMovement();
+        double drivePreset = autoChassis.trueDrive + 50;
         double rotationGoal = zAngle;
         
 
@@ -187,8 +196,9 @@ public class firstAutonomousMode extends LinearOpMode {
                 case FIRSTMOVE:
                     telemetry.addLine("FIRSTMOVE");
                     telemetry.addData("Drive Preset: ", drivePreset);
-                    autoChassis.SetAxisMovement();
+                    telemetry.addData("drive", autoChassis.trueDrive);
                     autoChassis.Encoders();
+                    autoChassis.SetAxisMovement();
                     autoChassis.ForwardAndBackward(drivePreset);
 
 
@@ -214,18 +224,27 @@ public class firstAutonomousMode extends LinearOpMode {
                         autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(zAngle, rotationGoal));
                         autoChassis.Drive();
                     }
+                    front_left_wheel.setPower(-0.01);
+                    front_right_wheel.setPower(-0.01);
+                    back_right_wheel.setPower(-0.01);
+                    back_left_wheel.setPower(-0.01);
+                    autoChassis.Encoders();
                     autoChassis.ZeroEncoders();
+                    autoChassis.Encoders();
+                    autoChassis.SetAxisMovement();
                     drivePreset = autoChassis.trueDrive - 10;
                     rotationGoal = zAngle;
                     driveOpState = firstAutonomousMode.OperState.SECONDMOVE;
+
                     break;
                     
                     
                 case SECONDMOVE:
                     telemetry.addLine("SECONDMOVE");
                     telemetry.addData("Drive Preset: ", drivePreset);
-                    autoChassis.SetAxisMovement();
+                    telemetry.addData("drive", autoChassis.trueDrive);
                     autoChassis.Encoders();
+                    autoChassis.SetAxisMovement();
                     autoChassis.ForwardAndBackward(drivePreset);
 
 
@@ -244,7 +263,8 @@ public class firstAutonomousMode extends LinearOpMode {
                     }
 
                     break;
-                    
+
+
                 case THIRDMOVESETUP:
                     telemetry.addLine("THIRDMOVESETUP");
                     while ((Math.abs(zAngle - rotationGoal) >= 2)) {
@@ -252,16 +272,19 @@ public class firstAutonomousMode extends LinearOpMode {
                         autoChassis.Drive();
                     }
                     autoChassis.ZeroEncoders();
+                    autoChassis.Encoders();
+                    autoChassis.SetAxisMovement();
                     drivePreset = autoChassis.trueStrafe - 20;
                     rotationGoal = zAngle;
                     driveOpState = firstAutonomousMode.OperState.THIRDMOVE;
                     break;
-                
+
+
                 case THIRDMOVE:
                     telemetry.addLine("THIRDMOVE");
                     telemetry.addData("Drive Preset: ", drivePreset);
-                    autoChassis.SetAxisMovement();
                     autoChassis.Encoders();
+                    autoChassis.SetAxisMovement();
                     autoChassis.LeftAndRight(drivePreset);
 
                     
@@ -277,12 +300,30 @@ public class firstAutonomousMode extends LinearOpMode {
                         front_right_wheel.setPower(-0.01);
                         back_right_wheel.setPower(-0.01);
                         back_left_wheel.setPower(-0.01);
-                        System.exit(1);
+                        driveOpState = firstAutonomousMode.OperState.FOURTHMOVESETUP;
                     }
 
                     break;
 
+                case FOURTHMOVESETUP:
+                    telemetry.addLine("FOURTHMOVESETUP");
+                    while ((Math.abs(zAngle - rotationGoal) >= 2)) {
+                        autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(zAngle, rotationGoal));
+                        autoChassis.Drive();
+                    }
+                    front_left_wheel.setPower(-0.01);
+                    front_right_wheel.setPower(-0.01);
+                    back_right_wheel.setPower(-0.01);
+                    back_left_wheel.setPower(-0.01);
+                    autoChassis.Encoders();
+                    autoChassis.ZeroEncoders();
+                    autoChassis.Encoders();
+                    autoChassis.SetAxisMovement();
+                    drivePreset = autoChassis.trueDrive + 20;
+                    rotationGoal = zAngle;
+                    driveOpState = firstAutonomousMode.OperState.SECONDMOVE;
 
+                    break;
             }
             telemetry.update();
         }

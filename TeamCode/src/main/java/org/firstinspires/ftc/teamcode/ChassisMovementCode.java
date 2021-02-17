@@ -100,10 +100,6 @@ public class ChassisMovementCode extends LinearOpMode {
             rightEncoder = back_right_wheel.getCurrentPosition()/360*1.173150521-clearRight;
             leftEncoder = -front_right_wheel.getCurrentPosition()/360*1.178221633-clearLeft;
             backEncoder = front_left_wheel.getCurrentPosition()/360*1.17584979-clearBack;
-
-        }
-
-        private void Telemetry () {
             telemetry.addData("True back", backEncoder/360*1.17584979);
             telemetry.addData("True right", rightEncoder/360*1.173150521);
             telemetry.addData("True left", leftEncoder/360*1.178221633);
@@ -180,7 +176,6 @@ public class ChassisMovementCode extends LinearOpMode {
         double drivePreset = 0;
         double increaseDecrease = 1;
         boolean aWait = false;
-        double autonomousTestStep = 0;
         double rotationGoal = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;;
         ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
@@ -227,7 +222,6 @@ public class ChassisMovementCode extends LinearOpMode {
 
                     if (this.gamepad1.b) {
                         drivePreset = chasty.trueStrafe + movementLength;
-                        rotationGoal = zAngle;
                         driveOpState = ChassisMovementCode.OperState.LATERALMOVEMENT;
                     }
 
@@ -428,37 +422,23 @@ public class ChassisMovementCode extends LinearOpMode {
 
 
                 case AUTONOMOUSTEST:
-                    if (autonomousTestStep == 0) {
-                        drivePreset = chasty.trueDrive + 40;
-                        rotationGoal = zAngle;
-                        autonomousTestStep = 1;
-                        if (this.gamepad1.left_trigger != 0) {
-                            driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
-                        }
-                    }
-                    if (autonomousTestStep == 1) {
-                        chasty.SetAxisMovement();
-                        chasty.Encoders();
-                        chasty.ForwardAndBackward(drivePreset);
 
-                        if (this.gamepad1.left_trigger != 0) {
-                            driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
-                        }
+                    chasty.SetAxisMovement();
+                    chasty.Encoders();
+                    chasty.ForwardAndBackward(drivePreset);
 
-                        if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                            chasty.SetMotors(0, 0, chasty.CorrectRotation(zAngle, rotationGoal));
-                            chasty.Drive();
-                        }
-
-                        if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
-                            front_left_wheel.setPower(0.01);
-                            front_right_wheel.setPower(0.01);
-                            back_right_wheel.setPower(0.01);
-                            back_left_wheel.setPower(0.01);
-                            autonomousTestStep = 2;
-                        }
+                    if ((Math.abs(zAngle - rotationGoal) >= 2)) {
+                        chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
+                        chasty.Drive();
                     }
 
+                    if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
+                        front_left_wheel.setPower(0.01);
+                        front_right_wheel.setPower(0.01);
+                        back_right_wheel.setPower(0.01);
+                        back_left_wheel.setPower(0.01);
+                        driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                    }
 
                     break;
 
