@@ -26,6 +26,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 @TeleOp
 
 //Merging, lift, and part of intake done by Ethan, the rest done by Nihal.
+//back right front right front left back left
 public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     private double LeftStickValue;
     private double RightStickValue;
@@ -168,11 +169,8 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     chasty.SetMotors (drive, strafe, rotate);
                     chasty.Drive();
 
-
                     chasty.Encoders();
                     chasty.SetAxisMovement();
-
-
 
                     if (this.gamepad1.left_trigger != 0) {
                         chasty.ZeroEncoders();

@@ -55,7 +55,6 @@ public class ChassisMovementCode {
         double backLeftMultiplier = 1;
         double frontRightMultiplier = 0.9;
         double frontLeftMultiplier = 0.9;
-        public Telemetry telemetry;
 
         public void SetAxisMovement() {
             trueDrive = (rightEncoder + leftEncoder) / 2;
@@ -95,7 +94,7 @@ public class ChassisMovementCode {
             rightEncoder = back_right_wheel.getCurrentPosition() / 360 * 1.173150521 - clearRight;
             leftEncoder = -front_right_wheel.getCurrentPosition() / 360 * 1.178221633 - clearLeft;
             backEncoder = front_left_wheel.getCurrentPosition() / 360 * 1.17584979 - clearBack;
-            telemetry.addData("True back", backEncoder / 360 * 1.17584979);
+            /*telemetry.addData("True back", backEncoder / 360 * 1.17584979);
             telemetry.addData("True right", rightEncoder / 360 * 1.173150521);
             telemetry.addData("True left", leftEncoder / 360 * 1.178221633);
             telemetry.addData("Right Encoder CM", rightEncoder);
@@ -108,6 +107,7 @@ public class ChassisMovementCode {
             telemetry.addData("Strafe", trueStrafe);
             telemetry.addData("Rotate", trueRotate);
             telemetry.update();
+            */
         }
 
         public void SetMotors(double drive, double strafe, double rotate) {
