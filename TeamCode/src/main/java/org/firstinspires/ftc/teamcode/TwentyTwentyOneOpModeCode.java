@@ -75,15 +75,15 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         boolean aWait = false;
         double autonomousTestStep = 0;
         double rotationGoal = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
+        double banana2 = -1;
         waitForStart();
 
         while (opModeIsActive()) {
             this.LeftStickValue = -gamepad2.left_stick_y;
             this.RightStickValue = -gamepad2.right_stick_y;
-            lift.MoveLift(this.LeftStickValue);
-
-
+            banana2 = lift.MoveLift(this.LeftStickValue);
             lift.MoveServo(this.RightStickValue);
+            telemetry.addData("Banana", banana2);
             telemetry.addData("testing LauncherOn:", launcher.launcherOn);
             telemetry.addData("Lift Power", lift.LiftPower);
             telemetry.addData("Fork Power", lift.ForkPower);
