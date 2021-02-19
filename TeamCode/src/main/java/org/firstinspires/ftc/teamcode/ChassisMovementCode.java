@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode;
-
 import android.os.DropBoxManager;
-
-import com.qualcomm.hardware.bosch.BNO055IMU;  //This is the package for controlling the IMU
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
@@ -12,17 +10,13 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-
-import java.lang.Math;  //This is the standard Java package for a variety of math functions
-
+import java.lang.Math;
 @TeleOp
-
 public class ChassisMovementCode {
     public static class Chassis {
         public DcMotor back_right_wheel;
