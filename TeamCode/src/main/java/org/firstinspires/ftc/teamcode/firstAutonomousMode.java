@@ -321,7 +321,71 @@ public class firstAutonomousMode extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     drivePreset = autoChassis.trueDrive + 20;
                     rotationGoal = zAngle;
-                    driveOpState = firstAutonomousMode.OperState.SECONDMOVE;
+                    driveOpState = OperState.FOURTHMOVE;
+
+                    break;
+
+                case FOURTHMOVE:
+                    telemetry.addLine("FOURTHMOVE");
+                    telemetry.addData("Drive Preset: ", drivePreset);
+                    telemetry.addData("drive", autoChassis.trueDrive);
+                    autoChassis.Encoders();
+                    autoChassis.SetAxisMovement();
+                    autoChassis.ForwardAndBackward(drivePreset);
+
+
+
+                    if ((Math.abs(zAngle - rotationGoal) >= 2)) {
+                        autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(zAngle, rotationGoal));
+                        autoChassis.Drive();
+                    }
+
+                    if (Math.abs(drivePreset - autoChassis.trueDrive) <= 0.2) {
+                        front_left_wheel.setPower(-0.01);
+                        front_right_wheel.setPower(-0.01);
+                        back_right_wheel.setPower(-0.01);
+                        back_left_wheel.setPower(-0.01);
+                        driveOpState = firstAutonomousMode.OperState.FIFTHMOVESETUP;
+                    }
+
+                    break;
+
+                case FIFTHMOVESETUP:
+                    telemetry.addLine("FIFTHMOVESETUP");
+                    while ((Math.abs(zAngle - rotationGoal) >= 2)) {
+                        autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(zAngle, rotationGoal));
+                        autoChassis.Drive();
+                    }
+                    autoChassis.ZeroEncoders();
+                    autoChassis.Encoders();
+                    autoChassis.SetAxisMovement();
+                    drivePreset = autoChassis.trueStrafe + 30;
+                    rotationGoal = zAngle;
+                    driveOpState = firstAutonomousMode.OperState.THIRDMOVE;
+                    break;
+
+                case FIFTHMOVE:
+                    telemetry.addLine("FIFTHMOVE");
+                    telemetry.addData("Drive Preset: ", drivePreset);
+                    autoChassis.Encoders();
+                    autoChassis.SetAxisMovement();
+                    autoChassis.LeftAndRight(drivePreset);
+
+
+
+                    if ((Math.abs(zAngle - rotationGoal) >= 2)) {
+                        autoChassis.SetMotors(0,0,autoChassis.CorrectRotation(zAngle,rotationGoal));
+                        autoChassis.Drive();
+                    }
+
+
+                    if (Math.abs(drivePreset - autoChassis.trueStrafe) <= 0.2) {
+                        front_left_wheel.setPower(-0.01);
+                        front_right_wheel.setPower(-0.01);
+                        back_right_wheel.setPower(-0.01);
+                        back_left_wheel.setPower(-0.01);
+                        System.exit(1);
+                    }
 
                     break;
             }
