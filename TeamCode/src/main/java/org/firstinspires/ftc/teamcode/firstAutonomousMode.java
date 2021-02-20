@@ -82,6 +82,7 @@ public class firstAutonomousMode extends LinearOpMode {
         double rotationGoal = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
         waitForStart();
         servoTimer.reset();
+
         while (opModeIsActive()) {
             double zAngle = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
             double yAngle = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).secondAngle;
@@ -92,7 +93,7 @@ public class firstAutonomousMode extends LinearOpMode {
                     telemetry.addLine("FIRSTMOVE");
                     lift.MoveServo(1);
 
-                    if (servoTimer.time()  >= 5.5) {
+                    if (servoTimer.time()  >= 5.4) {
                         lift.MoveServo(0);
                         driveOpState = firstAutonomousMode.OperState.SECONDMOVESETUP;
                     }
@@ -157,10 +158,10 @@ public class firstAutonomousMode extends LinearOpMode {
 
 
                 case THIRDMOVE:
-                    telemetry.addLine("FOURTHMOVE");
+                    telemetry.addLine("THIRDMOVE");
                     lift.MoveServo(-1);
 
-                    if (servoTimer.time() >= 5.5) {
+                    if (servoTimer.time() >= 5) {
                         driveOpState = firstAutonomousMode.OperState.FOURTHMOVESETUP;
                     }
 
@@ -179,9 +180,9 @@ public class firstAutonomousMode extends LinearOpMode {
                     autoChassis.Encoders();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    drivePreset = autoChassis.trueStrafe - 20;
+                    drivePreset = autoChassis.trueStrafe + 20;
                     rotationGoal = zAngle;
-                    driveOpState = firstAutonomousMode.OperState.THIRDMOVE;
+                    driveOpState = firstAutonomousMode.OperState.FOURTHMOVE;
                     break;
 
                 case FOURTHMOVE:
@@ -198,12 +199,12 @@ public class firstAutonomousMode extends LinearOpMode {
                         autoChassis.Drive();
                     }
 
-                    if (Math.abs(drivePreset - autoChassis.trueStrafe) <= 0.2) {
+                    if (Math.abs(drivePreset - autoChassis.trueStrafe) <= 0.5) {
                         autoChassis.front_left_wheel.setPower(-0.01);
                         autoChassis.front_right_wheel.setPower(-0.01);
                         autoChassis.back_right_wheel.setPower(-0.01);
                         autoChassis.back_left_wheel.setPower(-0.01);
-                        driveOpState = OperState.FIFTHMOVESETUP;
+                        driveOpState = firstAutonomousMode.OperState.FIFTHMOVESETUP;
                     }
 
                     break;
@@ -220,6 +221,7 @@ public class firstAutonomousMode extends LinearOpMode {
                     autoChassis.back_left_wheel.setPower(-0.01);
                     autoChassis.Encoders();
                     autoChassis.ZeroEncoders();
+                    autoChassis.Encoders();
                     autoChassis.SetAxisMovement();
                     drivePreset = autoChassis.trueDrive - 15;
                     rotationGoal = zAngle;
@@ -241,7 +243,7 @@ public class firstAutonomousMode extends LinearOpMode {
                         autoChassis.Drive();
                     }
 
-                    if (Math.abs(drivePreset - autoChassis.trueDrive) <= 0.2) {
+                    if (Math.abs(drivePreset - autoChassis.trueDrive) <= 0.5) {
                         autoChassis.front_left_wheel.setPower(-0.01);
                         autoChassis.front_right_wheel.setPower(-0.01);
                         autoChassis.back_right_wheel.setPower(-0.01);
@@ -264,7 +266,7 @@ public class firstAutonomousMode extends LinearOpMode {
                     autoChassis.Encoders();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    drivePreset = autoChassis.trueStrafe + 30;
+                    drivePreset = autoChassis.trueStrafe - 25;
                     rotationGoal = zAngle;
                     driveOpState = firstAutonomousMode.OperState.SIXTHMOVE;
                     break;
@@ -283,7 +285,7 @@ public class firstAutonomousMode extends LinearOpMode {
                         autoChassis.Drive();
                     }
 
-                    if (Math.abs(drivePreset - autoChassis.trueStrafe) <= 0.2) {
+                    if (Math.abs(drivePreset - autoChassis.trueStrafe) <= 0.5) {
                         autoChassis.front_left_wheel.setPower(-0.01);
                         autoChassis.front_right_wheel.setPower(-0.01);
                         autoChassis.back_right_wheel.setPower(-0.01);
