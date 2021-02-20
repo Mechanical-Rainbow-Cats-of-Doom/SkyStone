@@ -23,7 +23,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import java.lang.Math;  //This is the standard Java package for a variety of math functions
 import java.lang.annotation.ElementType;
-
+//Created by mostly Patrick, partly Ethan
 @Autonomous
 public class firstAutonomousMode extends LinearOpMode {
 
