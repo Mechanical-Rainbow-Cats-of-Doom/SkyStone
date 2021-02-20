@@ -20,7 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import java.lang.Math;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 @TeleOp
-//Merging, lift, and part of intake done by Ethan, the rest done by Nihal.
+//Merging, lift, and part of intake done by nahtE, the rest done by lahiN.
 //back right front right front left back left
 public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     
@@ -29,6 +29,12 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     private Blinker Control_Hub;
     private Blinker expansion_Hub_2;
     ElapsedTime mytimer = new ElapsedTime();
+    ElapsedTime debugTimer = new ElapsedTime();
+
+    enum OperState {
+        DEBUGSELECT,
+        DEBUGONE
+    }
     
     @Override
     public void runOpMode() {
@@ -38,6 +44,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
         ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+        TwentyTwentyOneOpModeCode.OperState debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGSELECT;
 
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
         expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
@@ -73,6 +80,8 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         double autonomousTestStep = 0;
         double rotationGoal = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
         double banana2 = -1;
+
+        //double timerStopTime = 0;
         waitForStart();
 
         while (opModeIsActive()) {
@@ -87,7 +96,35 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             double zAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
             double yAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).secondAngle;
             double xAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).thirdAngle;
+            switch (debugOpState) {
+                case DEBUGSELECT:
+                    //telemetry.addData("Timer Stop Time: ", timerStopTime);
+                    telemetry.update();
+                    /*
+                    if (this.gamepad2.right_trigger != 0) {
+                        debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGONE;
+                        debugTimer.reset();
+                    }
+                    */
+
+                    break;
+                /*
+                case DEBUGONE:
+                    if (this.gamepad2.right_trigger != 0) {
+                        lift.MoveServo(1);
+                    }
+                    else {
+                        lift.MoveServo(0);
+                        timerStopTime = debugTimer.seconds();
+                        debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGSELECT;
+                    }
+
+                    break;
+                 */
+            }
+
             switch (launchStates) {
+
                 case Start:
                     if (this.gamepad2.a) {
                         launchStates = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed;
