@@ -210,6 +210,7 @@ public class firstAutonomousMode extends LinearOpMode {
 
                     break;
             }
+            telemetry.addData("why is patrick always correct", servoTimer);
             telemetry.update();
         }
     }
