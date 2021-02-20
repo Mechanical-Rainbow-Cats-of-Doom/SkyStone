@@ -80,25 +80,15 @@ public class firstAutonomousMode extends LinearOpMode {
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
         autoChassis.imu.initialize(parameters);
-
-        waitForStart();
-
-
-
-        double zAngle = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
-        double yAngle = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).secondAngle;
-        double xAngle = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).thirdAngle;
-
-        servoTimer.reset();
         double drivePreset = 0;
         double rotationGoal = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
-        
-
+        waitForStart();
+        servoTimer.reset();
         while (opModeIsActive()) {
 
-            zAngle = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
-            yAngle = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).secondAngle;
-            xAngle = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).thirdAngle;
+            double zAngle = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
+            double yAngle = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).secondAngle;
+            double xAngle = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).thirdAngle;
 
             switch(driveOpState) {
                 case FIRSTMOVE:
@@ -106,6 +96,7 @@ public class firstAutonomousMode extends LinearOpMode {
                     lift.MoveServo(1);
 
                     if (servoTimer.seconds() == 5.9) {
+                        lift.MoveServo(0);
                         driveOpState = firstAutonomousMode.OperState.SECONDMOVESETUP;
                     }
 
