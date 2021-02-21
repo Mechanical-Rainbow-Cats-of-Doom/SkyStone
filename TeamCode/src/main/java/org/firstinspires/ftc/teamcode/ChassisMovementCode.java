@@ -49,6 +49,10 @@ public class ChassisMovementCode {
         double backLeftMultiplier = 1;
         double frontRightMultiplier = 0.9;
         double frontLeftMultiplier = 0.9;
+        double oldZAngel =0;
+        double newZAngle = 0;
+        double rotations=0;
+        double zAngle = 0;
 
         public void SetAxisMovement() {
             trueDrive = (rightEncoder + leftEncoder) / 2;
@@ -57,24 +61,34 @@ public class ChassisMovementCode {
         }
 
         public void ForwardAndBackward(double drivePreset) {
-            front_right_wheel.setPower(frontRightMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
-            front_left_wheel.setPower(frontLeftMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
-            back_left_wheel.setPower(-1 * backLeftMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
-            back_right_wheel.setPower(backRightMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs(drivePreset - trueDrive) / drivePreset));
+            front_right_wheel.setPower(frontRightMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs((drivePreset - trueDrive) / drivePreset)));
+            front_left_wheel.setPower(frontLeftMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs((drivePreset - trueDrive) / drivePreset)));
+            back_left_wheel.setPower(-1 * backLeftMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs((drivePreset - trueDrive) / drivePreset)));
+            back_right_wheel.setPower(backRightMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs((drivePreset - trueDrive) / drivePreset)));
 
         }
 
+        public void SetRotation(double imuZAngle) {
+            oldZAngel = newZAngle;
+            newZAngle = imuZAngle;
+            if ((Math.signum(newZAngle) != Math.signum(oldZAngel)) & Math.abs(newZAngle) > 50) {
+                rotations += Math.signum(oldZAngel);
+            }
+            zAngle = newZAngle + rotations*360;
+        }
+
+
         public double CorrectRotation(double currentRotation, double rotationGoal) {
 
-            rotation = Math.signum(rotationGoal - currentRotation) * (Math.max(0.2, Math.abs(rotationGoal - currentRotation) / 180));
+            rotation = Math.signum(rotationGoal - currentRotation) * (Math.max(0.2, Math.abs((rotationGoal - currentRotation) / 180)));
             return (rotation);
         }
 
         public void LeftAndRight(double drivePreset) {
-            front_right_wheel.setPower(-1 * frontRightMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs(drivePreset - trueStrafe) / drivePreset));
-            front_left_wheel.setPower(frontLeftMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs(drivePreset - trueStrafe) / drivePreset));
-            back_left_wheel.setPower(backLeftMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs(drivePreset - trueStrafe) / drivePreset));
-            back_right_wheel.setPower(backRightMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs(drivePreset - trueStrafe) / drivePreset));
+            front_right_wheel.setPower(-1 * frontRightMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs((drivePreset - trueStrafe) / drivePreset)));
+            front_left_wheel.setPower(frontLeftMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs((drivePreset - trueStrafe) / drivePreset)));
+            back_left_wheel.setPower(backLeftMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs((drivePreset - trueStrafe) / drivePreset)));
+            back_right_wheel.setPower(backRightMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs((drivePreset - trueStrafe) / drivePreset)));
 
         }
 
