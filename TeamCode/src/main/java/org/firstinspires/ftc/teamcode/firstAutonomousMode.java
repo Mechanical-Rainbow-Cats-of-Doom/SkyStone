@@ -44,8 +44,15 @@ public class firstAutonomousMode extends LinearOpMode {
         SECONDMOVE,
         THIRDMOVESETUP,
         THIRDMOVE,
+        STARTLAUNCHER,
         FOURTHMOVESETUP,
         FOURTHMOVE,
+        SHOOT1,
+        Pressed,
+        firsttimer,
+        Load,
+        secondtimer,
+        ResetPosition,
         FIFTHMOVESETUP,
         FIFTHMOVE,
         SIXTHMOVESETUP,
@@ -81,12 +88,14 @@ public class firstAutonomousMode extends LinearOpMode {
         double drivePreset = 0;
         double rotationGoal = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
         double originalRotation = rotationGoal;
+        double shootWait = 0;
         autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
         waitForStart();
         servoTimer.reset();
 
         while (opModeIsActive()) {
             autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
+            launcher.LauncherRun();
 
             switch(driveOpState) {
                 case FIRSTMOVE:
@@ -168,11 +177,15 @@ public class firstAutonomousMode extends LinearOpMode {
                     lift.MoveServo(-1);
 
                     if (servoTimer.time() >= 2) {
-                        launcher.LauncherToggle();
-                        driveOpState = firstAutonomousMode.OperState.FOURTHMOVESETUP;
+                        lift.MoveServo(0);
+                        driveOpState = firstAutonomousMode.OperState.STARTLAUNCHER;
                     }
 
                     break;
+
+                case STARTLAUNCHER:
+                    launcher.LauncherToggle();
+                    driveOpState = firstAutonomousMode.OperState.FOURTHMOVESETUP;
 
 
                 case FOURTHMOVESETUP:
@@ -195,7 +208,7 @@ public class firstAutonomousMode extends LinearOpMode {
                         autoChassis.back_right_wheel.setPower(-0.01);
                         autoChassis.back_left_wheel.setPower(-0.01);
 
-                        drivePreset = autoChassis.trueStrafe - 40;
+                        drivePreset = autoChassis.trueStrafe - 50;
 
 
                         driveOpState = firstAutonomousMode.OperState.FOURTHMOVE;
@@ -220,15 +233,78 @@ public class firstAutonomousMode extends LinearOpMode {
                         autoChassis.Drive();
                     }
 
-                    if (Math.abs(drivePreset - autoChassis.trueStrafe) <= 0.2) {
+                    if (Math.abs(drivePreset - autoChassis.trueStrafe) <= 11) {
                         autoChassis.front_left_wheel.setPower(-0.01);
                         autoChassis.front_right_wheel.setPower(-0.01);
                         autoChassis.back_right_wheel.setPower(-0.01);
                         autoChassis.back_left_wheel.setPower(-0.01);
-                        driveOpState = firstAutonomousMode.OperState.FIFTHMOVESETUP;
+                        servoTimer.reset();
+                        driveOpState = firstAutonomousMode.OperState.SHOOT1;
                     }
 
                     break;
+
+                case SHOOT1:
+                    if (shootWait < 6) {
+                        if (servoTimer.time() > 0.5) {
+                            driveOpState = firstAutonomousMode.OperState.firsttimer;
+                        }
+                    }
+                    else {
+                        driveOpState = firstAutonomousMode.OperState.FIFTHMOVESETUP;
+                    }
+
+
+
+                    break;
+                case firsttimer:
+                    servoTimer.reset();
+                    driveOpState = firstAutonomousMode.OperState.Load;
+                    break;
+
+                case Load:
+                    launcher.Shoot();
+                    if (servoTimer.time() >= 0.15) {
+                        driveOpState = firstAutonomousMode.OperState.secondtimer;
+                    }
+                    break;
+
+                case secondtimer:
+                    servoTimer.reset();
+                    driveOpState = firstAutonomousMode.OperState.ResetPosition;
+                    break;
+
+                case ResetPosition:
+                    launcher.Reload();
+                    if (servoTimer.time() >= 0.15) {
+                        shootWait += 1;
+                        servoTimer.reset();
+                        driveOpState = firstAutonomousMode.OperState.SHOOT1;
+                    }
+                    break;
+
+                case FIFTHMOVESETUP:
+                    telemetry.addLine("FIFTHMOVESETUP");
+                    if ((Math.abs(autoChassis.zAngle - originalRotation) >= 2)) {
+                        autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, originalRotation));
+                        autoChassis.Drive();
+                        autoChassis.Encoders();
+                        autoChassis.ZeroEncoders();
+                        autoChassis.SetAxisMovement();
+                        rotationGoal = autoChassis.zAngle;
+                    }
+                    else {
+                        autoChassis.front_left_wheel.setPower(-0.01);
+                        autoChassis.front_right_wheel.setPower(-0.01);
+                        autoChassis.back_right_wheel.setPower(-0.01);
+                        autoChassis.back_left_wheel.setPower(-0.01);
+
+                        drivePreset = autoChassis.trueDrive + 10;
+
+                        driveOpState = firstAutonomousMode.OperState.FIFTHMOVE;
+                    }
+                    break;
+
 
             }
             telemetry.update();

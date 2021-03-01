@@ -1,191 +1,63 @@
 package org.firstinspires.ftc.teamcode;
-import android.os.DropBoxManager;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
-import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import java.lang.Math;
+
 @TeleOp
-public class ChassisMovementCode {
-    public static class Chassis {
-        public DcMotor back_right_wheel;
-        public DcMotor front_right_wheel;
-        public DcMotor back_left_wheel;
-        public DcMotor front_left_wheel;
-        public BNO055IMU imu;
-        private DigitalChannel switch_;
-        double rotation;
-        double frontLeft;
-        double frontRight;
-        double backLeft;
-        double backRight;
-        double rightEncoder;
-        double leftEncoder;
-        double backEncoder;
-        double clearRight = 0;
-        double clearLeft = 0;
-        double clearBack = 0;
-        double clearRotate = 0;
-        double fieldLength = 141;
-        double robotLength = 17.25;
-        double robotWidth = 17.375;
-        double countsPerRotation = 360;
-        double trueDrive;
-        double drivePreset;
-        double trueStrafe;
-        double slowIntensity = 10;
-        double trueRotate;
-        double backRightMultiplier = 1;
-        double backLeftMultiplier = 1;
-        double frontRightMultiplier = 0.9;
-        double frontLeftMultiplier = 0.9;
-        double oldZAngel =0;
-        double newZAngle = 0;
-        double rotations=0;
-        double zAngle = 0;
-        double presetX = 0;
-        double presetY = 0;
-        double trueX = 0;
-        double trueY = 0;
-
-        public void SetTrueAxis() {
-            trueX = trueStrafe*Math.cos((zAngle))+trueDrive*(Math.cos(zAngle+(Math.PI/2))) + presetX;
-            trueY = trueStrafe*Math.sin((zAngle))+trueDrive*(Math.sin(zAngle+(Math.PI/2))) + presetY;
-        }
-
-        public void SetPresetAxis() {
-            presetX = trueX;
-            presetY = trueY;
-        }
-
-
-        public void SetAxisMovement() {
-            rightEncoder = back_right_wheel.getCurrentPosition() / 360 * 1.173150521 - clearRight;
-            leftEncoder = -front_right_wheel.getCurrentPosition() / 360 * 1.178221633 - clearLeft;
-            backEncoder = front_left_wheel.getCurrentPosition() / 360 * 1.17584979 - clearBack;
-            trueDrive = (rightEncoder + leftEncoder) / 2;
-            trueStrafe = backEncoder - (rightEncoder - leftEncoder) / 2;
-            trueRotate = (rightEncoder - leftEncoder) / 2;
-
-        }
-
-        public void ForwardAndBackward(double drivePreset) {
-            front_right_wheel.setPower(frontRightMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs((drivePreset - trueDrive) / drivePreset)));
-            front_left_wheel.setPower(frontLeftMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs((drivePreset - trueDrive) / drivePreset)));
-            back_left_wheel.setPower(-1 * backLeftMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs((drivePreset - trueDrive) / drivePreset)));
-            back_right_wheel.setPower(backRightMultiplier * Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs((drivePreset - trueDrive) / drivePreset)));
-
-        }
-
-        public void SetRotation(double imuZAngle) {
-            oldZAngel = newZAngle;
-            newZAngle = imuZAngle;
-            if ((Math.signum(newZAngle) != Math.signum(oldZAngel)) & Math.abs(newZAngle) > 50) {
-                rotations += Math.signum(oldZAngel);
-            }
-            zAngle = (newZAngle + rotations*360) - clearRotate;
-        }
-
-
-        public double CorrectRotation(double currentRotation, double rotationGoal) {
-
-            rotation = Math.signum(rotationGoal - currentRotation) * (Math.max(0.2, Math.abs((rotationGoal - currentRotation) / 180)));
-            return (rotation);
-        }
-
-        public void LeftAndRight(double drivePreset) {
-            front_right_wheel.setPower(-1 * frontRightMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs((drivePreset - trueStrafe) / drivePreset)));
-            front_left_wheel.setPower(frontLeftMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs((drivePreset - trueStrafe) / drivePreset)));
-            back_left_wheel.setPower(backLeftMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs((drivePreset - trueStrafe) / drivePreset)));
-            back_right_wheel.setPower(backRightMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs((drivePreset - trueStrafe) / drivePreset)));
-
-        }
-        public void ResetRotate() {clearRotate = zAngle;}
-
-        public void ZeroEncoders() {
-            clearRight = back_right_wheel.getCurrentPosition() / 360 * 1.173150521;
-            clearLeft = -front_right_wheel.getCurrentPosition() / 360 * 1.178221633;
-            clearBack = front_left_wheel.getCurrentPosition() / 360 * 1.17584979;
-        }
-
-        public void Encoders() {
-            /*telemetry.addData("True back", backEncoder / 360 * 1.17584979);
-            telemetry.addData("True right", rightEncoder / 360 * 1.173150521);
-            telemetry.addData("True left", leftEncoder / 360 * 1.178221633);
-            telemetry.addData("Right Encoder CM", rightEncoder);
-            telemetry.addData("Left Encoder CM", leftEncoder);
-            telemetry.addData("Back Encoder CM", backEncoder);
-            telemetry.addData("Right Encoder", back_right_wheel.getCurrentPosition());
-            telemetry.addData("Left Encoder", front_right_wheel.getCurrentPosition());
-            telemetry.addData("Back Encoder", front_left_wheel.getCurrentPosition());
-            telemetry.addData("Drive", trueDrive);
-            telemetry.addData("Strafe", trueStrafe);
-            telemetry.addData("Rotate", trueRotate);
-            telemetry.update();
-            */
-        }
-
-        public void SetMotors(double drive, double strafe, double rotate) {
-            this.frontLeft = drive - strafe - rotate;
-            this.backLeft = -drive - strafe + rotate;
-            this.frontRight = drive + strafe + rotate;
-            this.backRight = drive - strafe + rotate;
-        }
-
-
-        public void Drive() {
-            front_right_wheel.setPower(this.frontRight * frontRightMultiplier);
-            front_left_wheel.setPower(this.frontLeft * frontLeftMultiplier);
-            back_left_wheel.setPower(this.backLeft * backLeftMultiplier);
-            back_right_wheel.setPower(this.backRight * backRightMultiplier);
-        }
-    }
+//Merging, lift, and part of intake done by nahtE, the rest done by lahiN.
+//back right front right front left back left
+public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
+    
+    private double LeftStickValue;
+    private double RightStickValue;
+    private Blinker Control_Hub;
+    private Blinker expansion_Hub_2;
+    ElapsedTime mytimer = new ElapsedTime();
+    ElapsedTime debugTimer = new ElapsedTime();
 
     enum OperState {
-        NORMALDRIVE,
-        NORMALROTATE,
-        FORWARD,
-        LATERALMOVEMENT,
-        SETMOVEMENTDISTANCE,
-        SETMOTORMULTIPLE,
-        AUTONOMOUSTEST,
-        FULLDRIVE,
-        ROTATE360
+        DEBUGSELECT,
+        DEBUGONE
     }
-/*
+    
     @Override
-    public void runOpMode(){
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+    public void runOpMode() {
+        InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
+        InitialLauncherAndIntakeCode.LauncherStates launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
+        InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
+        NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
+        ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
+        ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+        TwentyTwentyOneOpModeCodeCopy.OperState debugOpState = TwentyTwentyOneOpModeCodeCopy.OperState.DEBUGSELECT;
+
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
-
-        front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
-        front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
-        back_left_wheel = hardwareMap.get(DcMotor.class, "back left wheel");
-        back_right_wheel = hardwareMap.get(DcMotor.class, "back right wheel");
-
+        expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
+        lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
+        lift.ForkServo = hardwareMap.get(CRServo.class, "LiftServo");
+        launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
+        launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
+        chasty.imu = hardwareMap.get(BNO055IMU.class, "imu");
+        chasty.front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
+        chasty.front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
+        chasty.back_left_wheel = hardwareMap.get(DcMotor.class, "back left wheel");
+        chasty.back_right_wheel = hardwareMap.get(DcMotor.class, "back right wheel");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();  //in wrong spot--where is better?
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
-
-        imu.initialize(parameters);
-
-        waitForStart();
-
-        double drive;
+        chasty.imu.initialize(parameters); double drive;
         double strafe;
         double rotate;
         double movementLength = 0;
@@ -200,35 +72,130 @@ public class ChassisMovementCode {
         double increaseDecrease = 1;
         boolean aWait = false;
         double autonomousTestStep = 0;
-        double rotationGoal = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;;
-        ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
-        ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+        double rotationGoal = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
+        double banana2 = -1;
+
+        //double timerStopTime = 0;
+        waitForStart();
 
         while (opModeIsActive()) {
+            this.LeftStickValue = -gamepad2.left_stick_y;
+            this.RightStickValue = -gamepad2.right_stick_y;
+            lift.MoveLift(this.LeftStickValue);
+            lift.MoveServo(this.RightStickValue);
+            telemetry.addData("testing LauncherOn:", launcher.launcherOn);
+            telemetry.addData("Lift Power", lift.LiftPower);
+            telemetry.addData("Fork Power", lift.ForkPower);
+            telemetry.update();
+            double zAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
+            double yAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).secondAngle;
+            double xAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).thirdAngle;
+            switch (debugOpState) {
+                case DEBUGSELECT:
+                    //telemetry.addData("Timer Stop Time: ", timerStopTime);
+                    telemetry.update();
+                    /*
+                    if (this.gamepad2.right_trigger != 0) {
+                        debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGONE;
+                        debugTimer.reset();
+                    }
+                    */
 
-            double zAngle = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
-            double yAngle = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).secondAngle;
-            double xAngle = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).thirdAngle;
+                    break;
+                /*
+                case DEBUGONE:
+                    if (this.gamepad2.right_trigger != 0) {
+                        lift.MoveServo(1);
+                    }
+                    else {
+                        lift.MoveServo(0);
+                        timerStopTime = debugTimer.seconds();
+                        debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGSELECT;
+                    }
 
+                    break;
+                 */
+            }
+
+            switch (launchStates) {
+
+                case Start:
+                    if (this.gamepad2.a) {
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed;
+                    }
+
+                    if (this.gamepad2.b) {
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.Pressed;
+                    }
+                    if (this.gamepad2.x) {
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed2;
+                    }
+                    break;
+                case Pressed:
+                    if (!this.gamepad2.b) {
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.firsttimer;
+
+                    }
+                    break;
+                case firsttimer:
+                    mytimer.reset();
+                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.Load;
+                    break;
+
+                case Load:
+                    launcher.Shoot();
+                    if (mytimer.time() >= 0.15) {
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.secondtimer;
+                    }
+                    break;
+
+                case secondtimer:
+                    mytimer.reset();
+                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.ResetPosition;
+                    break;
+
+                case ResetPosition:
+                    launcher.Reload();
+                    if (mytimer.time() >= 0.15) {
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
+                    }
+                    break;
+
+                case ButtonPushed:
+                    if (!this.gamepad2.a) {
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ToggleLauncher;
+                    }
+                    break;
+                case ButtonPushed2:
+                    if (!this.gamepad2.x) {
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ToggleIntake;
+                        break;
+                    }
+
+                case ToggleIntake:
+                    launcher.IntakeToggle();
+                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
+                    break;
+                case ToggleLauncher:
+                    launcher.LauncherToggle();
+                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
+                    break;
+            }
+            launcher.LauncherRun();
             switch (driveOpState) {
                 case NORMALDRIVE:
                     drive = -this.gamepad1.left_stick_y;
                     strafe = -this.gamepad1.left_stick_x;
-                    if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                        rotate = chasty.CorrectRotation(zAngle,rotationGoal);
-                    }
-                    else {
-                        rotate = 0;
-                    }
+
+
+                    rotate = 0;
+
 
                     chasty.SetMotors (drive, strafe, rotate);
                     chasty.Drive();
 
-
                     chasty.Encoders();
                     chasty.SetAxisMovement();
-
-
 
                     if (this.gamepad1.left_trigger != 0) {
                         chasty.ZeroEncoders();
@@ -276,7 +243,7 @@ public class ChassisMovementCode {
                         if (this.gamepad1.left_trigger != 0) {
                             chasty.ZeroEncoders();
                         }
-                        telemetry.addData("IMU rotation", this.imu.getAngularOrientation());
+                        telemetry.addData("IMU rotation", chasty.imu.getAngularOrientation());
                         telemetry.update();
                     }
                     else {
@@ -300,10 +267,10 @@ public class ChassisMovementCode {
                     }
 
                     if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
-                        front_left_wheel.setPower(0.01);
-                        front_right_wheel.setPower(0.01);
-                        back_right_wheel.setPower(0.01);
-                        back_left_wheel.setPower(0.01);
+                        chasty.front_left_wheel.setPower(0.01);
+                        chasty.front_right_wheel.setPower(0.01);
+                        chasty.back_right_wheel.setPower(0.01);
+                        chasty.back_left_wheel.setPower(0.01);
                         driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
                     }
 
@@ -327,10 +294,10 @@ public class ChassisMovementCode {
 
 
                     if (Math.abs(drivePreset - chasty.trueStrafe) <= 0.2) {
-                        front_left_wheel.setPower(0.01);
-                        front_right_wheel.setPower(0.01);
-                        back_right_wheel.setPower(0.01);
-                        back_left_wheel.setPower(0.01);
+                        chasty.front_left_wheel.setPower(0.01);
+                        chasty.front_right_wheel.setPower(0.01);
+                        chasty.back_right_wheel.setPower(0.01);
+                        chasty.back_left_wheel.setPower(0.01);
                         driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
                     }
 
@@ -446,45 +413,22 @@ public class ChassisMovementCode {
                     break;
 
 
-                case AUTONOMOUSTEST:
-                    if (autonomousTestStep == 0) {
-                        drivePreset = chasty.trueDrive + 40;
-                        rotationGoal = zAngle;
-                        autonomousTestStep = 1;
-                        if (this.gamepad1.left_trigger != 0) {
-                            driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
-                        }
-                    }
-                    if (autonomousTestStep == 1) {
-                        chasty.SetAxisMovement();
-                        chasty.Encoders();
-                        chasty.ForwardAndBackward(drivePreset);
-
-                        if (this.gamepad1.left_trigger != 0) {
-                            driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
-                        }
-
-                        if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                            chasty.SetMotors(0, 0, chasty.CorrectRotation(zAngle, rotationGoal));
-                            chasty.Drive();
-                        }
-
-                        if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
-                            front_left_wheel.setPower(0.01);
-                            front_right_wheel.setPower(0.01);
-                            back_right_wheel.setPower(0.01);
-                            back_left_wheel.setPower(0.01);
-                            autonomousTestStep = 2;
-                        }
-                    }
+                case FULLDRIVE:
+                    chasty.SetAxisMovement();
+                    drive = -this.gamepad1.left_stick_y;
+                    strafe = -this.gamepad1.left_stick_x;
+                    rotate = -this.gamepad1.right_stick_x;
 
 
-                    break;
+                    chasty.SetMotors (drive, strafe, rotate);
+                    chasty.Drive();
+
 
 
                 default :
                     break;
             }
         }
-    */
+    }
 }
+

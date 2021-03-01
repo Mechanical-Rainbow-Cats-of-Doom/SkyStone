@@ -93,6 +93,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             telemetry.addData("Lift Power", lift.LiftPower);
             telemetry.addData("Fork Power", lift.ForkPower);
             telemetry.update();
+            chasty.SetRotation(chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
             double zAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
             double yAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).secondAngle;
             double xAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).thirdAngle;
@@ -230,7 +231,28 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     }
 
                     if (this.gamepad1.x) {
-                        driveOpState = ChassisMovementCode.OperState.SETMOTORMULTIPLE;
+                        chasty.ResetRotate();
+                        chasty.ZeroEncoders();
+                        rotationGoal = chasty.zAngle;
+                        driveOpState = ChassisMovementCode.OperState.ROTATE360;
+                    }
+
+                    break;
+
+                case ROTATE360:
+                    if (Math.abs((chasty.zAngle - (rotationGoal + 360))) >= 2) {
+                        chasty.SetMotors(0, 0, chasty.CorrectRotation(chasty.zAngle, (rotationGoal+360)));
+                        chasty.Drive();
+                        chasty.Encoders();
+                        chasty.Encoders();
+                        chasty.SetAxisMovement();
+                    }
+                    else {
+                        telemetry.addData("zAngle", chasty.zAngle);
+                        telemetry.addData("rotate", chasty.trueRotate);
+                        if (this.gamepad1.left_trigger != 0) {
+                            driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
+                        }
                     }
 
                     break;
@@ -421,38 +443,16 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     break;
 
 
-                case AUTONOMOUSTEST:
-                    if (autonomousTestStep == 0) {
-                        drivePreset = chasty.trueDrive + 40;
-                        rotationGoal = zAngle;
-                        autonomousTestStep = 1;
-                        if (this.gamepad1.left_trigger != 0) {
-                            driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
-                        }
-                    }
-                    if (autonomousTestStep == 1) {
-                        chasty.SetAxisMovement();
-                        chasty.Encoders();
-                        chasty.ForwardAndBackward(drivePreset);
 
-                        if (this.gamepad1.left_trigger != 0) {
-                            driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
-                        }
+                case FULLDRIVE:
+                    chasty.SetAxisMovement();
+                    drive = -this.gamepad1.left_stick_y;
+                    strafe = -this.gamepad1.left_stick_x;
+                    rotate = -this.gamepad1.right_stick_x;
 
-                        if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                            chasty.SetMotors(0, 0, chasty.CorrectRotation(zAngle, rotationGoal));
-                            chasty.Drive();
-                        }
 
-                        if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
-                            chasty.front_left_wheel.setPower(0.01);
-                            chasty.front_right_wheel.setPower(0.01);
-                            chasty.back_right_wheel.setPower(0.01);
-                            chasty.back_left_wheel.setPower(0.01);
-                            autonomousTestStep = 2;
-                        }
-                    }
-                    break;
+                    chasty.SetMotors (drive, strafe, rotate);
+                    chasty.Drive();
 
                 default :
                     break;
