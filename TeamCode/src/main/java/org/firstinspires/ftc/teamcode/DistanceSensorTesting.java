@@ -24,7 +24,7 @@ import java.lang.reflect.Array;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 @TeleOp
-
+// Warning and reminder: Code just adds values constantly, this needs to be fixed. There is no value rollover, and it isn't averaging. This needs to be a no. 1 priority before it gets put inside a class and merged into the main file, and should be done as soon as possible.
 public class DistanceSensorTesting extends LinearOpMode {
     private DistanceSensor DistanceSensor;
 
