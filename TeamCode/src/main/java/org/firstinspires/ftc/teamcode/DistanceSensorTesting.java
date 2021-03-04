@@ -34,7 +34,7 @@ public class DistanceSensorTesting extends LinearOpMode {
         double AveragedArray;
         double total = 0;
         int index = 0;
-        int ArraySize = 10;
+        int ArraySize = 30;
         double [] sensorArray;
         sensorArray = new double[ArraySize];
         waitForStart();
@@ -45,10 +45,10 @@ public class DistanceSensorTesting extends LinearOpMode {
             else {
                 index++;
             }
-            sensorArray[index] = DistanceSensor.getDistance(DistanceUnit.MM);
+            sensorArray[index] = DistanceSensor.getDistance(DistanceUnit.INCH);
             AveragedArray = total / sensorArray.length;
             total = 0;
-            for (int i = 0; i <=9; i++) {
+            for (int i = 0; i <= (ArraySize - 1); i++) {
                 total = total + sensorArray[i];
             }
             telemetry.addData("Average Array", AveragedArray);
