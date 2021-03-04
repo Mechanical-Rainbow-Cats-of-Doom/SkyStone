@@ -52,6 +52,10 @@ public class DistanceSensorTesting extends LinearOpMode {
             }
             AveragedArray = total / sensorArray.length;
             telemetry.addData("Average Array", AveragedArray);
+            telemetry.addData("i", i);
+            telemetry.addData("index", index);
+            telemetry.addData("ArraySize", ArraySize);
+            telemetry.addData("total", total);
             telemetry.update();
         }
     }
