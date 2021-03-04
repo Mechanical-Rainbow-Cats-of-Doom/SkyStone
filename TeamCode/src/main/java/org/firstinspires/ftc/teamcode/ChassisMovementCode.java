@@ -76,7 +76,18 @@ public class ChassisMovementCode {
             backEncoder = front_left_wheel.getCurrentPosition() / 360 * 1.17584979 - clearBack;
             trueDrive = (rightEncoder + leftEncoder) / 2;
             trueStrafe = backEncoder - (rightEncoder - leftEncoder) / 2;
-            trueRotate = (rightEncoder - leftEncoder) / 2;
+            trueRotate = ((rightEncoder - leftEncoder) / 2)*0.12877427457 /* <---- see comment below*/;
+            /*
+            the number 0.12877427457 was calculated through taking several measurements with the im
+            and with the rotate encoders, then I divided the imu measurement by the encoder measurement
+            and got the average of all my attempts giving me a multiplier to go from encoders counts
+            to degrees, 7.3305, then I multiplied that by the rotation to radians multiplier, pi/180,
+            then I ran the robot and rotated 360 degrees several times to get measurements with the
+            new rotate values then I divided tau by the new rotation measurements and got the average
+            of all my attempts to get the multiplier to go from my new measurements to true tau,
+            1.00651012115, then I multiplied my new multiplier by my old multiplier to get my final
+            multiplier, 0.12877427457
+             */
 
         }
 

@@ -78,7 +78,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         double increaseDecrease = 1;
         boolean aWait = false;
         double autonomousTestStep = 0;
-        double rotationGoal = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
+        double rotationGoal = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle;
         double banana2 = -1;
 
         //double timerStopTime = 0;
@@ -89,9 +89,9 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             this.RightStickValue = -gamepad2.right_stick_y;
             lift.MoveLift(this.LeftStickValue);
             lift.MoveServo(this.RightStickValue);
-            telemetry.addData("testing LauncherOn:", launcher.launcherOn);
-            telemetry.addData("Lift Power", lift.LiftPower);
-            telemetry.addData("Fork Power", lift.ForkPower);
+            //telemetry.addData("testing LauncherOn:", launcher.launcherOn);
+            //telemetry.addData("Lift Power", lift.LiftPower);
+            //telemetry.addData("Fork Power", lift.ForkPower);
             telemetry.update();
             chasty.SetRotation(chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
             double zAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
@@ -193,12 +193,11 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                 case NORMALDRIVE:
                     drive = -this.gamepad1.left_stick_y;
                     strafe = -this.gamepad1.left_stick_x;
-                    if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                        rotate = chasty.CorrectRotation(zAngle,rotationGoal);
-                    }
-                    else {
-                        rotate = 0;
-                    }
+                    telemetry.addData("zAngle", chasty.zAngle);
+                    telemetry.addData("rotate", chasty.trueRotate);
+
+                    rotate = 0;
+
 
                     chasty.SetMotors (drive, strafe, rotate);
                     chasty.Drive();
