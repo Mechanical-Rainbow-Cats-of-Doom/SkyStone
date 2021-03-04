@@ -60,13 +60,15 @@ public class ChassisMovementCode {
         double trueY = 0;
 
         public void SetTrueAxis() {
-            trueX = trueStrafe*Math.cos((zAngle))+trueDrive*(Math.cos(zAngle+(Math.PI/2))) + presetX;
-            trueY = trueStrafe*Math.sin((zAngle))+trueDrive*(Math.sin(zAngle+(Math.PI/2))) + presetY;
+            trueX = trueStrafe*Math.cos((trueRotate))+trueDrive*(Math.cos(trueRotate+(Math.PI/2))) + presetX;
+            trueY = trueStrafe*Math.sin((trueRotate))+trueDrive*(Math.sin(trueRotate+(Math.PI/2))) + presetY;
         }
 
         public void SetPresetAxis() {
             presetX = trueX;
             presetY = trueY;
+            clearRight = back_right_wheel.getCurrentPosition() / 360 * 1.173150521;
+            clearLeft = -front_right_wheel.getCurrentPosition() / 360 * 1.178221633;
         }
 
 
@@ -122,7 +124,7 @@ public class ChassisMovementCode {
             back_right_wheel.setPower(backRightMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs((drivePreset - trueStrafe) / drivePreset)));
 
         }
-        public void ResetRotate() {clearRotate = zAngle;}
+
 
         public void ZeroEncoders() {
             clearRight = back_right_wheel.getCurrentPosition() / 360 * 1.173150521;

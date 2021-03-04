@@ -230,7 +230,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     }
 
                     if (this.gamepad1.x) {
-                        chasty.ResetRotate();
+
                         chasty.ZeroEncoders();
                         rotationGoal = chasty.zAngle;
                         driveOpState = ChassisMovementCode.OperState.ROTATE360;
@@ -444,14 +444,22 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
 
 
                 case FULLDRIVE:
+                    telemetry.addData("drive",chasty.trueDrive);
+                    telemetry.addData("strafe", chasty.trueStrafe);
+                    telemetry.addData("rotate", chasty.trueRotate);
+                    telemetry.addData("X", chasty.trueX);
+                    telemetry.addData("Y",chasty.trueY);
+                    telemetry.addData("Preset X", chasty.presetX);
+                    telemetry.addData("Preset Y", chasty.presetY);
                     chasty.SetAxisMovement();
                     drive = -this.gamepad1.left_stick_y;
                     strafe = -this.gamepad1.left_stick_x;
                     rotate = -this.gamepad1.right_stick_x;
 
-
+                    chasty.SetPresetAxis();
                     chasty.SetMotors (drive, strafe, rotate);
                     chasty.Drive();
+                    chasty.SetTrueAxis();
 
                 default :
                     break;
