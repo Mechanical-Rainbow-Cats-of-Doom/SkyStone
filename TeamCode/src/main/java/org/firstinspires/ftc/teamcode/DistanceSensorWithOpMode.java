@@ -388,6 +388,19 @@ public class DistanceSensorWithOpMode extends LinearOpMode {
                     telemetry.addData("BR wheel multiplier: ", chasty.backRightMultiplier);
                     telemetry.addLine("Press right dpad to change BL wheel multiplier");
                     telemetry.addData("BL wheel multiplier: ", chasty.backLeftMultiplier);
+                    telemetry.addData("True back", chasty.backEncoder / 360 * 1.17584979);
+                    telemetry.addData("True right", chasty.rightEncoder / 360 * 1.173150521);
+                    telemetry.addData("True left", chasty.leftEncoder / 360 * 1.178221633);
+                    telemetry.addData("Right Encoder CM", chasty.rightEncoder);
+                    telemetry.addData("Left Encoder CM", chasty.leftEncoder);
+                    telemetry.addData("Back Encoder CM", chasty.backEncoder);
+                    telemetry.addData("Right Encoder", chasty.back_right_wheel.getCurrentPosition());
+                    telemetry.addData("Left Encoder", chasty.front_right_wheel.getCurrentPosition());
+                    telemetry.addData("Back Encoder", chasty.front_left_wheel.getCurrentPosition());
+                    telemetry.addData("Drive", chasty.trueDrive);
+                    telemetry.addData("Strafe", chasty.trueStrafe);
+                    telemetry.addData("Rotate", chasty.trueRotate);
+                    telemetry.update();
                     telemetry.update();
 
                     if ((increaseDecrease == 1) & (!this.gamepad1.a) & (aWait)) {
