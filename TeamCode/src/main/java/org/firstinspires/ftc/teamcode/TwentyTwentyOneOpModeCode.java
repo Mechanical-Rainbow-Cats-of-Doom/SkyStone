@@ -443,15 +443,15 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
 
 
                 case FULLDRIVE:
-                    telemetry.addData("drive",chasty.trueDrive);
-                    telemetry.addData("strafe", chasty.trueStrafe);
-                    telemetry.addData("rotate", chasty.trueRotate);
+
                     telemetry.addData("X", chasty.trueX);
                     telemetry.addData("Y",chasty.trueY);
                     telemetry.addData("Preset X", chasty.presetX);
                     telemetry.addData("Preset Y", chasty.presetY);
                     telemetry.addData("clear drive", chasty.clearDrive);
                     telemetry.addData("clear strafe", chasty.clearStrafe);
+                    telemetry.addData("clear rotate", (chasty.clearRotate/chasty.tau));
+                    telemetry.addData("total rotate", (chasty.trueRotate+chasty.clearRotate));
                     chasty.SetAxisMovement();
                     drive = -this.gamepad1.left_stick_y;
                     strafe = -this.gamepad1.left_stick_x;
