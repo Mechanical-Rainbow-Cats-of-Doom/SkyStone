@@ -32,10 +32,11 @@ public class DistanceSensorTesting extends LinearOpMode {
     public void runOpMode() {
         DistanceSensor = hardwareMap.get(DistanceSensor.class, "Distance Sensor");
         double AveragedArray;
-        double total = 0;
+        double total;
         int index = 0;
-        int ArraySize = 30;
+        int ArraySize = 50;
         double [] sensorArray;
+        int RingCount = 0;
         sensorArray = new double[ArraySize];
         waitForStart();
         while (opModeIsActive()) {
@@ -51,10 +52,20 @@ public class DistanceSensorTesting extends LinearOpMode {
                 total = total + sensorArray[i];
             }
             AveragedArray = total / sensorArray.length;
+            if (AveragedArray <= 17.6) {
+                RingCount = 4;
+            }
+            else if (AveragedArray <= 19) {
+                RingCount = 1;
+            }
+            else if (AveragedArray <= 19.7) {
+                RingCount = 0;
+            }
             telemetry.addData("Average Array", AveragedArray);
             telemetry.addData("index", index);
             telemetry.addData("ArraySize", ArraySize);
             telemetry.addData("total", total);
+            telemetry.addData("Ring Count", RingCount);
             telemetry.update();
         }
     }
