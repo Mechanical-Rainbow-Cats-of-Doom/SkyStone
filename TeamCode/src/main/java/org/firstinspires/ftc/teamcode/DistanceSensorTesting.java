@@ -46,11 +46,11 @@ public class DistanceSensorTesting extends LinearOpMode {
                 index++;
             }
             sensorArray[index] = DistanceSensor.getDistance(DistanceUnit.INCH);
-            AveragedArray = total / sensorArray.length;
             total = 0;
             for (int i = 0; i <= (ArraySize - 1); i++) {
                 total = total + sensorArray[i];
             }
+            AveragedArray = total / sensorArray.length;
             telemetry.addData("Average Array", AveragedArray);
             telemetry.addData("index", index);
             telemetry.addData("ArraySize", ArraySize);

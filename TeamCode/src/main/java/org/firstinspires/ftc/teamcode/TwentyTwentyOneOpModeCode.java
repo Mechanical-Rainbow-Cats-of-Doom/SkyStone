@@ -232,8 +232,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     if (this.gamepad1.x) {
 
                         chasty.ZeroEncoders();
-                        rotationGoal = chasty.zAngle;
-                        driveOpState = ChassisMovementCode.OperState.ROTATE360;
+                        driveOpState = ChassisMovementCode.OperState.FULLDRIVE;
                     }
 
                     break;

@@ -67,8 +67,7 @@ public class ChassisMovementCode {
         public void SetPresetAxis() {
             presetX = trueX;
             presetY = trueY;
-            clearRight = back_right_wheel.getCurrentPosition() / 360 * 1.173150521;
-            clearLeft = -front_right_wheel.getCurrentPosition() / 360 * 1.178221633;
+
         }
 
 
