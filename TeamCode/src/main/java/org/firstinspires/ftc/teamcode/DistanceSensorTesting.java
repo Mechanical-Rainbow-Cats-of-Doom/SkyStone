@@ -27,15 +27,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 // Warning and reminder: Code just adds values constantly, this needs to be fixed. There is no value rollover, and it isn't averaging. This needs to be a no. 1 priority before it gets put inside a class and merged into the main file, and should be done as soon as possible.
 public class DistanceSensorTesting extends LinearOpMode {
     private DistanceSensor DistanceSensor;
-
     @Override
     public void runOpMode() {
         DistanceSensor = hardwareMap.get(DistanceSensor.class, "Distance Sensor");
         double AveragedArray;
-        double total = 0;
+        double total;
         int index = 0;
-        int ArraySize = 30;
+        int ArraySize = 50;
         double [] sensorArray;
+        int RingCount = 0;
         sensorArray = new double[ArraySize];
         waitForStart();
         while (opModeIsActive()) {
@@ -51,10 +51,20 @@ public class DistanceSensorTesting extends LinearOpMode {
                 total = total + sensorArray[i];
             }
             AveragedArray = total / sensorArray.length;
+            if (AveragedArray <= 17.6) {
+                RingCount = 4;
+            }
+            else if (AveragedArray <= 19) {
+                RingCount = 1;
+            }
+            else if (AveragedArray <= 19.7) {
+                RingCount = 0;
+            }
             telemetry.addData("Average Array", AveragedArray);
             telemetry.addData("index", index);
             telemetry.addData("ArraySize", ArraySize);
             telemetry.addData("total", total);
+            telemetry.addData("Ring Count", RingCount);
             telemetry.update();
         }
     }
