@@ -58,6 +58,9 @@ public class ChassisMovementCode {
         double presetY = 0;
         double trueX = 0;
         double trueY = 0;
+        double clearDrive = 0;
+        double clearStrafe = 0;
+        double tau = 6.28318530718;
 
         public void SetTrueAxis() {
             trueX = trueStrafe*Math.cos((trueRotate))+trueDrive*(Math.cos(trueRotate+(Math.PI/2))) + presetX;
@@ -67,7 +70,8 @@ public class ChassisMovementCode {
         public void SetPresetAxis() {
             presetX = trueX;
             presetY = trueY;
-
+            clearDrive = (rightEncoder + leftEncoder) / 2;
+            clearStrafe = backEncoder - (rightEncoder - leftEncoder) / 2;
         }
 
 
@@ -75,9 +79,9 @@ public class ChassisMovementCode {
             rightEncoder = back_right_wheel.getCurrentPosition() / 360 * 1.173150521 - clearRight;
             leftEncoder = -front_right_wheel.getCurrentPosition() / 360 * 1.178221633 - clearLeft;
             backEncoder = front_left_wheel.getCurrentPosition() / 360 * 1.17584979 - clearBack;
-            trueDrive = (rightEncoder + leftEncoder) / 2;
-            trueStrafe = backEncoder - (rightEncoder - leftEncoder) / 2;
-            trueRotate = ((rightEncoder - leftEncoder) / 2)*0.12877427457 /* <---- see comment below*/;
+            trueDrive = ((rightEncoder + leftEncoder) / 2)-clearDrive;
+            trueStrafe = (backEncoder - (rightEncoder - leftEncoder) / 2)-clearStrafe;
+            trueRotate = (((rightEncoder - leftEncoder) / 2)*0.12877427457 /* <---- see comment below*/)-clearRotate;
             /*
             the number 0.12877427457 was calculated through taking several measurements with the im
             and with the rotate encoders, then I divided the imu measurement by the encoder measurement
@@ -89,6 +93,13 @@ public class ChassisMovementCode {
             1.00651012115, then I multiplied my new multiplier by my old multiplier to get my final
             multiplier, 0.12877427457
              */
+
+            if (trueRotate >= tau) {
+                clearRotate += tau;
+            }
+            if (trueRotate < 0) {
+                clearRotate -= tau;
+            }
 
         }
 
@@ -106,7 +117,7 @@ public class ChassisMovementCode {
             if ((Math.signum(newZAngle) != Math.signum(oldZAngel)) & Math.abs(newZAngle) > 50) {
                 rotations += Math.signum(oldZAngel);
             }
-            zAngle = (newZAngle + rotations*360) - clearRotate;
+            zAngle = (newZAngle + rotations*360);
         }
 
 
