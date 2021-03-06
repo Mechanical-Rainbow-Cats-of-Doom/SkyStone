@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -14,20 +13,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
-
 //Created by mostly Patrick, partly Ethan
 @Autonomous
 public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
     private Blinker Control_Hub;
     private Blinker expansion_Hub_2;
-
-    //motors
-
-    private BNO055IMU imu;
-
-    private DigitalChannel switch_;
-
     ElapsedTime servoTimer = new ElapsedTime();
 
     enum OperState {
@@ -57,7 +48,6 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
         InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
         ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
         DistanceSensorfirstAutonomousMode.OperState driveOpState = DistanceSensorfirstAutonomousMode.OperState.FIRSTMOVE;
-
 
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
         expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
@@ -98,9 +88,7 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                         lift.MoveServo(0);
                         driveOpState = DistanceSensorfirstAutonomousMode.OperState.SECONDMOVESETUP;
                     }
-
                     break;
-
                     
                 case SECONDMOVESETUP:
                     autoChassis.Encoders();
@@ -110,7 +98,6 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     drivePreset = autoChassis.trueDrive - 60;
                     rotationGoal = autoChassis.zAngle;
                     driveOpState = DistanceSensorfirstAutonomousMode.OperState.SECONDMOVE;
-
                     break;
 
                 case SECONDMOVE:
@@ -121,9 +108,6 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ForwardAndBackward(drivePreset);
                     rotationGoal += -0.02;
-
-
-
 
                     if ((Math.abs(autoChassis.zAngle - rotationGoal) >= 2)) {
                         autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, rotationGoal));
@@ -137,9 +121,7 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                         autoChassis.back_left_wheel.setPower(-0.01);
                         driveOpState = DistanceSensorfirstAutonomousMode.OperState.THIRDMOVESETUP;
                     }
-
                     break;
-
 
                 case THIRDMOVESETUP:
                     telemetry.addLine("THIRDMOVESETUP");
@@ -163,7 +145,6 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     }
                     break;
 
-
                 case THIRDMOVE:
                     telemetry.addLine("THIRDMOVE");
                     lift.MoveServo(-1);
@@ -172,13 +153,11 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                         lift.MoveServo(0);
                         driveOpState = DistanceSensorfirstAutonomousMode.OperState.STARTLAUNCHER;
                     }
-
                     break;
 
                 case STARTLAUNCHER:
                     launcher.LauncherToggle();
                     driveOpState = DistanceSensorfirstAutonomousMode.OperState.FOURTHMOVESETUP;
-
 
                 case FOURTHMOVESETUP:
                     telemetry.addLine("FIFTHMOVESETUP");
@@ -205,7 +184,6 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
                         driveOpState = DistanceSensorfirstAutonomousMode.OperState.FOURTHMOVE;
                     }
-
                     break;
 
                 case FOURTHMOVE:
@@ -215,10 +193,6 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     autoChassis.Encoders();
                     autoChassis.SetAxisMovement();
                     autoChassis.LeftAndRight(drivePreset);
-
-
-
-
 
                     if ((Math.abs(autoChassis.zAngle - rotationGoal) >= 2)) {
                         autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, rotationGoal));
@@ -233,7 +207,6 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                         servoTimer.reset();
                         driveOpState = DistanceSensorfirstAutonomousMode.OperState.SHOOT1;
                     }
-
                     break;
 
                 case SHOOT1:
@@ -245,8 +218,6 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     else {
                         driveOpState = DistanceSensorfirstAutonomousMode.OperState.FIFTHMOVESETUP;
                     }
-
-
 
                     break;
                 case firsttimer:
@@ -296,8 +267,6 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                         driveOpState = DistanceSensorfirstAutonomousMode.OperState.FIFTHMOVE;
                     }
                     break;
-
-
             }
             telemetry.update();
         }
