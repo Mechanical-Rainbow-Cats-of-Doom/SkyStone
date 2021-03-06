@@ -195,6 +195,9 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     strafe = -this.gamepad1.left_stick_x;
                     telemetry.addData("zAngle", chasty.zAngle);
                     telemetry.addData("rotate", chasty.trueRotate);
+                    telemetry.addData("br", chasty.backRight);
+                    telemetry.addData("bl", chasty.backLeft);
+                    telemetry.addData("fr", chasty.frontRight);
 
                     rotate = 0;
 

@@ -49,7 +49,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-import java.lang.Math;  //This is the standard Java package for a variety of math functions
+  //This is the standard Java package for a variety of math functions
 
 /**
  * This file contains a minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either

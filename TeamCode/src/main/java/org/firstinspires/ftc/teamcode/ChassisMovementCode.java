@@ -126,13 +126,13 @@ public class ChassisMovementCode {
 
         public double StrafeMovement (double currentStrafe, double strafeGoal) {
 
-            strafe = Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs((drivePreset - trueStrafe) / drivePreset));
+            strafe = Math.signum(strafeGoal - currentStrafe) * Math.max(0.15, Math.abs((strafeGoal - currentStrafe) / strafeGoal));
             return (strafe);
         }
 
         public double DriveMovement (double currentDrive, double driveGoal) {
 
-            drive = Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs((drivePreset - trueDrive) / drivePreset));
+            drive = Math.signum(driveGoal - currentDrive) * Math.max(0.15, Math.abs((driveGoal - currentDrive) / driveGoal));
             return (drive);
         }
 
@@ -183,10 +183,10 @@ public class ChassisMovementCode {
 
 
         public void Drive() {
-            front_right_wheel.setPower(this.frontRight * frontRightMultiplier);
-            front_left_wheel.setPower(this.frontLeft * frontLeftMultiplier);
-            back_left_wheel.setPower(this.backLeft * backLeftMultiplier);
-            back_right_wheel.setPower(this.backRight * backRightMultiplier);
+            front_right_wheel.setPower(this.frontRight);
+            front_left_wheel.setPower(this.frontLeft);
+            back_left_wheel.setPower(this.backLeft);
+            back_right_wheel.setPower(this.backRight);
         }
     }
 
