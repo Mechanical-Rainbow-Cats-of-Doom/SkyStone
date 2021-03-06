@@ -61,6 +61,8 @@ public class ChassisMovementCode {
         double clearDrive = 0;
         double clearStrafe = 0;
         double tau = 6.28318530718;
+        double drive;
+        double strafe;
 
         public void SetTrueAxis() {
             trueX = trueStrafe*Math.cos((trueRotate))+trueDrive*(Math.cos(trueRotate+(Math.PI/2))) + presetX;
@@ -120,6 +122,19 @@ public class ChassisMovementCode {
             zAngle = (newZAngle + rotations*360);
         }
 
+
+
+        public double StrafeMovement (double currentStrafe, double strafeGoal) {
+
+            strafe = Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs((drivePreset - trueStrafe) / drivePreset));
+            return (strafe);
+        }
+
+        public double DriveMovement (double currentDrive, double driveGoal) {
+
+            drive = Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs((drivePreset - trueDrive) / drivePreset));
+            return (drive);
+        }
 
         public double CorrectRotation(double currentRotation, double rotationGoal) {
 
