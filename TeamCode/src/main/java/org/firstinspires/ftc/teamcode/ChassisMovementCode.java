@@ -183,10 +183,10 @@ public class ChassisMovementCode {
 
 
         public void Drive() {
-            front_right_wheel.setPower(this.frontRight);
-            front_left_wheel.setPower(this.frontLeft);
-            back_left_wheel.setPower(this.backLeft);
-            back_right_wheel.setPower(this.backRight);
+            front_right_wheel.setPower(this.frontRight*(1/1));
+            front_left_wheel.setPower(this.frontLeft*(1/1));
+            back_left_wheel.setPower(this.backLeft*(1/1));
+            back_right_wheel.setPower(this.backRight*(1/1));
         }
     }
 

@@ -119,12 +119,11 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     break;
 
                 case NEWSECONDMOVESETUP:
-                    autoChassis.Encoders();
+                    autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
-                    autoChassis.Encoders();
                     autoChassis.SetAxisMovement();
                     driveValue = -70;
-                    strafeValue = 30;
+                    strafeValue = 0;
                     drivePreset = autoChassis.trueDrive + driveValue;
                     strafePreset = autoChassis.trueStrafe + strafeValue;
                     rotationGoal = autoChassis.zAngle;
@@ -136,8 +135,6 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     telemetry.addData("driveStrafe", drivePreset);
                     telemetry.addData("strafePreset", strafePreset);
                     telemetry.addData("rotate", rotate);
-                    telemetry.addData("drivevalue", driveValue);
-                    telemetry.addData("strafevalue", strafeValue);
                     telemetry.addData("drivevalue", autoChassis.trueDrive);
                     telemetry.addData("strafevalue", autoChassis.trueStrafe);
                     telemetry.addData("drive", drive);
@@ -146,22 +143,30 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     telemetry.addData("back right wheel", autoChassis.backRight);
                     telemetry.addData("front right wheel", autoChassis.frontRight);
                     telemetry.addData("front left wheel", autoChassis.frontLeft);
+                    telemetry.addData("firstSignumRotate", Math.signum(rotationGoal - autoChassis.zAngle));
+                    telemetry.addData("firstSignumStrafe", Math.signum(strafePreset - autoChassis.trueStrafe));
+                    telemetry.addData("firstSignumDrive", Math.signum(drivePreset - autoChassis.trueDrive));
+                    telemetry.addData("Math.maxRotate", (Math.max(0.2, Math.abs((rotationGoal - autoChassis.zAngle) / 180))));
+                    telemetry.addData("Math.maxStrafe", (Math.max(0.2, Math.abs((strafePreset - autoChassis.trueStrafe) / strafePreset))));
+                    telemetry.addData("Math.maxDrive", (Math.max(0.2, Math.abs((drivePreset - autoChassis.trueDrive) / drivePreset))));
                     autoChassis.Encoders();
                     autoChassis.SetAxisMovement();
 
                     if ((Math.abs(autoChassis.zAngle - rotationGoal) >= 2)) {
                         rotate = autoChassis.CorrectRotation(autoChassis.zAngle, rotationGoal);
-                    } else {isRotate = 1;}
+                    } else {isRotate = 1; rotate = 0;}
 
-                    if (Math.abs(drivePreset - autoChassis.trueStrafe) >= 10.2) {
+                    if (Math.abs(strafePreset - autoChassis.trueStrafe) >= 10.2) {
                         strafe = autoChassis.StrafeMovement(autoChassis.trueStrafe, strafePreset);
-                    } else {isStrafe = 1;}
+                    } else {isStrafe = 1; strafe = 0;}
 
                     if (Math.abs(drivePreset - autoChassis.trueDrive) >= 10.2) {
                         drive = autoChassis.DriveMovement(autoChassis.trueDrive, drivePreset);
-                    } else {isDrive = 1;}
+                    } else {isDrive = 1; drive = 0;}
 
                     autoChassis.SetMotors(drive, strafe, rotate );
+                    autoChassis.Drive();
+
 
                     if ((isDrive == 1) & (isRotate == 1) & (isStrafe == 1)) {
                         isDrive = 0;
@@ -171,7 +176,12 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                         autoChassis.front_right_wheel.setPower(-0.01);
                         autoChassis.back_right_wheel.setPower(-0.01);
                         autoChassis.back_left_wheel.setPower(-0.01);
-                        driveOpState = DistanceSensorfirstAutonomousMode.OperState.THIRDMOVESETUP;
+
+                    }
+                    else {
+                        isDrive = 0;
+                        isRotate = 0;
+                        isStrafe = 0;
                     }
                     break;
                 /*
