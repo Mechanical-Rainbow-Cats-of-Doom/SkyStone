@@ -238,6 +238,7 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                 case C:
                     //Moving to C Code
                     break;
+
                 case THIRDMOVESETUP:
                     telemetry.addLine("THIRDMOVESETUP");
                     if ((Math.abs(autoChassis.zAngle - rotationGoal) >= 2)) {
