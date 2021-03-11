@@ -109,11 +109,12 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    driveValue = -70;
-                    strafeValue = 0;
+                    driveValue = 0;
+                    strafeValue = -50;
                     drivePreset = autoChassis.trueDrive + driveValue;
                     strafePreset = autoChassis.trueStrafe + strafeValue;
                     rotationGoal = autoChassis.zAngle;
+                    servoTimer.reset();
                     driveOpState = DistanceSensorfirstAutonomousMode.OperState.NEWSECONDMOVE;
                     break;
 
@@ -153,8 +154,9 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     } else {isDrive = 1; drive = 0;}
 
                     autoChassis.SetMotors(drive, strafe, rotate );
-                    autoChassis.Drive();
-
+                    if (( servoTimer.time()  <= 15) & (servoTimer.time() >= 6)) {
+                        autoChassis.Drive();
+                    }
 
                     if ((isDrive == 1) & (isRotate == 1) & (isStrafe == 1)) {
                         isDrive = 0;

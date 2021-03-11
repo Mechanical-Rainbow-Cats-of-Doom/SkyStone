@@ -175,10 +175,14 @@ public class ChassisMovementCode {
         }
 
         public void SetMotors(double drive, double strafe, double rotate) {
-            this.frontLeft = drive - strafe - rotate;
-            this.backLeft = -drive - strafe + rotate;
-            this.frontRight = drive + strafe + rotate;
-            this.backRight = drive - strafe + rotate;
+            //this.frontLeft = drive - strafe - rotate;
+            //this.backLeft = -drive - strafe + rotate;
+            //this.frontRight = drive + strafe + rotate;
+            //this.backRight = drive - strafe + rotate;
+            this.frontLeft = drive + strafe - rotate;
+            this.backLeft = -drive + strafe + rotate;
+            this.frontRight = drive - strafe + rotate;
+            this.backRight = drive + strafe + rotate;
         }
 
 
