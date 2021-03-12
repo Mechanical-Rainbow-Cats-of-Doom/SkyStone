@@ -262,7 +262,7 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
                     }
 
                     if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                        chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
+                        //chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
                         chasty.Drive();
                     }
 
@@ -288,7 +288,7 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
                     }
 
                     if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                        chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
+                        //chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
                         chasty.Drive();
                     }
 

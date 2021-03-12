@@ -131,11 +131,11 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     telemetry.addLine("newsecondmoveE");
                     telemetry.addData("driveStrafe", drivePreset);
                     telemetry.addData("strafePreset", strafePreset);
-                    telemetry.addData("rotate", rotate);
+                    telemetry.addData("rotate", autoChassis.rotation);
                     telemetry.addData("drivevalue", autoChassis.trueDrive);
                     telemetry.addData("strafevalue", autoChassis.trueStrafe);
-                    telemetry.addData("drive", drive);
-                    telemetry.addData("strafe", strafe);
+                    telemetry.addData("drive", autoChassis.drive);
+                    telemetry.addData("strafe", autoChassis.strafe);
                     telemetry.addData("back left wheel", autoChassis.backLeft);
                     telemetry.addData("back right wheel", autoChassis.backRight);
                     telemetry.addData("front right wheel", autoChassis.frontRight);
@@ -148,7 +148,7 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     telemetry.addData("Math.maxDrive", (Math.max(0.2, Math.abs((drivePreset - autoChassis.trueDrive) / drivePreset))));
 
                     if (autoChassis.MoveToLocation() == true) {
-
+                        telemetry.addLine("done");
                     }
 
                     break;

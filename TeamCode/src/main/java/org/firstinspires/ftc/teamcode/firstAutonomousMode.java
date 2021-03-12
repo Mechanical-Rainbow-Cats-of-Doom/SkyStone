@@ -96,7 +96,7 @@ public class firstAutonomousMode extends LinearOpMode {
         while (opModeIsActive()) {
             autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
             launcher.LauncherRun();
-
+/*
             switch(driveOpState) {
                 case FIRSTMOVE:
                     telemetry.addLine("FIRSTMOVE");
@@ -304,9 +304,11 @@ public class firstAutonomousMode extends LinearOpMode {
                         driveOpState = firstAutonomousMode.OperState.FIFTHMOVE;
                     }
                     break;
-
-
             }
+ */
+
+
+
             telemetry.update();
         }
     }

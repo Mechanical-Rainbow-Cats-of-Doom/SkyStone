@@ -240,23 +240,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
 
                     break;
 
-                case ROTATE360:
-                    if (Math.abs((chasty.zAngle - (rotationGoal + 360))) >= 2) {
-                        chasty.SetMotors(0, 0, chasty.CorrectRotation(chasty.zAngle, (rotationGoal+360)));
-                        chasty.Drive();
-                        chasty.Encoders();
-                        chasty.Encoders();
-                        chasty.SetAxisMovement();
-                    }
-                    else {
-                        telemetry.addData("zAngle", chasty.zAngle);
-                        telemetry.addData("rotate", chasty.trueRotate);
-                        if (this.gamepad1.left_trigger != 0) {
-                            driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
-                        }
-                    }
 
-                    break;
 
                 case NORMALROTATE:
                     if (this.gamepad1.right_trigger != 0) {
@@ -293,7 +277,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     }
 
                     if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                        chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
+                        //chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
                         chasty.Drive();
                     }
 
@@ -319,7 +303,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     }
 
                     if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                        chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
+                        //chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
                         chasty.Drive();
                     }
 

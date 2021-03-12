@@ -124,7 +124,7 @@ public class ChassisMovementCode {
             } else {isStrafe = 1; strafe = 0;}
 
             if ((Math.abs(zAngle - rotationPreset) >= 2)) {
-                rotation = Math.signum(zAngle - rotationPreset) * (Math.max(0.2, Math.abs((zAngle - rotationPreset) / 180)));
+                rotation = 0 /*Math.signum(zAngle - rotationPreset) * (Math.max(0.2, Math.abs((zAngle - rotationPreset) / 180)))*/;
             } else {isRotate = 1; rotation = 0;}
 
 
