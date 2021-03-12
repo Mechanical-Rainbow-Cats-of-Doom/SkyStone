@@ -63,7 +63,7 @@ public class AutoCode2 extends LinearOpMode {
         InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
         InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
         ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
-        AutoCode2.OperState driveOpState = AutoCode2.OperState.NEWSECONDMOVESETUP;
+        AutoCode2.OperState driveOpState = AutoCode2.OperState.FIRSTMOVE;
         DistanceSensorClass.RingClass ring = new DistanceSensorClass.RingClass();
 
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
@@ -120,7 +120,7 @@ public class AutoCode2 extends LinearOpMode {
 
                     if (servoTimer.time()  >= 2) {
                         lift.MoveServo(0);
-                        driveOpState = AutoCode2.OperState.SECONDMOVESETUP;
+                        driveOpState = AutoCode2.OperState.PREPMOVEANDLIFT;
                     }
                     break;
 
