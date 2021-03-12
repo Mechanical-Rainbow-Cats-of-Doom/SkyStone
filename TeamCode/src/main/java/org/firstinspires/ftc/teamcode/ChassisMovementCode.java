@@ -85,30 +85,21 @@ public class ChassisMovementCode {
 
         }
 
-        public double StrafeMovement () {
+        public double StrafeMovement (double currentStrafe, double strafeGoal) {
 
-            if (Math.abs(strafePreset - trueStrafe) >= 0.5) {
-                strafe = Math.signum(strafePreset - trueStrafe) * Math.max(0.15, Math.abs((strafePreset - trueStrafe) / strafePreset));
-            } else {isStrafe = 1; strafe = 0;}
-
+            strafe = Math.signum(strafeGoal - currentStrafe) * Math.max(0.15, Math.abs((strafeGoal - currentStrafe) / strafeGoal));
             return (strafe);
         }
 
-        public double DriveMovement () {
+        public double DriveMovement (double currentDrive, double driveGoal) {
 
-            if (Math.abs(drivePreset - trueDrive) >= 0.5) {
-                drive = Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs((drivePreset - trueDrive) / drivePreset));
-            } else {isDrive = 1; drive = 0;}
-
+            drive = Math.signum(driveGoal - currentDrive) * Math.max(0.15, Math.abs((driveGoal - currentDrive) / driveGoal));
             return (drive);
         }
 
-        public double CorrectRotation() {
+        public double CorrectRotation(double currentRotation, double rotationGoal) {
 
-            if ((Math.abs(zAngle - rotationPreset) >= 2)) {
-                rotation = Math.signum(zAngle - rotationPreset) * (Math.max(0.2, Math.abs((zAngle - rotationPreset) / 180)));
-            } else {isRotate = 1; rotation = 0;}
-
+            rotation = Math.signum(rotationGoal - currentRotation) * (Math.max(0.2, Math.abs((rotationGoal - currentRotation) / 180)));
             return (rotation);
         }
 
@@ -124,7 +115,7 @@ public class ChassisMovementCode {
             } else {isStrafe = 1; strafe = 0;}
 
             if ((Math.abs(zAngle - rotationPreset) >= 2)) {
-                rotation = 0 /*Math.signum(zAngle - rotationPreset) * (Math.max(0.2, Math.abs((zAngle - rotationPreset) / 180)))*/;
+                rotation = Math.signum(rotationPreset - zAngle) * (Math.max(0.2, Math.abs((rotationPreset - zAngle) / 180)));
             } else {isRotate = 1; rotation = 0;}
 
 
