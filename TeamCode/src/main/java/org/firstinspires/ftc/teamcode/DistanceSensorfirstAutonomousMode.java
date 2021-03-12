@@ -122,11 +122,7 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    driveValue = 0;
-                    strafeValue = -50;
-                    drivePreset = autoChassis.trueDrive + driveValue;
-                    strafePreset = autoChassis.trueStrafe + strafeValue;
-                    rotationGoal = autoChassis.zAngle;
+                    autoChassis.SetPresetMovement(-80,-50,autoChassis.zAngle);
                     servoTimer.reset();
                     driveOpState = DistanceSensorfirstAutonomousMode.OperState.NEWSECONDMOVE;
                     break;
@@ -150,41 +146,11 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     telemetry.addData("Math.maxRotate", (Math.max(0.2, Math.abs((rotationGoal - autoChassis.zAngle) / 180))));
                     telemetry.addData("Math.maxStrafe", (Math.max(0.2, Math.abs((strafePreset - autoChassis.trueStrafe) / strafePreset))));
                     telemetry.addData("Math.maxDrive", (Math.max(0.2, Math.abs((drivePreset - autoChassis.trueDrive) / drivePreset))));
-                    autoChassis.Encoders();
-                    autoChassis.SetAxisMovement();
 
-                    if ((Math.abs(autoChassis.zAngle - rotationGoal) >= 2)) {
-                        rotate = autoChassis.CorrectRotation(autoChassis.zAngle, rotationGoal);
-                    } else {isRotate = 1; rotate = 0;}
-
-                    if (Math.abs(strafePreset - autoChassis.trueStrafe) >= 10.2) {
-                        strafe = autoChassis.StrafeMovement(autoChassis.trueStrafe, strafePreset);
-                    } else {isStrafe = 1; strafe = 0;}
-
-                    if (Math.abs(drivePreset - autoChassis.trueDrive) >= 10.2) {
-                        drive = autoChassis.DriveMovement(autoChassis.trueDrive, drivePreset);
-                    } else {isDrive = 1; drive = 0;}
-
-                    autoChassis.SetMotors(drive, strafe, rotate );
-                    if (( servoTimer.time()  <= 15) & (servoTimer.time() >= 6)) {
-                        autoChassis.Drive();
-                    }
-
-                    if ((isDrive == 1) & (isRotate == 1) & (isStrafe == 1)) {
-                        isDrive = 0;
-                        isRotate = 0;
-                        isStrafe = 0;
-                        autoChassis.front_left_wheel.setPower(-0.01);
-                        autoChassis.front_right_wheel.setPower(-0.01);
-                        autoChassis.back_right_wheel.setPower(-0.01);
-                        autoChassis.back_left_wheel.setPower(-0.01);
+                    if (autoChassis.MoveToLocation() == true) {
 
                     }
-                    else {
-                        isDrive = 0;
-                        isRotate = 0;
-                        isStrafe = 0;
-                    }
+
                     break;
                 /*
                 case SECONDMOVESETUP:
@@ -219,7 +185,7 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                         driveOpState = DistanceSensorfirstAutonomousMode.OperState.THIRDMOVESETUP;
                     }
                     break;
-*/
+
 
                 case RESETTIMER:
                     MeasureWait.reset();
@@ -394,6 +360,8 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                         driveOpState = DistanceSensorfirstAutonomousMode.OperState.FIFTHMOVE;
                     }
                     break;
+
+                 */
             }
             telemetry.update();
         }

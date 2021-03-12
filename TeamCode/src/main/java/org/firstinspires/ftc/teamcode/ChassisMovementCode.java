@@ -25,7 +25,7 @@ public class ChassisMovementCode {
         public DcMotor front_left_wheel;
         public BNO055IMU imu;
         private DigitalChannel switch_;
-        double rotation;
+
         double frontLeft;
         double frontRight;
         double backLeft;
@@ -42,7 +42,7 @@ public class ChassisMovementCode {
         double robotWidth = 17.375;
         double countsPerRotation = 360;
         double trueDrive;
-        double drivePreset;
+
         double trueStrafe;
         double slowIntensity = 10;
         double trueRotate;
@@ -61,8 +61,99 @@ public class ChassisMovementCode {
         double clearDrive = 0;
         double clearStrafe = 0;
         double tau = 6.28318530718;
+
+
         double drive;
+        int isDrive = 0;
+
         double strafe;
+        int isStrafe = 0;
+
+        double rotation;
+        int isRotate= 0;
+
+        double drivePreset = 0;
+        double strafePreset = 0;
+        double rotationPreset = 0;
+
+        boolean isDone = false;
+
+        public void SetPresetMovement(double Preset_Drive, double Preset_Strafe, double Preset_Rotation) {
+            drivePreset = trueDrive + Preset_Drive;
+            strafePreset = trueStrafe + Preset_Strafe;
+            rotationPreset = Preset_Rotation;
+
+        }
+
+        public double StrafeMovement () {
+
+            if (Math.abs(strafePreset - trueStrafe) >= 0.5) {
+                strafe = Math.signum(strafePreset - trueStrafe) * Math.max(0.15, Math.abs((strafePreset - trueStrafe) / strafePreset));
+            } else {isStrafe = 1; strafe = 0;}
+
+            return (strafe);
+        }
+
+        public double DriveMovement () {
+
+            if (Math.abs(drivePreset - trueDrive) >= 0.5) {
+                drive = Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs((drivePreset - trueDrive) / drivePreset));
+            } else {isDrive = 1; drive = 0;}
+
+            return (drive);
+        }
+
+        public double CorrectRotation() {
+
+            if ((Math.abs(zAngle - rotationPreset) >= 2)) {
+                rotation = Math.signum(zAngle - rotationPreset) * (Math.max(0.2, Math.abs((zAngle - rotationPreset) / 180)));
+            } else {isRotate = 1; rotation = 0;}
+
+            return (rotation);
+        }
+
+        public boolean MoveToLocation () {
+            this.SetAxisMovement();
+
+            if (Math.abs(drivePreset - trueDrive) >= 0.5) {
+                drive = Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs((drivePreset - trueDrive) / drivePreset));
+            } else {isDrive = 1; drive = 0;}
+
+            if (Math.abs(strafePreset - trueStrafe) >= 0.5) {
+                strafe = Math.signum(strafePreset - trueStrafe) * Math.max(0.15, Math.abs((strafePreset - trueStrafe) / strafePreset));
+            } else {isStrafe = 1; strafe = 0;}
+
+            if ((Math.abs(zAngle - rotationPreset) >= 2)) {
+                rotation = Math.signum(zAngle - rotationPreset) * (Math.max(0.2, Math.abs((zAngle - rotationPreset) / 180)));
+            } else {isRotate = 1; rotation = 0;}
+
+
+            this.SetMotors(drive,strafe,rotation);
+            this.Drive();
+
+            if ((isDrive == 1) & (isRotate == 1) & (isStrafe == 1)) {
+                isDrive = 0;
+                isRotate = 0;
+                isStrafe = 0;
+                front_left_wheel.setPower(-0.01);
+                front_right_wheel.setPower(-0.01);
+                back_right_wheel.setPower(-0.01);
+                back_left_wheel.setPower(-0.01);
+                isDone = true;
+            }
+            else {
+                isDrive = 0;
+                isRotate = 0;
+                isStrafe = 0;
+                isDone = false;
+            }
+
+            return (isDone);
+        }
+
+
+
+
 
         public void SetTrueAxis() {
             trueX = trueStrafe*Math.cos((trueRotate))+trueDrive*(Math.cos(trueRotate+(Math.PI/2))) + presetX;
@@ -124,23 +215,7 @@ public class ChassisMovementCode {
 
 
 
-        public double StrafeMovement (double currentStrafe, double strafeGoal) {
 
-            strafe = Math.signum(strafeGoal - currentStrafe) * Math.max(0.15, Math.abs((strafeGoal - currentStrafe) / strafeGoal));
-            return (strafe);
-        }
-
-        public double DriveMovement (double currentDrive, double driveGoal) {
-
-            drive = Math.signum(driveGoal - currentDrive) * Math.max(0.15, Math.abs((driveGoal - currentDrive) / driveGoal));
-            return (drive);
-        }
-
-        public double CorrectRotation(double currentRotation, double rotationGoal) {
-
-            rotation = Math.signum(rotationGoal - currentRotation) * (Math.max(0.2, Math.abs((rotationGoal - currentRotation) / 180)));
-            return (rotation);
-        }
 
         public void LeftAndRight(double drivePreset) {
             front_right_wheel.setPower(-1 * frontRightMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs((drivePreset - trueStrafe) / drivePreset)));
