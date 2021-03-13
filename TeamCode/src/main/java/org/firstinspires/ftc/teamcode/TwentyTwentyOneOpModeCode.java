@@ -191,6 +191,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             launcher.LauncherRun();
             switch (driveOpState) {
                 case NORMALDRIVE:
+
                     drive = -this.gamepad1.left_stick_y;
                     strafe = -this.gamepad1.left_stick_x;
                     telemetry.addData("zAngle", chasty.zAngle);
@@ -435,18 +436,24 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     telemetry.addData("Y",chasty.trueY);
                     telemetry.addData("Preset X", chasty.presetX);
                     telemetry.addData("Preset Y", chasty.presetY);
+                    telemetry.addData("True Drive", chasty.trueDrive);
+                    telemetry.addData("True Strafe", chasty.trueStrafe);
+                    telemetry.addData("true rotate", chasty.trueRotate);
                     telemetry.addData("clear drive", chasty.clearDrive);
                     telemetry.addData("clear strafe", chasty.clearStrafe);
                     telemetry.addData("clear rotate", (chasty.clearRotate/chasty.tau));
                     telemetry.addData("total rotate", (chasty.trueRotate+chasty.clearRotate));
+                    telemetry.addData("Right Encoder", chasty.back_right_wheel.getCurrentPosition());
+                    telemetry.addData("Left Encoder", -chasty.front_right_wheel.getCurrentPosition());
+                    telemetry.addData("Back Encoder", chasty.front_left_wheel.getCurrentPosition());
                     chasty.SetAxisMovement();
-                    drive = -this.gamepad1.left_stick_y;
-                    strafe = -this.gamepad1.left_stick_x;
+                    //drive = -this.gamepad1.left_stick_y;
+                    strafe = this.gamepad1.left_stick_x;
                     rotate = -this.gamepad1.right_stick_x;
 
                     chasty.SetPresetAxis();
 
-                    chasty.SetMotors (drive, strafe, rotate);
+                    chasty.SetMotors (0, strafe, rotate);
                     chasty.Drive();
                     chasty.SetTrueAxis();
                     break;

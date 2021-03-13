@@ -161,7 +161,6 @@ public class AutoCode2 extends LinearOpMode {
                     if (autoChassis.MoveToLocation() == true) {
                         telemetry.addLine("done");
                         servoTimer.reset();
-                        driveOpState = OperState.LIFTUP;
                     }
 
                     break;

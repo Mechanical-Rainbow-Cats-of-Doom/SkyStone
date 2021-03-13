@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -19,6 +21,7 @@ import java.lang.Math;
 @TeleOp
 public class ChassisMovementCode {
     public static class Chassis {
+        ElapsedTime movementTimer = new ElapsedTime();
         public DcMotor back_right_wheel;
         public DcMotor front_right_wheel;
         public DcMotor back_left_wheel;
@@ -106,11 +109,11 @@ public class ChassisMovementCode {
         public boolean MoveToLocation () {
             this.SetAxisMovement();
 
-            if (Math.abs(drivePreset - trueDrive) >= 0.5) {
+            if (Math.abs(drivePreset - trueDrive) >= .5) {
                 drive = Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs((drivePreset - trueDrive) / drivePreset));
             } else {isDrive = 1; drive = 0;}
 
-            if (Math.abs(strafePreset - trueStrafe) >= 0.5) {
+            if (Math.abs(strafePreset - trueStrafe) >= 10.5) {
                 strafe = Math.signum(strafePreset - trueStrafe) * Math.max(0.15, Math.abs((strafePreset - trueStrafe) / strafePreset));
             } else {isStrafe = 1; strafe = 0;}
 
@@ -120,7 +123,10 @@ public class ChassisMovementCode {
 
 
             this.SetMotors(drive,strafe,rotation);
-            this.Drive();
+            if ((movementTimer.time() >= 10)) {
+                this.Drive();
+            }
+
 
             if ((isDrive == 1) & (isRotate == 1) & (isStrafe == 1)) {
                 isDrive = 0;

@@ -1,57 +1,39 @@
 package org.firstinspires.ftc.teamcode;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import java.lang.Math;
-import java.util.concurrent.TimeUnit;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 //Created by mostly Patrick, partly Ethan
 @Autonomous
-public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
+public class rotate360onA extends LinearOpMode {
 
     private Blinker Control_Hub;
     private Blinker expansion_Hub_2;
+
+    //motors
+
+    private BNO055IMU imu;
+
+    private DigitalChannel switch_;
+
     ElapsedTime servoTimer = new ElapsedTime();
 
     enum OperState {
-        FIRSTMOVE,
-        NEWSECONDMOVESETUP,
-        NEWSECONDMOVE,
-        SECONDMOVESETUP,
-        SECONDMOVE,
-        THIRDMOVESETUP,
-        THIRDMOVE,
-        STARTLAUNCHER,
-        FOURTHMOVESETUP,
-        FOURTHMOVE,
-        SHOOT1,
-        RESETTIMER,
-        MEASURE,
-        BOTTOM0,
-        MIDDLE1,
-        TOP4,
-        Pressed,
-        firsttimer,
-        Load,
-        secondtimer,
-        ResetPosition,
-        FIFTHMOVESETUP,
-        FIFTHMOVE,
-        A,
-        B,
-        C,
-        SIXTHMOVESETUP,
-        SIXTHMOVE
+        SETUP,
+        rotate,
     }
 
     @Override
@@ -59,8 +41,8 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
         InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
         InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
         ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
-        DistanceSensorfirstAutonomousMode.OperState driveOpState = DistanceSensorfirstAutonomousMode.OperState.NEWSECONDMOVESETUP;
-        DistanceSensorClass.RingClass ring = new DistanceSensorClass.RingClass();
+        rotate360onA.OperState driveOpState = rotate360onA.OperState.SETUP;
+
 
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
         expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
@@ -73,87 +55,114 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
         autoChassis.front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
         autoChassis.back_left_wheel = hardwareMap.get(DcMotor.class, "back left wheel");
         autoChassis.back_right_wheel = hardwareMap.get(DcMotor.class, "back right wheel");
-        ring.DistanceSensor = hardwareMap.get(DistanceSensor.class, "Distance Sensor");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();  //in wrong spot--where is better?
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
         autoChassis.imu.initialize(parameters);
         double drivePreset = 0;
-        double strafePreset = 0;
-        double rotationGoal = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
+        double rotationGoal = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
         double originalRotation = rotationGoal;
         double shootWait = 0;
-        double rotate = 0;
-        double strafe = 0;
-        double drive = 0;
-        int isRotate = 0;
-        int isStrafe = 0;
-        int isDrive = 0;
-        int ringCount;
-        ElapsedTime MeasureWait = new ElapsedTime();
+        double initialLeft = 0;
+        double initialBack = 0;
+        double initialRight = 0;
 
-        double driveValue = 0;
-        double strafeValue = 0;
-        autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
+        double AveragedArray;
+        double totalLeft = 0;
+        double totalBack = 0;
+        double totalRight =0;
+        int index = 0;
+        int ArraySize = 50; //Allows for easy way to change the size of the array that affects all of the code
+        double[] movementArrayLeft = new double [ArraySize];
+        double[] movementArrayBack = new double [ArraySize];
+        double[] movementArrayRight = new double [ArraySize];
+
+
+        autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         waitForStart();
         servoTimer.reset();
 
         while (opModeIsActive()) {
-
-            autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
+            autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
             launcher.LauncherRun();
-            ring.MeasureDistance();
 
-            switch(driveOpState) {
-                case FIRSTMOVE:
-                    telemetry.addLine("FIRSTMOVE");
-                    lift.MoveServo(1);
+            switch (driveOpState) {
 
-                    if (servoTimer.time()  >= 5) {
-                        lift.MoveServo(0);
-                        driveOpState = DistanceSensorfirstAutonomousMode.OperState.SECONDMOVESETUP;
+                case SETUP:
+                    telemetry.addData("Right Encoder", autoChassis.back_right_wheel.getCurrentPosition());
+                    telemetry.addData("Left Encoder", -autoChassis.front_right_wheel.getCurrentPosition());
+                    telemetry.addData("Back Encoder", autoChassis.front_left_wheel.getCurrentPosition());
+                    telemetry.addData("Initial Right Encoder", initialRight);
+                    telemetry.addData("Initial Left Encoder", initialLeft);
+                    telemetry.addData("Initial Back Encoder", initialBack);
+                    telemetry.addData("Right Encoder Difference", autoChassis.back_right_wheel.getCurrentPosition()-initialRight);
+                    telemetry.addData("Left Encoder Difference", -autoChassis.front_right_wheel.getCurrentPosition()-initialLeft);
+                    telemetry.addData("Back Encoder Difference", autoChassis.front_left_wheel.getCurrentPosition()-initialBack);
+                    telemetry.addData("Right Encoder Average Difference", totalRight / movementArrayRight.length);
+                    telemetry.addData("Left Encoder Average Difference", totalLeft / movementArrayLeft.length);
+                    telemetry.addData("Back Encoder Average Difference", totalBack / movementArrayBack.length);
+
+
+
+                    if (gamepad1.a) {
+                        if (index >= (ArraySize - 1)) {
+                            index = 0;
+                        }
+                        else {
+                            index++;
+                        }
+                        movementArrayLeft[index] = -autoChassis.front_right_wheel.getCurrentPosition()-initialLeft;
+                        movementArrayBack[index] = autoChassis.front_left_wheel.getCurrentPosition()-initialBack;
+                        movementArrayRight[index] = autoChassis.back_right_wheel.getCurrentPosition()-initialRight;
+
+                        initialLeft = -autoChassis.front_right_wheel.getCurrentPosition();
+                        initialBack = autoChassis.front_left_wheel.getCurrentPosition();
+                        initialRight = autoChassis.back_right_wheel.getCurrentPosition();
+                        rotationGoal = autoChassis.zAngle;
+                        driveOpState = rotate360onA.OperState.rotate;
                     }
                     break;
 
-                case NEWSECONDMOVESETUP:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0,-50,autoChassis.zAngle);
-                    servoTimer.reset();
-                    autoChassis.movementTimer.reset();
-                    driveOpState = DistanceSensorfirstAutonomousMode.OperState.NEWSECONDMOVE;
-                    break;
+                case rotate:
+                    telemetry.addLine("Rotate");
+                    if ((Math.abs(autoChassis.zAngle - (rotationGoal - 180)) >= 2)) {
+                        autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, (rotationGoal - 180)));
+                        autoChassis.Drive();
+                        autoChassis.SetAxisMovement();
+                        autoChassis.ZeroEncoders();
+                        autoChassis.SetAxisMovement();
 
-                case NEWSECONDMOVE:
-                    telemetry.addLine("newsecondmoveE");
-                    telemetry.addData("driveStrafe", drivePreset);
-                    telemetry.addData("strafePreset", strafePreset);
-                    telemetry.addData("rotate", autoChassis.rotation);
-                    telemetry.addData("drivevalue", autoChassis.trueDrive);
-                    telemetry.addData("strafevalue", autoChassis.trueStrafe);
-                    telemetry.addData("drive", autoChassis.drive);
-                    telemetry.addData("strafe", autoChassis.strafe);
-                    telemetry.addData("back left wheel", autoChassis.backLeft);
-                    telemetry.addData("back right wheel", autoChassis.backRight);
-                    telemetry.addData("front right wheel", autoChassis.frontRight);
-                    telemetry.addData("front left wheel", autoChassis.frontLeft);
-                    telemetry.addData("firstSignumRotate", Math.signum(rotationGoal - autoChassis.zAngle));
-                    telemetry.addData("firstSignumStrafe", Math.signum(strafePreset - autoChassis.trueStrafe));
-                    telemetry.addData("firstSignumDrive", Math.signum(drivePreset - autoChassis.trueDrive));
-                    telemetry.addData("Math.maxRotate", (Math.max(0.2, Math.abs((rotationGoal - autoChassis.zAngle) / 180))));
-                    telemetry.addData("Math.maxStrafe", (Math.max(0.2, Math.abs((strafePreset - autoChassis.trueStrafe) / strafePreset))));
-                    telemetry.addData("Math.maxDrive", (Math.max(0.2, Math.abs((drivePreset - autoChassis.trueDrive) / drivePreset))));
-
-                    if (autoChassis.MoveToLocation() == true) {
-                        telemetry.addLine("done");
+                    } else {
+                        autoChassis.front_left_wheel.setPower(-0.01);
+                        autoChassis.front_right_wheel.setPower(-0.01);
+                        autoChassis.back_right_wheel.setPower(-0.01);
+                        autoChassis.back_left_wheel.setPower(-0.01);
+                        if (index >= (ArraySize - 1)) {
+                            index = 0;
+                        }
+                        else {
+                            index++;
+                        }
+                        movementArrayLeft[index] = -autoChassis.front_right_wheel.getCurrentPosition()-initialLeft;
+                        movementArrayBack[index] = autoChassis.front_left_wheel.getCurrentPosition()-initialBack;
+                        movementArrayRight[index] = autoChassis.back_right_wheel.getCurrentPosition()-initialRight;
+                        totalLeft = 0;
+                        totalBack = 0;
+                        totalRight = 0;
+                        for (int i = 0; i <= (ArraySize - 1); i++) {
+                            totalLeft = totalLeft + movementArrayLeft[i];
+                            totalRight = totalRight + movementArrayRight[i];
+                            totalBack = totalBack + movementArrayBack[i];
+                        }
+                        driveOpState = rotate360onA.OperState.SETUP;
                     }
 
                     break;
-                /*
+
+                    /*
                 case SECONDMOVESETUP:
                     autoChassis.Encoders();
                     autoChassis.ZeroEncoders();
@@ -161,7 +170,8 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     drivePreset = autoChassis.trueDrive - 60;
                     rotationGoal = autoChassis.zAngle;
-                    driveOpState = DistanceSensorfirstAutonomousMode.OperState.SECONDMOVE;
+                    driveOpState = firstAutonomousMode.OperState.SECONDMOVE;
+
                     break;
 
                 case SECONDMOVE:
@@ -173,6 +183,9 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     autoChassis.ForwardAndBackward(drivePreset);
                     rotationGoal += -0.02;
 
+
+
+
                     if ((Math.abs(autoChassis.zAngle - rotationGoal) >= 2)) {
                         autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, rotationGoal));
                         autoChassis.Drive();
@@ -183,40 +196,11 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                         autoChassis.front_right_wheel.setPower(-0.01);
                         autoChassis.back_right_wheel.setPower(-0.01);
                         autoChassis.back_left_wheel.setPower(-0.01);
-                        driveOpState = DistanceSensorfirstAutonomousMode.OperState.THIRDMOVESETUP;
+                        driveOpState = firstAutonomousMode.OperState.THIRDMOVESETUP;
                     }
+
                     break;
 
-
-                case RESETTIMER:
-                    MeasureWait.reset();
-                    driveOpState = DistanceSensorfirstAutonomousMode.OperState.MEASURE;
-                    break;
-
-                case MEASURE:
-                    if (MeasureWait.time(TimeUnit.SECONDS) >= 1) {
-                      ring.MeasureDistance();
-                      ringCount = ring.RingHeight();
-                      if (ringCount == 0) {
-                          driveOpState = DistanceSensorfirstAutonomousMode.OperState.A;
-                      }
-                      else if (ringCount == 1) {
-                          driveOpState = DistanceSensorfirstAutonomousMode.OperState.B;
-                      }
-                      else if (ringCount == 4) {
-                          driveOpState = DistanceSensorfirstAutonomousMode.OperState.C;
-                      }
-                    }
-                    break;
-                case A:
-                    //Moving to A Code
-                    break;
-                case B:
-                    //Moving to B Code
-                    break;
-                case C:
-                    //Moving to C Code
-                    break;
 
                 case THIRDMOVESETUP:
                     telemetry.addLine("THIRDMOVESETUP");
@@ -236,9 +220,10 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
                         servoTimer.reset();
 
-                        driveOpState = DistanceSensorfirstAutonomousMode.OperState.THIRDMOVE;
+                        driveOpState = firstAutonomousMode.OperState.THIRDMOVE;
                     }
                     break;
+
 
                 case THIRDMOVE:
                     telemetry.addLine("THIRDMOVE");
@@ -246,18 +231,20 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
                     if (servoTimer.time() >= 2) {
                         lift.MoveServo(0);
-                        driveOpState = DistanceSensorfirstAutonomousMode.OperState.STARTLAUNCHER;
+                        driveOpState = firstAutonomousMode.OperState.STARTLAUNCHER;
                     }
+
                     break;
 
                 case STARTLAUNCHER:
                     launcher.LauncherToggle();
-                    driveOpState = DistanceSensorfirstAutonomousMode.OperState.FOURTHMOVESETUP;
+                    driveOpState = firstAutonomousMode.OperState.FOURTHMOVESETUP;
+
 
                 case FOURTHMOVESETUP:
                     telemetry.addLine("FIFTHMOVESETUP");
                     telemetry.addData("autoChassis.zAngle", autoChassis.zAngle);
-                    telemetry.addData("originalRotation",originalRotation);
+                    telemetry.addData("originalRotaion",originalRotation);
                     telemetry.addData("goal for rotation", originalRotation-180);
                     if ((Math.abs(autoChassis.zAngle - (originalRotation-182)) >= 2)) {
                         autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, (originalRotation-182)));
@@ -276,8 +263,10 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
                         drivePreset = autoChassis.trueStrafe - 50;
 
-                        driveOpState = DistanceSensorfirstAutonomousMode.OperState.FOURTHMOVE;
+
+                        driveOpState = firstAutonomousMode.OperState.FOURTHMOVE;
                     }
+
                     break;
 
                 case FOURTHMOVE:
@@ -287,6 +276,10 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     autoChassis.Encoders();
                     autoChassis.SetAxisMovement();
                     autoChassis.LeftAndRight(drivePreset);
+
+
+
+
 
                     if ((Math.abs(autoChassis.zAngle - rotationGoal) >= 2)) {
                         autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, rotationGoal));
@@ -299,36 +292,39 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                         autoChassis.back_right_wheel.setPower(-0.01);
                         autoChassis.back_left_wheel.setPower(-0.01);
                         servoTimer.reset();
-                        driveOpState = DistanceSensorfirstAutonomousMode.OperState.SHOOT1;
+                        driveOpState = firstAutonomousMode.OperState.SHOOT1;
                     }
+
                     break;
 
                 case SHOOT1:
                     if (shootWait < 6) {
                         if (servoTimer.time() > 0.5) {
-                            driveOpState = DistanceSensorfirstAutonomousMode.OperState.firsttimer;
+                            driveOpState = firstAutonomousMode.OperState.firsttimer;
                         }
                     }
                     else {
-                        driveOpState = DistanceSensorfirstAutonomousMode.OperState.FIFTHMOVESETUP;
+                        driveOpState = firstAutonomousMode.OperState.FIFTHMOVESETUP;
                     }
+
+
 
                     break;
                 case firsttimer:
                     servoTimer.reset();
-                    driveOpState = DistanceSensorfirstAutonomousMode.OperState.Load;
+                    driveOpState = firstAutonomousMode.OperState.Load;
                     break;
 
                 case Load:
                     launcher.Shoot();
                     if (servoTimer.time() >= 0.15) {
-                        driveOpState = DistanceSensorfirstAutonomousMode.OperState.secondtimer;
+                        driveOpState = firstAutonomousMode.OperState.secondtimer;
                     }
                     break;
 
                 case secondtimer:
                     servoTimer.reset();
-                    driveOpState = DistanceSensorfirstAutonomousMode.OperState.ResetPosition;
+                    driveOpState = firstAutonomousMode.OperState.ResetPosition;
                     break;
 
                 case ResetPosition:
@@ -336,7 +332,7 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     if (servoTimer.time() >= 0.15) {
                         shootWait += 1;
                         servoTimer.reset();
-                        driveOpState = DistanceSensorfirstAutonomousMode.OperState.SHOOT1;
+                        driveOpState = firstAutonomousMode.OperState.SHOOT1;
                     }
                     break;
 
@@ -358,11 +354,13 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
                         drivePreset = autoChassis.trueDrive + 10;
 
-                        driveOpState = DistanceSensorfirstAutonomousMode.OperState.FIFTHMOVE;
+                        driveOpState = firstAutonomousMode.OperState.FIFTHMOVE;
                     }
                     break;
+            }
+ */
 
-                 */
+
             }
             telemetry.update();
         }
