@@ -139,10 +139,10 @@ public class AutoCode2 extends LinearOpMode {
                     break;
 
                 case ButtonWaiter:
-                    if (StartLocation == 1) { if (!gamepad1.a) { menu = Menu.CloseOut; } }
-                    else if (StartLocation == 2) { if (!gamepad1.b) { menu = Menu.CloseOut; } }
-                    else if (StartLocation == 3) { if (!gamepad1.x) { menu = Menu.CloseOut; } }
-                    else if (StartLocation == 4) { if (!gamepad1.y) { menu = Menu.CloseOut; } }
+                    if ((StartLocation == 1) & (!gamepad1.a)) { menu = Menu.CloseOut; }
+                    else if ((StartLocation == 2) & (!gamepad1.b)) { menu = Menu.CloseOut; }
+                    else if ((StartLocation == 3) & (!gamepad1.x)) { menu = Menu.CloseOut; }
+                    else if ((StartLocation == 4) & (!gamepad1.y)) { menu = Menu.CloseOut; }
                     break;
 
                 case CloseOut:
