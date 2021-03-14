@@ -53,7 +53,7 @@ public class InitialLauncherAndIntakeCode {
 
         public void LauncherRun () {
             if (launcherOn) {
-                LaunchMotor.setPower(-1);
+                LaunchMotor.setPower(-0.9);
             }
             else {
                 LaunchMotor.setPower(0);

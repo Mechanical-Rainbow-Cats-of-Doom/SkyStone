@@ -23,7 +23,7 @@ public class AutoCode2 extends LinearOpMode {
     private Blinker Control_Hub;
     private Blinker expansion_Hub_2;
     ElapsedTime servoTimer = new ElapsedTime();
-
+    ElapsedTime menuTimer = new ElapsedTime();
     enum OperState {
         FIRSTMOVE,
         PREPMOVEANDLIFT,
@@ -57,13 +57,18 @@ public class AutoCode2 extends LinearOpMode {
         B,
         C
     }
-
+    enum Menu  {
+        WhichSpot,
+        CloseOut,
+        ButtonWaiter
+    }
     @Override
     public void runOpMode() {
         InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
         InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
         ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
         AutoCode2.OperState driveOpState = AutoCode2.OperState.FIRSTMOVE;
+        AutoCode2.Menu  menu = AutoCode2.Menu.WhichSpot;
         DistanceSensorClass.RingClass ring = new DistanceSensorClass.RingClass();
 
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
@@ -86,6 +91,13 @@ public class AutoCode2 extends LinearOpMode {
         parameters.loggingTag          = "IMU";
         autoChassis.imu.initialize(parameters);
         double drivePreset = 0;
+
+        //menu variables
+        boolean IsMenuDone = false;
+        int StartLocation = 0; //1 is Blue 1, 2 is Blue 2, 3 is Red 1, 4 is Red 2.
+/*
+23.5 Inches Between the strips.
+ */
         double strafePreset = 0;
         double rotationGoal = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
         double originalRotation = rotationGoal;
@@ -93,6 +105,18 @@ public class AutoCode2 extends LinearOpMode {
         double rotate = 0;
         double strafe = 0;
         double drive = 0;
+
+        //All Constants For All Moves
+        double moveandliftstrafe = 0;
+        double moveandliftdrive = 0;
+        double moverightstrafe = 0;
+        double adrive = 0;
+        double astrafe = 0;
+        double bdrive = 0;
+        double bstrafe = 0;
+        double cdrive = 0;
+        double cstrafe = 0;
+
         int isRotate = 0;
         int isStrafe = 0;
         int isDrive = 0;
@@ -101,6 +125,47 @@ public class AutoCode2 extends LinearOpMode {
         double driveValue = 0;
         double strafeValue = 0;
         autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
+        while (!IsMenuDone) {
+            switch(menu) {
+                case WhichSpot:
+                    telemetry.addLine("Blue1(A) Blue2(B) Red1(X) Red2(Y)?");
+                    telemetry.update();
+                    if (gamepad1.a = true) {
+                        StartLocation = 1;
+                        menu = Menu.ButtonWaiter;
+                        menuTimer.reset();
+                    }
+                    else if (gamepad1.b = true) {
+                        StartLocation = 2;
+                        menu = Menu.ButtonWaiter;
+                        menuTimer.reset();
+                    }
+                    else if (gamepad1.x = true) {
+                        StartLocation = 3;
+                        menu = Menu.ButtonWaiter;
+                        menuTimer.reset();
+                    }
+                    else if (gamepad1.y = true) {
+                        StartLocation = 4;
+                        menu = Menu.ButtonWaiter;
+                        menuTimer.reset();
+                    }
+                    break;
+
+                case ButtonWaiter:
+                    if ((StartLocation == 1) & (!gamepad1.a)) { menu = Menu.CloseOut; }
+                    else if ((StartLocation == 2) & (!gamepad1.b)) { menu = Menu.CloseOut; }
+                    else if ((StartLocation == 3) & (!gamepad1.x)) { menu = Menu.CloseOut; }
+                    else if ((StartLocation == 4) & (!gamepad1.y)) { menu = Menu.CloseOut; }
+                    break;
+
+                case CloseOut:
+                    telemetry.addLine("Variable is " + StartLocation + ". Hopefully that is right.");
+                    telemetry.update();
+                    IsMenuDone = true;
+                    break;
+            }
+        }
         waitForStart();
         servoTimer.reset();
 /*                    if (autoChassis.MoveToLocation() == true) {
