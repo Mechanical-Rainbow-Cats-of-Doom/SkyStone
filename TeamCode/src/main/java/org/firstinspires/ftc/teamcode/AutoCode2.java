@@ -160,6 +160,50 @@ public class AutoCode2 extends LinearOpMode {
                     break;
 
                 case CloseOut:
+                     if (StartLocation == 1) { //This still needs to be worked on. There are issues with the constraints of the wobble goal grabber and the 1st and 3rd position
+                            moveandliftstrafe = 0;
+                            moveandliftdrive = 0;
+                            moverightstrafe = 0;
+                            adrive = 0;
+                            astrafe = 0;
+                            bdrive = 0;
+                            bstrafe = 0;
+                            cdrive = 0;
+                            cstrafe = 0;
+                    }
+                     else if (StartLocation == 2) {
+                            moveandliftstrafe = 0;
+                            moveandliftdrive = -19;
+                            moverightstrafe = -17;
+                            adrive = -38.5;
+                            astrafe = 7;
+                            bdrive = -61;
+                            bstrafe = -9.5;
+                            cdrive = -82;
+                            cstrafe = 7;
+                    }
+                    else if (StartLocation == 3) { //This still needs to be worked on. There are issues with the constraints of the wobble goal grabber and the 1st and 3rd position
+                            moveandliftstrafe = 0;
+                            moveandliftdrive = 0;
+                            moverightstrafe = 0;
+                            adrive = 0;
+                            astrafe = 0;
+                            bdrive = 0;
+                            bstrafe = 0;
+                            cdrive = 0;
+                            cstrafe = 0;
+                    }
+                    else if (StartLocation == 4) {
+                            moveandliftstrafe = 0;
+                            moveandliftdrive = -19;
+                            moverightstrafe = 17;
+                            adrive = -38.5;
+                            astrafe = -7;
+                            bdrive = -61;
+                            bstrafe = 9.5;
+                            cdrive = -82;
+                            cstrafe = -7;
+                    }
                     telemetry.addLine("Variable is " + StartLocation + ". Hopefully that is right.");
                     telemetry.update();
                     IsMenuDone = true;
@@ -198,7 +242,7 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(-19,0, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(moveandliftdrive, moveandliftstrafe, autoChassis.zAngle);
                     servoTimer.reset();
                     driveOpState = OperState.MOVEANDLIFT;
                     break;
@@ -240,7 +284,7 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0,17, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(0, moverightstrafe, autoChassis.zAngle);
                     servoTimer.reset();
                     driveOpState = OperState.MOVERIGHT;
                     break;
@@ -292,21 +336,21 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(-38.5,-7, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(adrive, astrafe, autoChassis.zAngle);
                     driveOpState = OperState.A;
                     break;
                 case PREPB:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(-61,9.5, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(bdrive, bstrafe, autoChassis.zAngle);
                     driveOpState = OperState.B;
                     break;
                 case PREPC:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(-82,-7, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(cdrive, cstrafe, autoChassis.zAngle);
                     driveOpState = OperState.C;
                     break;
                 case A:
