@@ -95,7 +95,9 @@ public class AutoCode2 extends LinearOpMode {
         //menu variables
         boolean IsMenuDone = false;
         int StartLocation = 0; //1 is Blue 1, 2 is Blue 2, 3 is Red 1, 4 is Red 2.
-
+/*
+23.5 Inches Between the strips.
+ */
         double strafePreset = 0;
         double rotationGoal = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
         double originalRotation = rotationGoal;
@@ -103,6 +105,18 @@ public class AutoCode2 extends LinearOpMode {
         double rotate = 0;
         double strafe = 0;
         double drive = 0;
+
+        //All Constants For All Moves
+        double moveandliftstrafe = 0;
+        double moveandliftdrive = 0;
+        double moverightstrafe = 0;
+        double adrive = 0;
+        double astrafe = 0;
+        double bdrive = 0;
+        double bstrafe = 0;
+        double cdrive = 0;
+        double cstrafe = 0;
+
         int isRotate = 0;
         int isStrafe = 0;
         int isDrive = 0;
