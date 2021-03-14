@@ -34,6 +34,7 @@ public class rotate360onA extends LinearOpMode {
     enum OperState {
         SETUP,
         rotate,
+        DRIVEANDROTATE
     }
 
     @Override
@@ -75,7 +76,7 @@ public class rotate360onA extends LinearOpMode {
         double totalBack = 0;
         double totalRight =0;
         int index = 0;
-        int ArraySize = 50; //Allows for easy way to change the size of the array that affects all of the code
+        int ArraySize = 500; //Allows for easy way to change the size of the array that affects all of the code
         double[] movementArrayLeft = new double [ArraySize];
         double[] movementArrayBack = new double [ArraySize];
         double[] movementArrayRight = new double [ArraySize];
@@ -101,9 +102,12 @@ public class rotate360onA extends LinearOpMode {
                     telemetry.addData("Right Encoder Difference", autoChassis.back_right_wheel.getCurrentPosition()-initialRight);
                     telemetry.addData("Left Encoder Difference", -autoChassis.front_right_wheel.getCurrentPosition()-initialLeft);
                     telemetry.addData("Back Encoder Difference", autoChassis.front_left_wheel.getCurrentPosition()-initialBack);
-                    telemetry.addData("Right Encoder Average Difference", totalRight / movementArrayRight.length);
-                    telemetry.addData("Left Encoder Average Difference", totalLeft / movementArrayLeft.length);
-                    telemetry.addData("Back Encoder Average Difference", totalBack / movementArrayBack.length);
+                    telemetry.addData("Right Encoder Average Difference", totalRight / (index-1));
+                    telemetry.addData("Left Encoder Average Difference", totalLeft / (index-1));
+                    telemetry.addData("Back Encoder Average Difference", totalBack / (index-1));
+                    telemetry.addData("Right Encoder Multiplier", (totalBack / (index-1)) / (totalRight / (index-1)) );
+                    telemetry.addData("Left Encoder Multiplier", (totalBack / (index-1)) / (totalLeft / (index-1)) );
+                    telemetry.addData("Back Encoder Multiplier" , 1);
 
 
 
@@ -123,6 +127,52 @@ public class rotate360onA extends LinearOpMode {
                         initialRight = autoChassis.back_right_wheel.getCurrentPosition();
                         rotationGoal = autoChassis.zAngle;
                         driveOpState = rotate360onA.OperState.rotate;
+                    }
+                    if (gamepad1.a) {
+                        initialLeft = -autoChassis.front_right_wheel.getCurrentPosition();
+                        initialBack = autoChassis.front_left_wheel.getCurrentPosition();
+                        initialRight = autoChassis.back_right_wheel.getCurrentPosition();
+                        rotationGoal = autoChassis.zAngle;
+                        driveOpState = rotate360onA.OperState.rotate;
+                    }
+                    break;
+
+                case DRIVEANDROTATE:
+                    if (gamepad1.a == true) {
+                        telemetry.addLine("Drive and Rotate");
+                        autoChassis.SetAxisMovement();
+                        double drive = -this.gamepad1.left_stick_y;
+                        //strafe = this.gamepad1.left_stick_x;
+                        double rotate = -this.gamepad1.right_stick_x;
+
+                        autoChassis.SetPresetAxis();
+
+                        autoChassis.SetMotors(drive, 0, 0);
+                        autoChassis.Drive();
+                        autoChassis.SetTrueAxis();
+                    }
+                    else {
+                        autoChassis.front_left_wheel.setPower(-0.01);
+                        autoChassis.front_right_wheel.setPower(-0.01);
+                        autoChassis.back_right_wheel.setPower(-0.01);
+                        autoChassis.back_left_wheel.setPower(-0.01);
+                        if (index >= (ArraySize - 1)) {
+                            index = 0;
+                        }
+                        else {
+                            index++;
+                        }
+                        movementArrayLeft[index] = Math.abs((-autoChassis.front_right_wheel.getCurrentPosition()-initialLeft)*autoChassis.leftEncoderMultiplier);
+                        movementArrayBack[index] = Math.abs((autoChassis.front_left_wheel.getCurrentPosition()-initialBack)*autoChassis.backEncoderMultiplier);
+                        movementArrayRight[index] = Math.abs((autoChassis.back_right_wheel.getCurrentPosition()-initialRight)*autoChassis.rightEncoderMultiplier);
+                        totalLeft = 0;
+                        totalBack = 0;
+                        totalRight = 0;
+                        for (int i = 0; i <= (ArraySize - 1); i++) {
+                            totalLeft = totalLeft + movementArrayLeft[i];
+                            totalRight = totalRight + movementArrayRight[i];
+                            totalBack = totalBack + movementArrayBack[i];
+                        }
                     }
                     break;
 
@@ -146,9 +196,9 @@ public class rotate360onA extends LinearOpMode {
                         else {
                             index++;
                         }
-                        movementArrayLeft[index] = -autoChassis.front_right_wheel.getCurrentPosition()-initialLeft;
-                        movementArrayBack[index] = autoChassis.front_left_wheel.getCurrentPosition()-initialBack;
-                        movementArrayRight[index] = autoChassis.back_right_wheel.getCurrentPosition()-initialRight;
+                        movementArrayLeft[index] = (-autoChassis.front_right_wheel.getCurrentPosition()-initialLeft)*autoChassis.leftEncoderMultiplier;
+                        movementArrayBack[index] = (autoChassis.front_left_wheel.getCurrentPosition()-initialBack)*autoChassis.backEncoderMultiplier;
+                        movementArrayRight[index] = (autoChassis.back_right_wheel.getCurrentPosition()-initialRight)*autoChassis.rightEncoderMultiplier;
                         totalLeft = 0;
                         totalBack = 0;
                         totalRight = 0;
@@ -361,7 +411,8 @@ public class rotate360onA extends LinearOpMode {
  */
 
 
-            }
+            }/*cdg*/
+
             telemetry.update();
         }
     }

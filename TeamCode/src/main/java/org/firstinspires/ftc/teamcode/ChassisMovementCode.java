@@ -65,6 +65,9 @@ public class ChassisMovementCode {
         double clearStrafe = 0;
         double tau = 6.28318530718;
 
+        double rightEncoderMultiplier = 0.80593467656*0.89374596932*0.93689689719;
+        double leftEncoderMultiplier = 0.89793273641*0.95477310547*0.96130738002;
+        double backEncoderMultiplier = 1;
 
         double drive;
         int isDrive = 0;
