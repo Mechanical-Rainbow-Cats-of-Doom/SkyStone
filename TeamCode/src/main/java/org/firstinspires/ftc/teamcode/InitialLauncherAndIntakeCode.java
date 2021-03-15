@@ -41,6 +41,7 @@ public class InitialLauncherAndIntakeCode {
     ElapsedTime mytimer = new ElapsedTime();
     public static class Launcher {
         public DcMotor LaunchMotor;
+        public DcMotor IntakeMotor2;
         public Servo LaunchServo;
         public DcMotor IntakeMotor;
         public boolean launcherOn = false;
@@ -63,9 +64,11 @@ public class InitialLauncherAndIntakeCode {
         public void IntakeRun () {
             if (intakeOn) {
                 IntakeMotor.setPower(-1);
+                IntakeMotor2.setPower(-1);
             }
             else {
                 IntakeMotor.setPower(0);
+                IntakeMotor2.setPower(0);
             }
         }
 

@@ -52,6 +52,8 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         lift.ForkServo = hardwareMap.get(CRServo.class, "LiftServo");
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
+        launcher.IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
+        launcher.IntakeMotor2 = hardwareMap.get(DcMotor.class, "IntakeMotor2");
         chasty.imu = hardwareMap.get(BNO055IMU.class, "imu");
         chasty.front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
         chasty.front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");

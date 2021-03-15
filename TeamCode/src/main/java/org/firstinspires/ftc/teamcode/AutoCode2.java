@@ -58,9 +58,21 @@ public class AutoCode2 extends LinearOpMode {
         C
     }
     enum Menu  {
-        WhichSpot,
-        CloseOut,
-        ButtonWaiter
+        StartLocation,
+        ButtonWaiter,
+        Powershots,
+        ButtonWaiter2,
+        OnlyPark,
+        ButtonWaiter3,
+        Goals,
+        ButtonWaiter4,
+        AreYouMoving,
+        ButtonWaiter5,
+        CheckForInvalid,
+        Save,
+        AskIfDone,
+        Redo,
+        ButtonWaiter6
     }
     @Override
     public void runOpMode() {
@@ -68,7 +80,7 @@ public class AutoCode2 extends LinearOpMode {
         InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
         ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
         AutoCode2.OperState driveOpState = AutoCode2.OperState.FIRSTMOVE;
-        AutoCode2.Menu  menu = AutoCode2.Menu.WhichSpot;
+        AutoCode2.Menu  menu = Menu.StartLocation;
         DistanceSensorClass.RingClass ring = new DistanceSensorClass.RingClass();
 
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
@@ -95,6 +107,11 @@ public class AutoCode2 extends LinearOpMode {
         //menu variables
         boolean IsMenuDone = false;
         int StartLocation = 0; //1 is Blue 1, 2 is Blue 2, 3 is Red 1, 4 is Red 2.
+        int Powershots = 0; //1 is yes, 2 is no.
+        int ShootGoals = 0; //1 is yes, 2 is no.
+        int OnlyPark = 0; //1 is yes, 2 is no.
+        int AreYouMoving = 0; //1 is yes, 2 is no.
+        int Save = 0; //1 is yes, 2 is no.
 /*
 23.5 Inches Between the strips.
  */
@@ -107,7 +124,6 @@ public class AutoCode2 extends LinearOpMode {
         double drive = 0;
 
         //All Constants For All Moves
-        double moveandliftstrafe = 0;
         double moveandliftdrive = 0;
         double moverightstrafe = 0;
         double adrive = 0;
@@ -126,53 +142,146 @@ public class AutoCode2 extends LinearOpMode {
         double strafeValue = 0;
         autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
         while (!IsMenuDone) {
-            switch(menu) {
-                case WhichSpot:
+            switch (menu) {
+                case StartLocation:
                     telemetry.addLine("Blue1(A) Blue2(B) Red1(X) Red2(Y)?");
                     telemetry.update();
                     if (gamepad1.a = true) {
                         StartLocation = 1;
                         menu = Menu.ButtonWaiter;
-                        menuTimer.reset();
                     }
                     else if (gamepad1.b = true) {
                         StartLocation = 2;
                         menu = Menu.ButtonWaiter;
-                        menuTimer.reset();
                     }
                     else if (gamepad1.x = true) {
                         StartLocation = 3;
                         menu = Menu.ButtonWaiter;
-                        menuTimer.reset();
                     }
                     else if (gamepad1.y = true) {
                         StartLocation = 4;
                         menu = Menu.ButtonWaiter;
-                        menuTimer.reset();
                     }
                     break;
-
                 case ButtonWaiter:
-                    if ((StartLocation == 1) & (!gamepad1.a)) { menu = Menu.CloseOut; }
-                    else if ((StartLocation == 2) & (!gamepad1.b)) { menu = Menu.CloseOut; }
-                    else if ((StartLocation == 3) & (!gamepad1.x)) { menu = Menu.CloseOut; }
-                    else if ((StartLocation == 4) & (!gamepad1.y)) { menu = Menu.CloseOut; }
+                    if ((StartLocation == 1) & (!gamepad1.a)) { menu = Menu.Powershots; }
+                    else if ((StartLocation == 2) & (!gamepad1.b)) { menu = Menu.Powershots; }
+                    else if ((StartLocation == 3) & (!gamepad1.x)) { menu = Menu.Powershots; }
+                    else if ((StartLocation == 4) & (!gamepad1.y)) { menu = Menu.Powershots; }
                     break;
-
-                case CloseOut:
-                     if (StartLocation == 1) { //This still needs to be worked on. There are issues with the constraints of the wobble goal grabber and the 1st and 3rd position
-                            moveandliftstrafe = 0;
+                case Powershots:
+                    telemetry.addLine("Shoot Powershots? Yes(Y) No(X)");
+                    telemetry.update();
+                    if (gamepad1.x = true) {
+                        Powershots = 2;
+                        menu = Menu.ButtonWaiter2;
+                    }
+                    else if (gamepad1.y = true) {
+                        Powershots = 1;
+                        menu = Menu.ButtonWaiter2;
+                    }
+                    break;
+                case ButtonWaiter2:
+                    if ((Powershots == 2) & (!gamepad1.x)) { menu = Menu.Goals; }
+                    else if ((Powershots == 1) & (!gamepad1.y)) { menu = Menu.CheckForInvalid; }
+                    break;
+                case Goals:
+                    telemetry.addLine("Shoot into Goal? Yes(Y) No(X)");
+                    telemetry.update();
+                    if (gamepad1.x = true) {
+                        ShootGoals = 2;
+                        menu = Menu.ButtonWaiter3;
+                    }
+                    else if (gamepad1.y = true) {
+                        ShootGoals = 1;
+                        menu = Menu.ButtonWaiter3;
+                    }
+                    break;
+                case ButtonWaiter3:
+                    if ((ShootGoals == 2) & (!gamepad1.x)) { menu = Menu.OnlyPark; }
+                    else if ((ShootGoals == 1) & (!gamepad1.y)) { menu = Menu.CheckForInvalid; }
+                    break;
+                case OnlyPark:
+                    telemetry.addLine("Would you like to park in the corner? Yes(Y) No(X)");
+                    telemetry.update();
+                    if (gamepad1.x = true) {
+                        OnlyPark = 2;
+                        menu = Menu.ButtonWaiter4;
+                    }
+                    else if (gamepad1.y = true) {
+                        OnlyPark = 1;
+                        menu = Menu.ButtonWaiter4;
+                    }
+                    break;
+                case ButtonWaiter4:
+                    if ((OnlyPark == 2) & (!gamepad1.x)) { menu = Menu.AreYouMoving; }
+                    else if ((OnlyPark == 1) & (!gamepad1.y)) { menu = Menu.CheckForInvalid; }
+                    break;
+                case AreYouMoving:
+                    telemetry.addLine("Would you even like to move? Yes(Y) No(X) No will cause an error and kick you back to the beginning.");
+                    telemetry.update();
+                    if (gamepad1.x = true) {
+                        OnlyPark = 2;
+                        menu = Menu.ButtonWaiter5;
+                    }
+                    else if (gamepad1.y = true) {
+                        AreYouMoving = 1;
+                        menu = Menu.ButtonWaiter5;
+                    }
+                    break;
+                case ButtonWaiter5:
+                    if ((AreYouMoving == 2) & (!gamepad1.x)) { menu = Menu.CheckForInvalid; }
+                    else if ((AreYouMoving == 1) & (!gamepad1.y)) { menu = Menu.CheckForInvalid; }
+                    break;
+                case CheckForInvalid:
+                    if (Powershots == 2 & ShootGoals == 2 & OnlyPark == 2 & AreYouMoving == 2) {
+                        StartLocation = 0;
+                        Powershots = 0;
+                        ShootGoals = 0;
+                        OnlyPark = 0;
+                        AreYouMoving = 0;
+                        menu = Menu.StartLocation;
+                    }
+                    else { menu = Menu.AskIfDone; }
+                    break;
+                case AskIfDone:
+                    telemetry.addLine("Would you like to save these changes? Yes(Y) No(X)");
+                    telemetry.update();
+                    if (gamepad1.x = true) {
+                        Save = 2;
+                        menu = Menu.ButtonWaiter5;
+                    }
+                    else if (gamepad1.y = true) {
+                        Save = 1;
+                        menu = Menu.ButtonWaiter5;
+                    }
+                    break;
+                case ButtonWaiter6:
+                    if ((Save == 2) & (!gamepad1.x)) { menu = Menu.Redo; }
+                    else if ((Save == 1) & (!gamepad1.y)) { menu = Menu.Save; }
+                    break;
+                case Redo:
+                    StartLocation = 0;
+                    Powershots = 0;
+                    ShootGoals = 0;
+                    OnlyPark = 0;
+                    AreYouMoving = 0;
+                    Save = 0;
+                    menu = Menu.StartLocation;
+                    break;
+                case Save:
+                    switch (StartLocation) {
+                        case 1:
                             moveandliftdrive = 0;
                             moverightstrafe = 0;
-                            adrive = 0;
-                            astrafe = 0;
-                            bdrive = 0;
-                            bstrafe = 0;
-                            cdrive = 0;
-                            cstrafe = 0;
-                    }
-                     else if (StartLocation == 2) {
-                            moveandliftstrafe = 0;
+                            adrive = -38.5;
+                            astrafe = 30.5;
+                            bdrive = -61;
+                            bstrafe = 14;
+                            cdrive = -82;
+                            cstrafe = 30.5;
+                            break;
+                        case 2:
                             moveandliftdrive = -19;
                             moverightstrafe = -17;
                             adrive = -38.5;
@@ -181,20 +290,18 @@ public class AutoCode2 extends LinearOpMode {
                             bstrafe = -9.5;
                             cdrive = -82;
                             cstrafe = 7;
-                    }
-                    else if (StartLocation == 3) { //This still needs to be worked on. There are issues with the constraints of the wobble goal grabber and the 1st and 3rd position
-                            moveandliftstrafe = 0;
-                            moveandliftdrive = 0;
-                            moverightstrafe = 0;
-                            adrive = 0;
-                            astrafe = 0;
-                            bdrive = 0;
-                            bstrafe = 0;
-                            cdrive = 0;
-                            cstrafe = 0;
-                    }
-                    else if (StartLocation == 4) {
-                            moveandliftstrafe = 0;
+                            break;
+                        case 3:
+                            moveandliftdrive = -19;
+                            moverightstrafe = -6.5;
+                            adrive = -38.5;
+                            astrafe = -30.5;
+                            bdrive = -61;
+                            bstrafe = -14;
+                            cdrive = -82;
+                            cstrafe = -30.5;
+                            break;
+                        case 4:
                             moveandliftdrive = -19;
                             moverightstrafe = 17;
                             adrive = -38.5;
@@ -203,13 +310,15 @@ public class AutoCode2 extends LinearOpMode {
                             bstrafe = 9.5;
                             cdrive = -82;
                             cstrafe = -7;
+                            break;
                     }
-                    telemetry.addLine("Variable is " + StartLocation + ". Hopefully that is right.");
-                    telemetry.update();
-                    IsMenuDone = true;
-                    break;
             }
+            telemetry.addLine("Choices have been saved. You may now tell the ref you are ready.");
+            telemetry.update();
+            IsMenuDone = true;
+            break;
         }
+
         waitForStart();
         servoTimer.reset();
 /*                    if (autoChassis.MoveToLocation() == true) {
@@ -242,7 +351,7 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(moveandliftdrive, moveandliftstrafe, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(moveandliftdrive, 0, autoChassis.zAngle);
                     servoTimer.reset();
                     driveOpState = OperState.MOVEANDLIFT;
                     break;
@@ -305,7 +414,7 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0,-17, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(0,-moverightstrafe, autoChassis.zAngle);
                     driveOpState = OperState.MOVEBACK;
                     break;
                 case MOVEBACK:
