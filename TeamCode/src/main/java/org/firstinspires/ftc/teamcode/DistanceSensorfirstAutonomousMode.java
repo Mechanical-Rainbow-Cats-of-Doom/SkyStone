@@ -122,7 +122,7 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0,-50,autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(60,50,autoChassis.zAngle);
                     servoTimer.reset();
                     autoChassis.movementTimer.reset();
                     driveOpState = DistanceSensorfirstAutonomousMode.OperState.NEWSECONDMOVE;
@@ -137,10 +137,10 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     telemetry.addData("strafevalue", autoChassis.trueStrafe);
                     telemetry.addData("drive", autoChassis.drive);
                     telemetry.addData("strafe", autoChassis.strafe);
-                    telemetry.addData("back left wheel", autoChassis.backLeft);
-                    telemetry.addData("back right wheel", autoChassis.backRight);
-                    telemetry.addData("front right wheel", autoChassis.frontRight);
-                    telemetry.addData("front left wheel", autoChassis.frontLeft);
+                    telemetry.addData("front left wheel", autoChassis.frontLeft + " = "+(1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(-1*autoChassis.rotation));
+                    telemetry.addData("back left wheel", autoChassis.backLeft + " = "+(-1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
+                    telemetry.addData("front right wheel", autoChassis.frontRight + " = "+(1*autoChassis.drive) +" + "+(-1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
+                    telemetry.addData("back right wheel", autoChassis.backRight + " = "+(1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
                     telemetry.addData("firstSignumRotate", Math.signum(rotationGoal - autoChassis.zAngle));
                     telemetry.addData("firstSignumStrafe", Math.signum(strafePreset - autoChassis.trueStrafe));
                     telemetry.addData("firstSignumDrive", Math.signum(drivePreset - autoChassis.trueDrive));

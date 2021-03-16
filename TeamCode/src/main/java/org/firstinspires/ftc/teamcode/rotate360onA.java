@@ -70,11 +70,13 @@ public class rotate360onA extends LinearOpMode {
         double initialLeft = 0;
         double initialBack = 0;
         double initialRight = 0;
+        double directionSwitch = -1;
 
         double AveragedArray;
         double totalLeft = 0;
         double totalBack = 0;
         double totalRight =0;
+        ElapsedTime driveTimer = new ElapsedTime();
         int index = 0;
         int ArraySize = 500; //Allows for easy way to change the size of the array that affects all of the code
         double[] movementArrayLeft = new double [ArraySize];
@@ -128,26 +130,28 @@ public class rotate360onA extends LinearOpMode {
                         rotationGoal = autoChassis.zAngle;
                         driveOpState = rotate360onA.OperState.rotate;
                     }
-                    if (gamepad1.a) {
+                    if (gamepad1.right_trigger != 0) {
                         initialLeft = -autoChassis.front_right_wheel.getCurrentPosition();
                         initialBack = autoChassis.front_left_wheel.getCurrentPosition();
                         initialRight = autoChassis.back_right_wheel.getCurrentPosition();
                         rotationGoal = autoChassis.zAngle;
-                        driveOpState = rotate360onA.OperState.rotate;
+                        driveTimer.reset();
+                        directionSwitch = directionSwitch * -1;
+                        driveOpState = rotate360onA.OperState.DRIVEANDROTATE;
                     }
                     break;
 
                 case DRIVEANDROTATE:
-                    if (gamepad1.a == true) {
+                    if (driveTimer.time() <= 8) {
                         telemetry.addLine("Drive and Rotate");
                         autoChassis.SetAxisMovement();
-                        double drive = -this.gamepad1.left_stick_y;
+                        //double drive = -this.gamepad1.left_stick_y;
                         //strafe = this.gamepad1.left_stick_x;
                         double rotate = -this.gamepad1.right_stick_x;
 
                         autoChassis.SetPresetAxis();
 
-                        autoChassis.SetMotors(drive, 0, 0);
+                        autoChassis.SetMotors(0.5 * directionSwitch, 0, 0);
                         autoChassis.Drive();
                         autoChassis.SetTrueAxis();
                     }
@@ -162,9 +166,9 @@ public class rotate360onA extends LinearOpMode {
                         else {
                             index++;
                         }
-                        movementArrayLeft[index] = Math.abs((-autoChassis.front_right_wheel.getCurrentPosition()-initialLeft)*autoChassis.leftEncoderMultiplier);
-                        movementArrayBack[index] = Math.abs((autoChassis.front_left_wheel.getCurrentPosition()-initialBack)*autoChassis.backEncoderMultiplier);
-                        movementArrayRight[index] = Math.abs((autoChassis.back_right_wheel.getCurrentPosition()-initialRight)*autoChassis.rightEncoderMultiplier);
+                        //movementArrayLeft[index] = Math.abs((-autoChassis.front_right_wheel.getCurrentPosition()-initialLeft)*autoChassis.leftEncoderMultiplier);
+                        //movementArrayBack[index] = Math.abs((autoChassis.front_left_wheel.getCurrentPosition()-initialBack)*autoChassis.backEncoderMultiplier);
+                        //movementArrayRight[index] = Math.abs((autoChassis.back_right_wheel.getCurrentPosition()-initialRight)*autoChassis.rightEncoderMultiplier);
                         totalLeft = 0;
                         totalBack = 0;
                         totalRight = 0;
@@ -196,9 +200,9 @@ public class rotate360onA extends LinearOpMode {
                         else {
                             index++;
                         }
-                        movementArrayLeft[index] = (-autoChassis.front_right_wheel.getCurrentPosition()-initialLeft)*autoChassis.leftEncoderMultiplier;
-                        movementArrayBack[index] = (autoChassis.front_left_wheel.getCurrentPosition()-initialBack)*autoChassis.backEncoderMultiplier;
-                        movementArrayRight[index] = (autoChassis.back_right_wheel.getCurrentPosition()-initialRight)*autoChassis.rightEncoderMultiplier;
+                        //movementArrayLeft[index] = (-autoChassis.front_right_wheel.getCurrentPosition()-initialLeft)*autoChassis.leftEncoderMultiplier;
+                        //movementArrayBack[index] = (autoChassis.front_left_wheel.getCurrentPosition()-initialBack)*autoChassis.backEncoderMultiplier;
+                        //movementArrayRight[index] = (autoChassis.back_right_wheel.getCurrentPosition()-initialRight)*autoChassis.rightEncoderMultiplier;
                         totalLeft = 0;
                         totalBack = 0;
                         totalRight = 0;

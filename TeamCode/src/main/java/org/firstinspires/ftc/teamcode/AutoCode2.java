@@ -311,13 +311,15 @@ public class AutoCode2 extends LinearOpMode {
                             cdrive = -82;
                             cstrafe = -7;
                             break;
+
                     }
+                    telemetry.addLine("Choices have been saved. You may now tell the ref you are ready.");
+                    telemetry.addData("Variables", StartLocation + Powershots + ShootGoals + OnlyPark + AreYouMoving);
+                    telemetry.update();
+                    IsMenuDone = true;
+                    break;
             }
-            telemetry.addLine("Choices have been saved. You may now tell the ref you are ready.");
-            telemetry.addData("Variables", StartLocation + Powershots + ShootGoals + OnlyPark + AreYouMoving);
-            telemetry.update();
-            IsMenuDone = true;
-            break;
+
         }
 
         waitForStart();
