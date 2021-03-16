@@ -80,7 +80,7 @@ public class AutoCode2 extends LinearOpMode {
         InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
         ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
         AutoCode2.OperState driveOpState = AutoCode2.OperState.FIRSTMOVE;
-        AutoCode2.Menu  menu = Menu.StartLocation;
+        AutoCode2.Menu menu = AutoCode2.Menu.StartLocation;
         DistanceSensorClass.RingClass ring = new DistanceSensorClass.RingClass();
 
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
@@ -146,92 +146,92 @@ public class AutoCode2 extends LinearOpMode {
                 case StartLocation:
                     telemetry.addLine("Blue1(A) Blue2(B) Red1(X) Red2(Y)?");
                     telemetry.update();
-                    if (gamepad1.a = true) {
+                    if (gamepad1.a) {
                         StartLocation = 1;
-                        menu = Menu.ButtonWaiter;
+                        menu = AutoCode2.Menu.ButtonWaiter;
                     }
-                    else if (gamepad1.b = true) {
+                    else if (gamepad1.b) {
                         StartLocation = 2;
-                        menu = Menu.ButtonWaiter;
+                        menu = AutoCode2.Menu.ButtonWaiter;
                     }
-                    else if (gamepad1.x = true) {
+                    else if (gamepad1.x) {
                         StartLocation = 3;
-                        menu = Menu.ButtonWaiter;
+                        menu = AutoCode2.Menu.ButtonWaiter;
                     }
-                    else if (gamepad1.y = true) {
+                    else if (gamepad1.y) {
                         StartLocation = 4;
-                        menu = Menu.ButtonWaiter;
+                        menu = AutoCode2.Menu.ButtonWaiter;
                     }
                     break;
                 case ButtonWaiter:
-                    if ((StartLocation == 1) & (!gamepad1.a)) { menu = Menu.Powershots; }
-                    else if ((StartLocation == 2) & (!gamepad1.b)) { menu = Menu.Powershots; }
-                    else if ((StartLocation == 3) & (!gamepad1.x)) { menu = Menu.Powershots; }
-                    else if ((StartLocation == 4) & (!gamepad1.y)) { menu = Menu.Powershots; }
+                    if ((StartLocation == 1) & (!gamepad1.a)) { menu = AutoCode2.Menu.Powershots; }
+                    else if ((StartLocation == 2) & (!gamepad1.b)) { menu = AutoCode2.Menu.Powershots; }
+                    else if ((StartLocation == 3) & (!gamepad1.x)) { menu = AutoCode2.Menu.Powershots; }
+                    else if ((StartLocation == 4) & (!gamepad1.y)) { menu = AutoCode2.Menu.Powershots; }
                     break;
                 case Powershots:
                     telemetry.addLine("Shoot Powershots? Yes(Y) No(X)");
                     telemetry.update();
-                    if (gamepad1.x = true) {
+                    if (gamepad1.x) {
                         Powershots = 2;
-                        menu = Menu.ButtonWaiter2;
+                        menu = AutoCode2.Menu.ButtonWaiter2;
                     }
-                    else if (gamepad1.y = true) {
+                    else if (gamepad1.y) {
                         Powershots = 1;
-                        menu = Menu.ButtonWaiter2;
+                        menu = AutoCode2.Menu.ButtonWaiter2;
                     }
                     break;
                 case ButtonWaiter2:
-                    if ((Powershots == 2) & (!gamepad1.x)) { menu = Menu.Goals; }
-                    else if ((Powershots == 1) & (!gamepad1.y)) { menu = Menu.CheckForInvalid; }
+                    if ((Powershots == 2) & (!gamepad1.x)) { menu = AutoCode2.Menu.Goals; }
+                    else if ((Powershots == 1) & (!gamepad1.y)) { menu = AutoCode2.Menu.CheckForInvalid; }
                     break;
                 case Goals:
                     telemetry.addLine("Shoot into Goal? Yes(Y) No(X)");
                     telemetry.update();
-                    if (gamepad1.x = true) {
+                    if (gamepad1.x) {
                         ShootGoals = 2;
-                        menu = Menu.ButtonWaiter3;
+                        menu = AutoCode2.Menu.ButtonWaiter3;
                     }
-                    else if (gamepad1.y = true) {
+                    else if (gamepad1.y) {
                         ShootGoals = 1;
-                        menu = Menu.ButtonWaiter3;
+                        menu = AutoCode2.Menu.ButtonWaiter3;
                     }
                     break;
                 case ButtonWaiter3:
-                    if ((ShootGoals == 2) & (!gamepad1.x)) { menu = Menu.OnlyPark; }
-                    else if ((ShootGoals == 1) & (!gamepad1.y)) { menu = Menu.CheckForInvalid; }
+                    if ((ShootGoals == 2) & (!gamepad1.x)) { menu = AutoCode2.Menu.OnlyPark; }
+                    else if ((ShootGoals == 1) & (!gamepad1.y)) { menu = AutoCode2.Menu.CheckForInvalid; }
                     break;
                 case OnlyPark:
                     telemetry.addLine("Would you like to park in the corner? Yes(Y) No(X)");
                     telemetry.update();
-                    if (gamepad1.x = true) {
+                    if (gamepad1.x) {
                         OnlyPark = 2;
-                        menu = Menu.ButtonWaiter4;
+                        menu = AutoCode2.Menu.ButtonWaiter4;
                     }
-                    else if (gamepad1.y = true) {
+                    else if (gamepad1.y) {
                         OnlyPark = 1;
-                        menu = Menu.ButtonWaiter4;
+                        menu = AutoCode2.Menu.ButtonWaiter4;
                     }
                     break;
                 case ButtonWaiter4:
-                    if ((OnlyPark == 2) & (!gamepad1.x)) { menu = Menu.AreYouMoving; }
-                    else if ((OnlyPark == 1) & (!gamepad1.y)) { menu = Menu.CheckForInvalid; }
+                    if ((OnlyPark == 2) & (!gamepad1.x)) { menu = AutoCode2.Menu.AreYouMoving; }
+                    else if ((OnlyPark == 1) & (!gamepad1.y)) { menu = AutoCode2.Menu.CheckForInvalid; }
                     break;
                 case AreYouMoving:
                     telemetry.addLine("Would you even like to move? Yes(Y) No(X) No will cause an error and kick you back to the beginning.");
                     telemetry.update();
-                    if (gamepad1.x = true) {
+                    if (gamepad1.x) {
                         OnlyPark = 2;
-                        menu = Menu.ButtonWaiter5;
+                        menu = AutoCode2.Menu.ButtonWaiter5;
                     }
-                    else if (gamepad1.y = true) {
+                    else if (gamepad1.y) {
                         AreYouMoving = 1;
-                        menu = Menu.ButtonWaiter5;
+                        menu = AutoCode2.Menu.ButtonWaiter5;
                     }
                     break;
                 case ButtonWaiter5:
-                    if ((AreYouMoving == 2) & (!gamepad1.x)) { menu = Menu.CheckForInvalid; }
-                    else if ((AreYouMoving == 1) & (!gamepad1.y)) { menu = Menu.CheckForInvalid; }
+                    if ((AreYouMoving == 2) & (!gamepad1.x)) { menu = AutoCode2.Menu.CheckForInvalid; }
+                    else if ((AreYouMoving == 1) & (!gamepad1.y)) { menu = AutoCode2.Menu.CheckForInvalid; }
                     break;
                 case CheckForInvalid:
                     if (Powershots == 2 & ShootGoals == 2 & OnlyPark == 2 & AreYouMoving == 2) {
@@ -240,25 +240,25 @@ public class AutoCode2 extends LinearOpMode {
                         ShootGoals = 0;
                         OnlyPark = 0;
                         AreYouMoving = 0;
-                        menu = Menu.StartLocation;
+                        menu = AutoCode2.Menu.StartLocation;
                     }
-                    else { menu = Menu.AskIfDone; }
+                    else { menu = AutoCode2.Menu.AskIfDone; }
                     break;
                 case AskIfDone:
                     telemetry.addLine("Would you like to save these changes? Yes(Y) No(X)");
                     telemetry.update();
-                    if (gamepad1.x = true) {
+                    if (gamepad1.x) {
                         Save = 2;
-                        menu = Menu.ButtonWaiter5;
+                        menu = AutoCode2.Menu.ButtonWaiter5;
                     }
-                    else if (gamepad1.y = true) {
+                    else if (gamepad1.y) {
                         Save = 1;
-                        menu = Menu.ButtonWaiter5;
+                        menu = AutoCode2.Menu.ButtonWaiter5;
                     }
                     break;
                 case ButtonWaiter6:
-                    if ((Save == 2) & (!gamepad1.x)) { menu = Menu.Redo; }
-                    else if ((Save == 1) & (!gamepad1.y)) { menu = Menu.Save; }
+                    if ((Save == 2) & (!gamepad1.x)) { menu = AutoCode2.Menu.Redo; }
+                    else if ((Save == 1) & (!gamepad1.y)) { menu = AutoCode2.Menu.Save; }
                     break;
                 case Redo:
                     StartLocation = 0;
@@ -267,7 +267,7 @@ public class AutoCode2 extends LinearOpMode {
                     OnlyPark = 0;
                     AreYouMoving = 0;
                     Save = 0;
-                    menu = Menu.StartLocation;
+                    menu = AutoCode2.Menu.StartLocation;
                     break;
                 case Save:
                     switch (StartLocation) {
@@ -314,6 +314,7 @@ public class AutoCode2 extends LinearOpMode {
                     }
             }
             telemetry.addLine("Choices have been saved. You may now tell the ref you are ready.");
+            telemetry.addData("Variables", StartLocation + Powershots + ShootGoals + OnlyPark + AreYouMoving);
             telemetry.update();
             IsMenuDone = true;
             break;
