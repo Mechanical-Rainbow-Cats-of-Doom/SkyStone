@@ -256,7 +256,7 @@ public class AutoCode2 extends LinearOpMode {
                         menu = AutoCode2.Menu.ButtonWaiter5;
                     }
                     break;
-                case ButtonWaiter6:
+                case ButtonWaiter6: // Both of these options will instantly crash the robot. This is probably a problem, as it means the robot will not be able to function. I might be wrong about this though.
                     if ((Save == 2) & (!gamepad1.x)) { menu = AutoCode2.Menu.Redo; }
                     else if ((Save == 1) & (!gamepad1.y)) { menu = AutoCode2.Menu.Save; }
                     break;
