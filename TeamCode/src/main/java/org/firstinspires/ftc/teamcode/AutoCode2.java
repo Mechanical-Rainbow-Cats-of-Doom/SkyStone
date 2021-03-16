@@ -221,7 +221,7 @@ public class AutoCode2 extends LinearOpMode {
                     telemetry.addLine("Would you even like to move? Yes(Y) No(X) No will cause an error and kick you back to the beginning.");
                     telemetry.update();
                     if (gamepad1.x) {
-                        OnlyPark = 2;
+                        AreYouMoving = 2;
                         menu = AutoCode2.Menu.ButtonWaiter5;
                     }
                     else if (gamepad1.y) {
@@ -314,7 +314,7 @@ public class AutoCode2 extends LinearOpMode {
 
                     }
                     telemetry.addLine("Choices have been saved. You may now tell the ref you are ready.");
-                    telemetry.addData("Variables", StartLocation + Powershots + ShootGoals + OnlyPark + AreYouMoving);
+                    telemetry.addData("Sum of Variables (If this is 0, something went very wrong. Please restart the robot if this is the case.)", StartLocation + Powershots + ShootGoals + OnlyPark + AreYouMoving);
                     telemetry.update();
                     IsMenuDone = true;
                     break;
