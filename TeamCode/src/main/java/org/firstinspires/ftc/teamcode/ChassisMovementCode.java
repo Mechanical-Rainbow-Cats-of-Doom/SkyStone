@@ -124,8 +124,8 @@ public class ChassisMovementCode {
 
 
             this.SetMotors(drive,strafe,rotation);
-            if ((movementTimer.time() >= 10)) {
-                //this.Drive();
+            if ((movementTimer.time() >= 60)) {
+                this.Drive();
             }
 
 
