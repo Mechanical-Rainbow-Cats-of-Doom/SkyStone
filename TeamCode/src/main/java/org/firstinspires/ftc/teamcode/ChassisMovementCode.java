@@ -111,23 +111,19 @@ public class ChassisMovementCode {
             this.SetAxisMovement();
 
             if (Math.abs(drivePreset - trueDrive) >= .5) {
-                drive = Math.signum(drivePreset - trueDrive) * Math.max(0.15, Math.abs((drivePreset - trueDrive) / drivePreset));
+                drive = Math.signum(drivePreset - trueDrive) * Math.max(0.2, Math.abs((drivePreset - trueDrive) / drivePreset));
             } else {isDrive = 1; drive = 0;}
 
             if (Math.abs(strafePreset - trueStrafe) >= 10.5) {
-                strafe = Math.signum(strafePreset - trueStrafe) * Math.max(0.15, Math.abs((strafePreset - trueStrafe) / strafePreset));
+                strafe = Math.signum(strafePreset - trueStrafe) * Math.max(0.2, Math.abs((strafePreset - trueStrafe) / strafePreset));
             } else {isStrafe = 1; strafe = 0;}
 
             if ((Math.abs(zAngle - rotationPreset) >= 2)) {
                 rotation = Math.signum(rotationPreset - zAngle) * (Math.max(0.2, Math.abs((rotationPreset - zAngle) / 180)));
             } else {isRotate = 1; rotation = 0;}
 
-
             this.SetMotors(drive,strafe,rotation);
-            if ((movementTimer.time() >= 60)) {
-                this.Drive();
-            }
-
+            this.Drive();
 
             if ((isDrive == 1) & (isRotate == 1) & (isStrafe == 1)) {
                 isDrive = 0;
