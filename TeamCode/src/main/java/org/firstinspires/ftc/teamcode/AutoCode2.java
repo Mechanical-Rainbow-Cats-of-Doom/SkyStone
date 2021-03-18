@@ -333,7 +333,7 @@ public class AutoCode2 extends LinearOpMode {
             autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
             launcher.LauncherRun();
             ring.MeasureDistance();
-
+            telemetry.addData("where you are in strafe", Math.abs(autoChassis.strafePreset - autoChassis.trueStrafe));
             switch(driveOpState) {
                 case FIRSTMOVE:
                     telemetry.addLine("FIRSTMOVE");
@@ -403,11 +403,11 @@ public class AutoCode2 extends LinearOpMode {
                     break;
                 case MOVERIGHT:
                     if (autoChassis.MoveToLocation() == true) {
+                        MeasureWait.reset();
                         driveOpState = OperState.MEASURE;
                     }
                     break;
                 case MEASURE:
-                    MeasureWait.reset();
                     if (MeasureWait.time(TimeUnit.SECONDS) >= 1) {
                       ring.MeasureDistance();
                       ringCount = ring.RingHeight();
