@@ -249,11 +249,11 @@ public class AutoCode2 extends LinearOpMode {
                     telemetry.update();
                     if (gamepad1.x) {
                         Save = 2;
-                        menu = AutoCode2.Menu.ButtonWaiter5;
+                        menu = AutoCode2.Menu.ButtonWaiter6;
                     }
                     else if (gamepad1.y) {
                         Save = 1;
-                        menu = AutoCode2.Menu.ButtonWaiter5;
+                        menu = AutoCode2.Menu.ButtonWaiter6;
                     }
                     break;
                 case ButtonWaiter6: // Both of these options will instantly crash the robot. This is probably a problem, as it means the robot will not be able to function. I might be wrong about this though.
