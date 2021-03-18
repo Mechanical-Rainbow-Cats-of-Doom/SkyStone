@@ -68,9 +68,11 @@ public class ChassisMovementCode {
 
 
         double drive;
+        double driveSpeedMultiplier = 1;
         int isDrive = 0;
 
         double strafe;
+        double strafeSpeedMultiplier = 1;
         int isStrafe = 0;
 
         double rotation;
@@ -82,10 +84,12 @@ public class ChassisMovementCode {
 
         boolean isDone = false;
 
-        public void SetPresetMovement(double Preset_Drive, double Preset_Strafe, double Preset_Rotation) {
+        public void SetPresetMovement(double Preset_Drive, double Drive_Speed_Multiplier, double Preset_Strafe, double Strafe_Speed_Multiplier, double Preset_Rotation) {
             drivePreset = trueDrive + Preset_Drive;
             strafePreset = trueStrafe + Preset_Strafe;
             rotationPreset = Preset_Rotation;
+            strafeSpeedMultiplier = Strafe_Speed_Multiplier;
+            driveSpeedMultiplier = Drive_Speed_Multiplier;
 
         }
 
@@ -111,11 +115,11 @@ public class ChassisMovementCode {
             this.SetAxisMovement();
 
             if (Math.abs(drivePreset - trueDrive) >= .5) {
-                drive = Math.signum(drivePreset - trueDrive) * Math.max(0.2, 0 /*Math.abs((drivePreset - trueDrive) / drivePreset)*/);
+                drive = Math.signum(drivePreset - trueDrive) * Math.max(0.2, driveSpeedMultiplier * Math.abs((drivePreset - trueDrive) / drivePreset));
             } else {isDrive = 1; drive = 0;}
 
             if (Math.abs(strafePreset - trueStrafe) >= 1) {
-                strafe = Math.signum(strafePreset - trueStrafe) * Math.max(0.2, 0 /*Math.abs((strafePreset - trueStrafe) / strafePreset)*/);
+                strafe = Math.signum(strafePreset - trueStrafe) * Math.max(0.2, strafeSpeedMultiplier * Math.abs((strafePreset - trueStrafe) / strafePreset));
             } else {isStrafe = 1; strafe = 0;}
 
             if ((Math.abs(zAngle - rotationPreset) >= 2)) {

@@ -446,14 +446,17 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     telemetry.addData("clear rotate", (chasty.clearRotate/chasty.tau));
                     telemetry.addData("total rotate", (chasty.trueRotate+chasty.clearRotate));
 
+
                     chasty.SetAxisMovement();
                     drive = -this.gamepad1.left_stick_y;
-                    //strafe = this.gamepad1.left_stick_x;
+                    strafe = this.gamepad1.left_stick_x;
                     rotate = -this.gamepad1.right_stick_x;
+                    telemetry.addData("drive",drive);
+                    telemetry.addData("strafe",strafe);
+                    telemetry.addData("rotate",rotate);
 
-                    chasty.SetPresetAxis();
+                    chasty.SetMotors (drive, strafe, rotate);
 
-                    chasty.SetMotors (drive, 0, rotate);
                     chasty.Drive();
                     chasty.SetTrueAxis();
                     break;
