@@ -16,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 import java.util.concurrent.TimeUnit;
 
-//Created by mostly Patrick, partly Ethan
+//Created by mostly Ethan, partly Patrick
 @Autonomous
 public class AutoCode2 extends LinearOpMode {
 
