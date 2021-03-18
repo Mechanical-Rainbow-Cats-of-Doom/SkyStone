@@ -218,7 +218,7 @@ public class AutoCode2 extends LinearOpMode {
                     else if ((OnlyPark == 1) & (!gamepad1.y)) { menu = AutoCode2.Menu.CheckForInvalid; }
                     break;
                 case AreYouMoving:
-                    telemetry.addLine("Would you even like to move? Yes(Y) No(X) No will cause an error and kick you back to the beginning.");
+                    telemetry.addLine("Would you like to stay put? Yes(Y) No(X) No will cause an error and kick you back to the beginning.");
                     telemetry.update();
                     if (gamepad1.x) {
                         AreYouMoving = 2;

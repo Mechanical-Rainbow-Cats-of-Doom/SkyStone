@@ -114,7 +114,7 @@ public class ChassisMovementCode {
                 drive = Math.signum(drivePreset - trueDrive) * Math.max(0.2, Math.abs((drivePreset - trueDrive) / drivePreset));
             } else {isDrive = 1; drive = 0;}
 
-            if (Math.abs(strafePreset - trueStrafe) >= .5) {
+            if (Math.abs(strafePreset - trueStrafe) >= 1) {
                 strafe = Math.signum(strafePreset - trueStrafe) * Math.max(0.2, Math.abs((strafePreset - trueStrafe) / strafePreset));
             } else {isStrafe = 1; strafe = 0;}
 
