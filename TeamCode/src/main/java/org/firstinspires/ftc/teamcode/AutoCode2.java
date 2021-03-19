@@ -354,7 +354,7 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(moveandliftdrive, 0, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(moveandliftdrive, 0, 0, 0, autoChassis.zAngle);
                     servoTimer.reset();
                     driveOpState = OperState.MOVEANDLIFT;
                     break;
@@ -397,7 +397,7 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0, moverightstrafe, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(0, 0, moverightstrafe, 0.5, autoChassis.zAngle);
                     servoTimer.reset();
                     driveOpState = OperState.MOVERIGHT;
                     break;
@@ -418,7 +418,7 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0,-moverightstrafe, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(0, 0, -moverightstrafe, 0.5, autoChassis.zAngle);
                     driveOpState = OperState.MOVEBACK;
                     break;
                 case MOVEBACK:
@@ -449,21 +449,21 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(adrive, astrafe, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(adrive, 1, astrafe, .5, autoChassis.zAngle);
                     driveOpState = OperState.A;
                     break;
                 case PREPB:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(bdrive, bstrafe, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(bdrive, 1, bstrafe,.5, autoChassis.zAngle);
                     driveOpState = OperState.B;
                     break;
                 case PREPC:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(cdrive, cstrafe, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(cdrive, 1,  cstrafe, 0.5, autoChassis.zAngle);
                     driveOpState = OperState.C;
                     break;
                 case A:
