@@ -19,7 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import java.lang.Math;
 @TeleOp
-public class ChassisMovementCode {
+public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS!!!!
     public static class Chassis {
         ElapsedTime movementTimer = new ElapsedTime();
         public DcMotor back_right_wheel;
