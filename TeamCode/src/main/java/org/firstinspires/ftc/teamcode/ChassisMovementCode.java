@@ -114,6 +114,13 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
         public boolean MoveToLocation () {
             this.SetAxisMovement();
 
+            if (drivePreset == 0) {
+                drivePreset = 0.0000000000000000000000001;
+            }
+            if (strafePreset == 0) {
+                strafePreset = 0.0000000000000000000000001;
+            }
+
             if (Math.abs(drivePreset - trueDrive) >= .5) {
                 drive = Math.signum(drivePreset - trueDrive) * Math.max(0.2, driveSpeedMultiplier * Math.abs((drivePreset - trueDrive) / drivePreset));
             } else {isDrive = 1; drive = 0;}

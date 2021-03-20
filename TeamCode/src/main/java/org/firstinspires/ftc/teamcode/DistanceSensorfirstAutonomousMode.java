@@ -118,7 +118,7 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     }
                     break;
 
-                case NEWSECONDMOVESETUP:
+               /* case NEWSECONDMOVESETUP:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
@@ -127,7 +127,7 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     autoChassis.movementTimer.reset();
                     driveOpState = DistanceSensorfirstAutonomousMode.OperState.NEWSECONDMOVE;
                     break;
-
+*/
                 case NEWSECONDMOVE:
                     telemetry.addLine("newsecondmoveE");
                     telemetry.addData("driveStrafe", drivePreset);

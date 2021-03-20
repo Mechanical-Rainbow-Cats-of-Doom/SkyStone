@@ -256,7 +256,7 @@ public class AutoCode2 extends LinearOpMode {
                         menu = AutoCode2.Menu.ButtonWaiter6;
                     }
                     break;
-                case ButtonWaiter6: // Both of these options will instantly crash the robot. This is probably a problem, as it means the robot will not be able to function. I might be wrong about this though.
+                case ButtonWaiter6:
                     if ((Save == 2) & (!gamepad1.x)) { menu = AutoCode2.Menu.Redo; }
                     else if ((Save == 1) & (!gamepad1.y)) { menu = AutoCode2.Menu.Save; }
                     break;
@@ -272,18 +272,8 @@ public class AutoCode2 extends LinearOpMode {
                 case Save:
                     switch (StartLocation) {
                         case 1:
-                            moveandliftdrive = 0;
-                            moverightstrafe = 0;
-                            adrive = -38.5;
-                            astrafe = 30.5;
-                            bdrive = -61;
-                            bstrafe = 14;
-                            cdrive = -82;
-                            cstrafe = 30.5;
-                            break;
-                        case 2:
                             moveandliftdrive = -19;
-                            moverightstrafe = -17;
+                            moverightstrafe = -6.5;
                             adrive = -38.5;
                             astrafe = 7;
                             bdrive = -61;
@@ -291,6 +281,18 @@ public class AutoCode2 extends LinearOpMode {
                             cdrive = -82;
                             cstrafe = 7;
                             break;
+
+                        case 2:
+                            moveandliftdrive = -19;
+                            moverightstrafe = 17;
+                            adrive = -38.5;
+                            astrafe = 30.5;
+                            bdrive = -61;
+                            bstrafe = 14;
+                            cdrive = -82;
+                            cstrafe = 30.5;
+                            break;
+
                         case 3:
                             moveandliftdrive = -19;
                             moverightstrafe = -6.5;
@@ -301,6 +303,7 @@ public class AutoCode2 extends LinearOpMode {
                             cdrive = -82;
                             cstrafe = -30.5;
                             break;
+
                         case 4:
                             moveandliftdrive = -19;
                             moverightstrafe = 17;
@@ -354,7 +357,7 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(moveandliftdrive, 0, 0, 0, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(moveandliftdrive, 0.5, 0, 0, autoChassis.zAngle);
                     servoTimer.reset();
                     driveOpState = OperState.MOVEANDLIFT;
                     break;
@@ -397,14 +400,18 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0, 0, moverightstrafe, 0.5, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(0, 0, moverightstrafe, 0.4, autoChassis.zAngle);
                     servoTimer.reset();
                     driveOpState = OperState.MOVERIGHT;
                     break;
                 case MOVERIGHT:
+                    telemetry.addData("front left wheel", autoChassis.frontLeft + " = "+(1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(-1*autoChassis.rotation));
+                    telemetry.addData("back left wheel", autoChassis.backLeft + " = "+(-1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
+                    telemetry.addData("front right wheel", autoChassis.frontRight + " = "+(1*autoChassis.drive) +" + "+(-1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
+                    telemetry.addData("back right wheel", autoChassis.backRight + " = "+(1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
                     if (autoChassis.MoveToLocation() == true) {
-                        MeasureWait.reset();
                         driveOpState = OperState.MEASURE;
+                        MeasureWait.reset();
                     }
                     break;
                 case MEASURE:
@@ -418,10 +425,14 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0, 0, -moverightstrafe, 0.5, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(0, 0, -moverightstrafe, 0.4, autoChassis.zAngle);
                     driveOpState = OperState.MOVEBACK;
                     break;
                 case MOVEBACK:
+                    telemetry.addData("front left wheel", autoChassis.frontLeft + " = "+(1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(-1*autoChassis.rotation));
+                    telemetry.addData("back left wheel", autoChassis.backLeft + " = "+(-1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
+                    telemetry.addData("front right wheel", autoChassis.frontRight + " = "+(1*autoChassis.drive) +" + "+(-1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
+                    telemetry.addData("back right wheel", autoChassis.backRight + " = "+(1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
                     if (autoChassis.MoveToLocation() == true) {
                         servoTimer.reset();
                         driveOpState = OperState.LIFTDOWN;
@@ -449,21 +460,21 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(adrive, 1, astrafe, .5, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(adrive, 1, astrafe, .4, autoChassis.zAngle+2);
                     driveOpState = OperState.A;
                     break;
                 case PREPB:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(bdrive, 1, bstrafe,.5, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(bdrive, 1, bstrafe,.4, autoChassis.zAngle+2);
                     driveOpState = OperState.B;
                     break;
                 case PREPC:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(cdrive, 1,  cstrafe, 0.5, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(cdrive, 1,  cstrafe, .4, autoChassis.zAngle+2);
                     driveOpState = OperState.C;
                     break;
                 case A:
