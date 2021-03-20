@@ -26,6 +26,9 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     
     private double LeftStickValue;
     private double RightStickValue;
+    public DcMotor IntakeMotor;
+    public DcMotor IntakeMotor2;
+    private boolean MotorState = false; //false = off, true = on.
     private Blinker Control_Hub;
     private Blinker expansion_Hub_2;
     ElapsedTime mytimer = new ElapsedTime();
@@ -35,7 +38,12 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         DEBUGSELECT,
         DEBUGONE
     }
-    
+    enum Intake {
+        WaitingForPush,
+        WaitingForRelease,
+        ChangeValue,
+        ChangeMotors
+    }
     @Override
     public void runOpMode() {
         InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
@@ -45,6 +53,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
         TwentyTwentyOneOpModeCode.OperState debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGSELECT;
+        TwentyTwentyOneOpModeCode.Intake IntakeSwitch = Intake.WaitingForPush;
 
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
         expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
@@ -52,8 +61,8 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         lift.ForkServo = hardwareMap.get(CRServo.class, "LiftServo");
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
-        launcher.IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
-        launcher.IntakeMotor2 = hardwareMap.get(DcMotor.class, "IntakeMotor2");
+        IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
+        IntakeMotor2 = hardwareMap.get(DcMotor.class, "IntakeMotor2");
         chasty.imu = hardwareMap.get(BNO055IMU.class, "imu");
         chasty.front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
         chasty.front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
@@ -132,13 +141,10 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     if (this.gamepad2.a) {
                         launchStates = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed;
                     }
-
                     if (this.gamepad2.b) {
                         launchStates = InitialLauncherAndIntakeCode.LauncherStates.Pressed;
                     }
-                    if (this.gamepad2.x) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed2;
-                    }
+
                     break;
                 case Pressed:
                     if (!this.gamepad2.b) {
@@ -175,16 +181,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                         launchStates = InitialLauncherAndIntakeCode.LauncherStates.ToggleLauncher;
                     }
                     break;
-                case ButtonPushed2:
-                    if (!this.gamepad2.x) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ToggleIntake;
-                        break;
-                    }
 
-                case ToggleIntake:
-                    launcher.IntakeToggle();
-                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
-                    break;
                 case ToggleLauncher:
                     launcher.LauncherToggle();
                     launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
@@ -236,7 +233,6 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     }
 
                     if (this.gamepad1.x) {
-
                         chasty.ZeroEncoders();
                         driveOpState = ChassisMovementCode.OperState.FULLDRIVE;
                     }
@@ -462,6 +458,31 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     break;
 
                 default :
+                    break;
+            }
+
+            switch (IntakeSwitch) {
+                case WaitingForPush:
+                    if (gamepad2.x) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForRelease; }
+                    else { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors; }
+                    break;
+                case WaitingForRelease:
+                    if (!gamepad2.x) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeValue; }
+                    break;
+                case ChangeValue:
+                    MotorState = !MotorState;
+                    IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors;
+                    break;
+                case ChangeMotors:
+                    if (MotorState) {
+                        IntakeMotor.setPower(-1);
+                        IntakeMotor2.setPower(1);
+                    }
+                    if (!MotorState) {
+                        IntakeMotor.setPower(0);
+                        IntakeMotor2.setPower(0);
+                    }
+                    IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForPush;
                     break;
             }
         }

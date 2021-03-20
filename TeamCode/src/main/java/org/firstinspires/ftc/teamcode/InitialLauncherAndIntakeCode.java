@@ -41,16 +41,12 @@ public class InitialLauncherAndIntakeCode {
     ElapsedTime mytimer = new ElapsedTime();
     public static class Launcher {
         public DcMotor LaunchMotor;
-        public DcMotor IntakeMotor2;
         public Servo LaunchServo;
-        public DcMotor IntakeMotor;
         public boolean launcherOn = false;
-        public boolean intakeOn = false;
+
         public void LauncherToggle () {
             launcherOn = !launcherOn;
         }
-
-        public void IntakeToggle () { intakeOn = !intakeOn; }
 
         public void LauncherRun () {
             if (launcherOn) {
@@ -58,17 +54,6 @@ public class InitialLauncherAndIntakeCode {
             }
             else {
                 LaunchMotor.setPower(0);
-            }
-        }
-
-        public void IntakeRun () {
-            if (intakeOn) {
-                IntakeMotor.setPower(-1);
-                IntakeMotor2.setPower(-1);
-            }
-            else {
-                IntakeMotor.setPower(0);
-                IntakeMotor2.setPower(0);
             }
         }
 
@@ -85,8 +70,6 @@ public class InitialLauncherAndIntakeCode {
     public enum LauncherStates {
         Start,
         ButtonPushed,
-        ButtonPushed2,
-        ToggleIntake,
         ToggleLauncher,
         Pressed,
         Load,

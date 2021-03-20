@@ -127,9 +127,10 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
                     if (this.gamepad2.b) {
                         launchStates = InitialLauncherAndIntakeCode.LauncherStates.Pressed;
                     }
+                    /*
                     if (this.gamepad2.x) {
                         launchStates = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed2;
-                    }
+                    }*/
                     break;
                 case Pressed:
                     if (!this.gamepad2.b) {
@@ -166,6 +167,7 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
                         launchStates = InitialLauncherAndIntakeCode.LauncherStates.ToggleLauncher;
                     }
                     break;
+                    /*
                 case ButtonPushed2:
                     if (!this.gamepad2.x) {
                         launchStates = InitialLauncherAndIntakeCode.LauncherStates.ToggleIntake;
@@ -176,6 +178,7 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
                     launcher.IntakeToggle();
                     launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
                     break;
+                    */
                 case ToggleLauncher:
                     launcher.LauncherToggle();
                     launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
