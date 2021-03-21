@@ -425,11 +425,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     }
 
                     break;
-
-
-
                 case FULLDRIVE:
-
                     telemetry.addData("X", chasty.trueX);
                     telemetry.addData("Y",chasty.trueY);
                     telemetry.addData("Preset X", chasty.presetX);
@@ -478,7 +474,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                         IntakeMotor.setPower(-1);
                         IntakeMotor2.setPower(1);
                     }
-                    if (!MotorState) {
+                    else if (!MotorState) {
                         IntakeMotor.setPower(0);
                         IntakeMotor2.setPower(0);
                     }

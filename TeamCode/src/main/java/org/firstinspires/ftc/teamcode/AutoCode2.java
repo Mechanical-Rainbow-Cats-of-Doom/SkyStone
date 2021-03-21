@@ -59,7 +59,9 @@ public class AutoCode2 extends LinearOpMode {
     }
     enum Menu  {
         StartLocation,
-        ButtonWaiter,
+        DelayAndGo,
+        ButtonWaiter0,
+        ButtonWaiter1,
         Powershots,
         ButtonWaiter2,
         OnlyPark,
@@ -148,26 +150,30 @@ public class AutoCode2 extends LinearOpMode {
                     telemetry.update();
                     if (gamepad1.a) {
                         StartLocation = 1;
-                        menu = AutoCode2.Menu.ButtonWaiter;
+                        menu = AutoCode2.Menu.ButtonWaiter0;
                     }
                     else if (gamepad1.b) {
                         StartLocation = 2;
-                        menu = AutoCode2.Menu.ButtonWaiter;
+                        menu = AutoCode2.Menu.ButtonWaiter0;
                     }
                     else if (gamepad1.x) {
                         StartLocation = 3;
-                        menu = AutoCode2.Menu.ButtonWaiter;
+                        menu = AutoCode2.Menu.ButtonWaiter0;
                     }
                     else if (gamepad1.y) {
                         StartLocation = 4;
-                        menu = AutoCode2.Menu.ButtonWaiter;
+                        menu = AutoCode2.Menu.ButtonWaiter0;
                     }
                     break;
-                case ButtonWaiter:
+                case ButtonWaiter0:
                     if ((StartLocation == 1) & (!gamepad1.a)) { menu = AutoCode2.Menu.Powershots; }
                     else if ((StartLocation == 2) & (!gamepad1.b)) { menu = AutoCode2.Menu.Powershots; }
                     else if ((StartLocation == 3) & (!gamepad1.x)) { menu = AutoCode2.Menu.Powershots; }
                     else if ((StartLocation == 4) & (!gamepad1.y)) { menu = AutoCode2.Menu.Powershots; }
+                    break;
+                case DelayAndGo:
+                    break;
+                case ButtonWaiter1:
                     break;
                 case Powershots:
                     telemetry.addLine("Shoot Powershots? Yes(Y) No(X)");
