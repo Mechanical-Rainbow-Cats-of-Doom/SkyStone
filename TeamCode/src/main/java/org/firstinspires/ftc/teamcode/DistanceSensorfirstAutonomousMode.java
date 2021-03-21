@@ -122,7 +122,7 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(60,50,autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(60, 1,50, 1,autoChassis.zAngle);
                     servoTimer.reset();
                     autoChassis.movementTimer.reset();
                     driveOpState = DistanceSensorfirstAutonomousMode.OperState.NEWSECONDMOVE;

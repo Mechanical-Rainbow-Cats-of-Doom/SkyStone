@@ -65,6 +65,9 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
         double clearStrafe = 0;
         double tau = 6.28318530718;
 
+        double IMUDrive = 0;
+        double IMUStrafe = 0;
+
 
 
         double drive;
@@ -254,6 +257,12 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
             */
         }
 
+        public void SetIMUMotors(double drive, double strafe, double rotate, double IMU_zAngle) {
+            IMUDrive = strafe*Math.sin(-IMU_zAngle)+drive*Math.sin((Math.PI/2)-IMU_zAngle);
+            IMUStrafe = strafe*Math.cos(-IMU_zAngle)+drive*Math.cos((Math.PI/2)-IMU_zAngle);
+            this.SetMotors(IMUDrive,IMUStrafe,rotate);
+        }
+
         public void SetMotors(double drive, double strafe, double rotate) {
             //this.frontLeft = drive - strafe - rotate;
             //this.backLeft = -drive - strafe + rotate;
@@ -283,7 +292,8 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
         SETMOTORMULTIPLE,
         AUTONOMOUSTEST,
         FULLDRIVE,
-        ROTATE360
+        ROTATE360,
+        ABSOLUTEDRIVE
     }
 /*
     @Override

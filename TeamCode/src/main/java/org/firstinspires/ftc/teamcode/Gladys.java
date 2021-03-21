@@ -1,34 +1,25 @@
 package org.firstinspires.ftc.teamcode;
-import android.os.DropBoxManager;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import java.lang.Math;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+
 @TeleOp
 //Merging, lift, and part of intake done by nahtE, the rest done by lahiN.
 //back right front right front left back left
-public class TwentyTwentyOneOpModeCode extends LinearOpMode {
+public class Gladys extends LinearOpMode {
     
     private double LeftStickValue;
     private double RightStickValue;
-    public DcMotor IntakeMotor;
-    public DcMotor IntakeMotor2;
-    private boolean MotorState = false; //false = off, true = on.
     private Blinker Control_Hub;
     private Blinker expansion_Hub_2;
     ElapsedTime mytimer = new ElapsedTime();
@@ -38,12 +29,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         DEBUGSELECT,
         DEBUGONE
     }
-    enum Intake {
-        WaitingForPush,
-        WaitingForRelease,
-        ChangeValue,
-        ChangeMotors
-    }
+    
     @Override
     public void runOpMode() {
         InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
@@ -52,8 +38,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
         ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
-        TwentyTwentyOneOpModeCode.OperState debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGSELECT;
-        TwentyTwentyOneOpModeCode.Intake IntakeSwitch = Intake.WaitingForPush;
+        Gladys.OperState debugOpState = Gladys.OperState.DEBUGSELECT;
 
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
         expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
@@ -61,8 +46,8 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         lift.ForkServo = hardwareMap.get(CRServo.class, "LiftServo");
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
-        IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
-        IntakeMotor2 = hardwareMap.get(DcMotor.class, "IntakeMotor2");
+        launcher.IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
+        launcher.IntakeMotor2 = hardwareMap.get(DcMotor.class, "IntakeMotor2");
         chasty.imu = hardwareMap.get(BNO055IMU.class, "imu");
         chasty.front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
         chasty.front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
@@ -141,10 +126,13 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     if (this.gamepad2.a) {
                         launchStates = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed;
                     }
+
                     if (this.gamepad2.b) {
                         launchStates = InitialLauncherAndIntakeCode.LauncherStates.Pressed;
                     }
-
+                    if (this.gamepad2.x) {
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed2;
+                    }
                     break;
                 case Pressed:
                     if (!this.gamepad2.b) {
@@ -181,7 +169,16 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                         launchStates = InitialLauncherAndIntakeCode.LauncherStates.ToggleLauncher;
                     }
                     break;
+                case ButtonPushed2:
+                    if (!this.gamepad2.x) {
+                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ToggleIntake;
+                        break;
+                    }
 
+                case ToggleIntake:
+                    launcher.IntakeToggle();
+                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
+                    break;
                 case ToggleLauncher:
                     launcher.LauncherToggle();
                     launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
@@ -193,19 +190,15 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
 
                     drive = -this.gamepad1.left_stick_y;
                     strafe = -this.gamepad1.left_stick_x;
-                    telemetry.addData("zAngle", chasty.zAngle);
-                    telemetry.addData("rotate", chasty.trueRotate);
-                    telemetry.addData("br", chasty.backRight);
-                    telemetry.addData("bl", chasty.backLeft);
-                    telemetry.addData("fr", chasty.frontRight);
+
 
                     rotate = 0;
 
 
-                    chasty.SetMotors (drive, strafe, rotate);
+                    chasty.SetIMUMotors(drive,strafe,rotate,chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle);
                     chasty.Drive();
 
-                    chasty.Encoders();
+
                     chasty.SetAxisMovement();
 
                     if (this.gamepad1.left_trigger != 0) {
@@ -233,6 +226,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     }
 
                     if (this.gamepad1.x) {
+
                         chasty.ZeroEncoders();
                         driveOpState = ChassisMovementCode.OperState.FULLDRIVE;
                     }
@@ -425,7 +419,14 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     }
 
                     break;
+
+
+
+
+
+
                 case FULLDRIVE:
+
                     telemetry.addData("X", chasty.trueX);
                     telemetry.addData("Y",chasty.trueY);
                     telemetry.addData("Preset X", chasty.presetX);
@@ -453,52 +454,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     chasty.SetTrueAxis();
                     break;
 
-                case ABSOLUTEDRIVE:
-
-                    drive = -this.gamepad1.left_stick_y;
-                    strafe = -this.gamepad1.left_stick_x;
-                    telemetry.addData("zAngle", chasty.zAngle);
-                    telemetry.addData("rotate", chasty.trueRotate);
-                    telemetry.addData("br", chasty.backRight);
-                    telemetry.addData("bl", chasty.backLeft);
-                    telemetry.addData("fr", chasty.frontRight);
-
-                    rotate = 0;
-
-
-                    chasty.SetMotors (drive, strafe, rotate);
-                    chasty.Drive();
-
-                    chasty.Encoders();
-                    chasty.SetAxisMovement();
-
-                    break;
                 default :
-                    break;
-            }
-
-            switch (IntakeSwitch) {
-                case WaitingForPush:
-                    if (gamepad2.x) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForRelease; }
-                    else { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors; }
-                    break;
-                case WaitingForRelease:
-                    if (!gamepad2.x) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeValue; }
-                    break;
-                case ChangeValue:
-                    MotorState = !MotorState;
-                    IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors;
-                    break;
-                case ChangeMotors:
-                    if (MotorState) {
-                        IntakeMotor.setPower(-1);
-                        IntakeMotor2.setPower(1);
-                    }
-                    else if (!MotorState) {
-                        IntakeMotor.setPower(0);
-                        IntakeMotor2.setPower(0);
-                    }
-                    IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForPush;
                     break;
             }
         }
