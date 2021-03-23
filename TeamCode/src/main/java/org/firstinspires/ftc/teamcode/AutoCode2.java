@@ -24,6 +24,7 @@ public class AutoCode2 extends LinearOpMode {
     private Blinker expansion_Hub_2;
     ElapsedTime servoTimer = new ElapsedTime();
     ElapsedTime menuTimer = new ElapsedTime();
+
     enum OperState {
         FIRSTMOVE,
         PREPMOVEANDLIFT,
@@ -60,9 +61,11 @@ public class AutoCode2 extends LinearOpMode {
         StrafeLeft1,
         StrafeLeft2,
         LaunchPark,
-        MoveToGoals
+        MoveToGoals,
+        Delayer
     }
-    enum Menu  {
+
+    enum Menu {
         StartLocation,
         DelayAndGo,
         ButtonWaiter0,
@@ -80,8 +83,8 @@ public class AutoCode2 extends LinearOpMode {
         AskIfDone,
         Redo,
         ButtonWaiter6,
-        Delayer
     }
+
     @Override
     public void runOpMode() {
         InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
@@ -104,11 +107,11 @@ public class AutoCode2 extends LinearOpMode {
         autoChassis.back_right_wheel = hardwareMap.get(DcMotor.class, "back right wheel");
         ring.DistanceSensor = hardwareMap.get(DistanceSensor.class, "Distance Sensor");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
         autoChassis.imu.initialize(parameters);
         double drivePreset = 0;
 
@@ -125,7 +128,7 @@ public class AutoCode2 extends LinearOpMode {
 23.5 Inches Between the strips.
  */
         double strafePreset = 0;
-        double rotationGoal = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
+        double rotationGoal = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
         double originalRotation = rotationGoal;
         double shootWait = 0;
         double rotate = 0;
@@ -145,7 +148,7 @@ public class AutoCode2 extends LinearOpMode {
         double topgoaldrive = 0;
         double powershotstrafe = 0;
         double topgoalstrafe = 0;
-        
+
         int isRotate = 0;
         int isStrafe = 0;
         int isDrive = 0;
@@ -153,7 +156,7 @@ public class AutoCode2 extends LinearOpMode {
         ElapsedTime MeasureWait = new ElapsedTime();
         double driveValue = 0;
         double strafeValue = 0;
-        autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
+        autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         while (!IsMenuDone) {
             switch (menu) {
                 case StartLocation:
@@ -162,25 +165,27 @@ public class AutoCode2 extends LinearOpMode {
                     if (gamepad1.a) {
                         StartLocation = 1;
                         menu = AutoCode2.Menu.ButtonWaiter0;
-                    }
-                    else if (gamepad1.b) {
+                    } else if (gamepad1.b) {
                         StartLocation = 2;
                         menu = AutoCode2.Menu.ButtonWaiter0;
-                    }
-                    else if (gamepad1.x) {
+                    } else if (gamepad1.x) {
                         StartLocation = 3;
                         menu = AutoCode2.Menu.ButtonWaiter0;
-                    }
-                    else if (gamepad1.y) {
+                    } else if (gamepad1.y) {
                         StartLocation = 4;
                         menu = AutoCode2.Menu.ButtonWaiter0;
                     }
                     break;
                 case ButtonWaiter0:
-                    if ((StartLocation == 1) & (!gamepad1.a)) { menu = AutoCode2.Menu.DelayAndGo; }
-                    else if ((StartLocation == 2) & (!gamepad1.b)) { menu = AutoCode2.Menu.DelayAndGo; }
-                    else if ((StartLocation == 3) & (!gamepad1.x)) { menu = AutoCode2.Menu.DelayAndGo; }
-                    else if ((StartLocation == 4) & (!gamepad1.y)) { menu = AutoCode2.Menu.DelayAndGo; }
+                    if ((StartLocation == 1) & (!gamepad1.a)) {
+                        menu = AutoCode2.Menu.DelayAndGo;
+                    } else if ((StartLocation == 2) & (!gamepad1.b)) {
+                        menu = AutoCode2.Menu.DelayAndGo;
+                    } else if ((StartLocation == 3) & (!gamepad1.x)) {
+                        menu = AutoCode2.Menu.DelayAndGo;
+                    } else if ((StartLocation == 4) & (!gamepad1.y)) {
+                        menu = AutoCode2.Menu.DelayAndGo;
+                    }
                     break;
                 case DelayAndGo:
                     telemetry.addLine("Are you doing the Wobble Goals? If you aren't, then the robot will delay for 11 seconds and then go straight to the launch location. Yes (Y) No (X)");
@@ -188,15 +193,17 @@ public class AutoCode2 extends LinearOpMode {
                     if (gamepad1.x) {
                         Powershots = 2;
                         menu = AutoCode2.Menu.ButtonWaiter1;
-                    }
-                    else if (gamepad1.y) {
+                    } else if (gamepad1.y) {
                         Powershots = 1;
                         menu = AutoCode2.Menu.ButtonWaiter1;
                     }
                     break;
                 case ButtonWaiter1:
-                    if ((DelayAndGo == 2) & (!gamepad1.x)) { menu = AutoCode2.Menu.Poweshots; }
-                    else if ((DelayAndGo == 1) & (!gamepad1.y)) { menu = AutoCode2.Menu.Powershots; }
+                    if ((DelayAndGo == 2) & (!gamepad1.x)) {
+                        menu = AutoCode2.Menu.Powershots;
+                    } else if ((DelayAndGo == 1) & (!gamepad1.y)) {
+                        menu = AutoCode2.Menu.Powershots;
+                    }
                     break;
                 case Powershots:
                     telemetry.addLine("Shoot Powershots? Yes(Y) No(X)");
@@ -204,15 +211,17 @@ public class AutoCode2 extends LinearOpMode {
                     if (gamepad1.x) {
                         DelayAndGo = 2;
                         menu = AutoCode2.Menu.ButtonWaiter2;
-                    }
-                    else if (gamepad1.y) {
+                    } else if (gamepad1.y) {
                         DelayAndGo = 1;
                         menu = AutoCode2.Menu.ButtonWaiter2;
                     }
                     break;
                 case ButtonWaiter2:
-                    if ((Powershots == 2) & (!gamepad1.x)) { menu = AutoCode2.Menu.Goals; }
-                    else if ((Powershots == 1) & (!gamepad1.y)) { menu = AutoCode2.Menu.CheckForInvalid; }
+                    if ((Powershots == 2) & (!gamepad1.x)) {
+                        menu = AutoCode2.Menu.Goals;
+                    } else if ((Powershots == 1) & (!gamepad1.y)) {
+                        menu = AutoCode2.Menu.CheckForInvalid;
+                    }
                     break;
                 case Goals:
                     telemetry.addLine("Shoot into Goal? Yes(Y) No(X)");
@@ -220,15 +229,17 @@ public class AutoCode2 extends LinearOpMode {
                     if (gamepad1.x) {
                         ShootGoals = 2;
                         menu = AutoCode2.Menu.ButtonWaiter3;
-                    }
-                    else if (gamepad1.y) {
+                    } else if (gamepad1.y) {
                         ShootGoals = 1;
                         menu = AutoCode2.Menu.ButtonWaiter3;
                     }
                     break;
                 case ButtonWaiter3:
-                    if ((ShootGoals == 2) & (!gamepad1.x)) { menu = AutoCode2.Menu.OnlyPark; }
-                    else if ((ShootGoals == 1) & (!gamepad1.y)) { menu = AutoCode2.Menu.CheckForInvalid; }
+                    if ((ShootGoals == 2) & (!gamepad1.x)) {
+                        menu = AutoCode2.Menu.OnlyPark;
+                    } else if ((ShootGoals == 1) & (!gamepad1.y)) {
+                        menu = AutoCode2.Menu.CheckForInvalid;
+                    }
                     break;
                 case OnlyPark:
                     telemetry.addLine("Would you like to park in the corner? Yes(Y) No(X)");
@@ -236,15 +247,17 @@ public class AutoCode2 extends LinearOpMode {
                     if (gamepad1.x) {
                         OnlyPark = 2;
                         menu = AutoCode2.Menu.ButtonWaiter4;
-                    }
-                    else if (gamepad1.y) {
+                    } else if (gamepad1.y) {
                         OnlyPark = 1;
                         menu = AutoCode2.Menu.ButtonWaiter4;
                     }
                     break;
                 case ButtonWaiter4:
-                    if ((OnlyPark == 2) & (!gamepad1.x)) { menu = AutoCode2.Menu.AreYouMoving; }
-                    else if ((OnlyPark == 1) & (!gamepad1.y)) { menu = AutoCode2.Menu.CheckForInvalid; }
+                    if ((OnlyPark == 2) & (!gamepad1.x)) {
+                        menu = AutoCode2.Menu.AreYouMoving;
+                    } else if ((OnlyPark == 1) & (!gamepad1.y)) {
+                        menu = AutoCode2.Menu.CheckForInvalid;
+                    }
                     break;
                 case AreYouMoving:
                     telemetry.addLine("Would you like to stay put? Yes(Y) No(X) No will cause an error and kick you back to the beginning.");
@@ -252,15 +265,17 @@ public class AutoCode2 extends LinearOpMode {
                     if (gamepad1.x) {
                         AreYouMoving = 2;
                         menu = AutoCode2.Menu.ButtonWaiter5;
-                    }
-                    else if (gamepad1.y) {
+                    } else if (gamepad1.y) {
                         AreYouMoving = 1;
                         menu = AutoCode2.Menu.ButtonWaiter5;
                     }
                     break;
                 case ButtonWaiter5:
-                    if ((AreYouMoving == 2) & (!gamepad1.x)) { menu = AutoCode2.Menu.CheckForInvalid; }
-                    else if ((AreYouMoving == 1) & (!gamepad1.y)) { menu = AutoCode2.Menu.CheckForInvalid; }
+                    if ((AreYouMoving == 2) & (!gamepad1.x)) {
+                        menu = AutoCode2.Menu.CheckForInvalid;
+                    } else if ((AreYouMoving == 1) & (!gamepad1.y)) {
+                        menu = AutoCode2.Menu.CheckForInvalid;
+                    }
                     break;
                 case CheckForInvalid:
                     if (Powershots == 2 & ShootGoals == 2 & OnlyPark == 2 & AreYouMoving == 2) {
@@ -270,8 +285,9 @@ public class AutoCode2 extends LinearOpMode {
                         OnlyPark = 0;
                         AreYouMoving = 0;
                         menu = AutoCode2.Menu.StartLocation;
+                    } else {
+                        menu = AutoCode2.Menu.AskIfDone;
                     }
-                    else { menu = AutoCode2.Menu.AskIfDone; }
                     break;
                 case AskIfDone:
                     telemetry.addLine("Would you like to save these changes? Yes(Y) No(X)");
@@ -279,15 +295,17 @@ public class AutoCode2 extends LinearOpMode {
                     if (gamepad1.x) {
                         Save = 2;
                         menu = AutoCode2.Menu.ButtonWaiter6;
-                    }
-                    else if (gamepad1.y) {
+                    } else if (gamepad1.y) {
                         Save = 1;
                         menu = AutoCode2.Menu.ButtonWaiter6;
                     }
                     break;
                 case ButtonWaiter6:
-                    if ((Save == 2) & (!gamepad1.x)) { menu = AutoCode2.Menu.Redo; }
-                    else if ((Save == 1) & (!gamepad1.y)) { menu = AutoCode2.Menu.Save; }
+                    if ((Save == 2) & (!gamepad1.x)) {
+                        menu = AutoCode2.Menu.Redo;
+                    } else if ((Save == 1) & (!gamepad1.y)) {
+                        menu = AutoCode2.Menu.Save;
+                    }
                     break;
                 case Redo:
                     StartLocation = 0;
@@ -303,24 +321,21 @@ public class AutoCode2 extends LinearOpMode {
                     if (DelayAndGo == 1) {
                         driveOpState = AutoCode2.OperState.Delayer;
                         if (Powershots == 1) {
-                          powershotdrive = 1;
-                          powershotstrafe = 1;
-                      }
-                      else if (ShootGoals == 1) {
-                          topgoaldrive = 1;
-                          topgoalstrafe = 1;
-                      }
-                    }
-                    else {
-                          if (Powershots == 1) {
-                              powershotdrive = 1;
-                              powershotstrafe = 1;
-                          }
-                          else if (ShootGoals == 1) {
-                              topgoaldrive = 1;
-                              topgoalstrafe = 1;
-                          }
+                            powershotdrive = 1;
+                            powershotstrafe = 1;
+                        } else if (ShootGoals == 1) {
+                            topgoaldrive = 1;
+                            topgoalstrafe = 1;
                         }
+                    } else {
+                        if (Powershots == 1) {
+                            powershotdrive = 1;
+                            powershotstrafe = 1;
+                        } else if (ShootGoals == 1) {
+                            topgoaldrive = 1;
+                            topgoalstrafe = 1;
+                        }
+                    }
                     switch (StartLocation) {
                         case 1:
                             moveandliftdrive = -19;
@@ -373,7 +388,7 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     telemetry.addLine("Choices have been saved. You may now tell the ref you are ready.");
                     telemetry.update();
-                    
+
                     IsMenuDone = true;
                     break;
             }
@@ -388,16 +403,17 @@ public class AutoCode2 extends LinearOpMode {
 */
         while (opModeIsActive()) {
 
-            autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
+            autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
             launcher.LauncherRun();
             ring.MeasureDistance();
             telemetry.addData("where you are in strafe", Math.abs(autoChassis.strafePreset - autoChassis.trueStrafe));
-            switch(driveOpState) {
+
+            switch (driveOpState) {
                 case FIRSTMOVE:
                     telemetry.addLine("FIRSTMOVE");
                     lift.MoveServo(1);
 
-                    if (servoTimer.time()  >= 2) {
+                    if (servoTimer.time() >= 2) {
                         lift.MoveServo(0);
                         driveOpState = AutoCode2.OperState.PREPMOVEANDLIFT;
                     }
@@ -409,9 +425,13 @@ public class AutoCode2 extends LinearOpMode {
                     break;
                 case Delayer:
                     if (servoTimer.time() >= 11) {
-                        if (Powershots == 1) { driveOpState = AutoCode2.OperState.MoveToPowerShots; }
-                        else if (ShootGoals == 1) { driveOpState = AutoCode2.OperState.MoveToGoals; }
-                        break;
+                        if (Powershots == 1) {
+                            driveOpState = AutoCode2.OperState.MoveToPowerShots;
+                        } else if (ShootGoals == 1) {
+                            driveOpState = AutoCode2.OperState.MoveToGoals;
+                        }
+                    }
+                    break;
                 case PREPMOVEANDLIFT:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
@@ -420,7 +440,6 @@ public class AutoCode2 extends LinearOpMode {
                     servoTimer.reset();
                     driveOpState = OperState.MOVEANDLIFT;
                     break;
-
                 case MOVEANDLIFT:
                     telemetry.addLine("newsecondmoveE");
                     telemetry.addData("driveStrafe", drivePreset);
@@ -440,17 +459,16 @@ public class AutoCode2 extends LinearOpMode {
                     telemetry.addData("Math.maxRotate", (Math.max(0.2, Math.abs((rotationGoal - autoChassis.zAngle) / 180))));
                     telemetry.addData("Math.maxStrafe", (Math.max(0.2, Math.abs((strafePreset - autoChassis.trueStrafe) / strafePreset))));
                     telemetry.addData("Math.maxDrive", (Math.max(0.2, Math.abs((drivePreset - autoChassis.trueDrive) / drivePreset))));
-
                     if (autoChassis.MoveToLocation() == true) {
                         telemetry.addLine("done");
                         driveOpState = AutoCode2.OperState.LIFTUP;
                         servoTimer.reset();
                     }
-
                     break;
+
                 case LIFTUP:
                     lift.MoveServo(-1);
-                    if (servoTimer.time()  >= 2) {
+                    if (servoTimer.time() >= 2) {
                         lift.MoveServo(0);
                         driveOpState = AutoCode2.OperState.PREPMOVERIGHT;
                     }
@@ -464,10 +482,10 @@ public class AutoCode2 extends LinearOpMode {
                     driveOpState = OperState.MOVERIGHT;
                     break;
                 case MOVERIGHT:
-                    telemetry.addData("front left wheel", autoChassis.frontLeft + " = "+(1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(-1*autoChassis.rotation));
-                    telemetry.addData("back left wheel", autoChassis.backLeft + " = "+(-1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
-                    telemetry.addData("front right wheel", autoChassis.frontRight + " = "+(1*autoChassis.drive) +" + "+(-1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
-                    telemetry.addData("back right wheel", autoChassis.backRight + " = "+(1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
+                    telemetry.addData("front left wheel", autoChassis.frontLeft + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (-1 * autoChassis.rotation));
+                    telemetry.addData("back left wheel", autoChassis.backLeft + " = " + (-1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
+                    telemetry.addData("front right wheel", autoChassis.frontRight + " = " + (1 * autoChassis.drive) + " + " + (-1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
+                    telemetry.addData("back right wheel", autoChassis.backRight + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
                     if (autoChassis.MoveToLocation() == true) {
                         driveOpState = OperState.MEASURE;
                         MeasureWait.reset();
@@ -475,9 +493,9 @@ public class AutoCode2 extends LinearOpMode {
                     break;
                 case MEASURE:
                     if (MeasureWait.time(TimeUnit.SECONDS) >= 1) {
-                      ring.MeasureDistance();
-                      ringCount = ring.RingHeight();
-                      driveOpState = OperState.PREPMOVEBACK;
+                        ring.MeasureDistance();
+                        ringCount = ring.RingHeight();
+                        driveOpState = OperState.PREPMOVEBACK;
                     }
                     break;
                 case PREPMOVEBACK:
@@ -488,10 +506,10 @@ public class AutoCode2 extends LinearOpMode {
                     driveOpState = OperState.MOVEBACK;
                     break;
                 case MOVEBACK:
-                    telemetry.addData("front left wheel", autoChassis.frontLeft + " = "+(1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(-1*autoChassis.rotation));
-                    telemetry.addData("back left wheel", autoChassis.backLeft + " = "+(-1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
-                    telemetry.addData("front right wheel", autoChassis.frontRight + " = "+(1*autoChassis.drive) +" + "+(-1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
-                    telemetry.addData("back right wheel", autoChassis.backRight + " = "+(1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
+                    telemetry.addData("front left wheel", autoChassis.frontLeft + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (-1 * autoChassis.rotation));
+                    telemetry.addData("back left wheel", autoChassis.backLeft + " = " + (-1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
+                    telemetry.addData("front right wheel", autoChassis.frontRight + " = " + (1 * autoChassis.drive) + " + " + (-1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
+                    telemetry.addData("back right wheel", autoChassis.backRight + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
                     if (autoChassis.MoveToLocation() == true) {
                         servoTimer.reset();
                         driveOpState = OperState.LIFTDOWN;
@@ -499,7 +517,7 @@ public class AutoCode2 extends LinearOpMode {
                     break;
                 case LIFTDOWN:
                     lift.MoveServo(1);
-                    if (servoTimer.time()  >= 2) {
+                    if (servoTimer.time() >= 2) {
                         lift.MoveServo(0);
                         driveOpState = AutoCode2.OperState.DECIDE;
                     }
@@ -507,11 +525,9 @@ public class AutoCode2 extends LinearOpMode {
                 case DECIDE:
                     if (ringCount == 0) {
                         driveOpState = AutoCode2.OperState.PREPA;
-                    }
-                    else if (ringCount == 1) {
+                    } else if (ringCount == 1) {
                         driveOpState = AutoCode2.OperState.PREPB;
-                    }
-                    else if (ringCount == 4) {
+                    } else if (ringCount == 4) {
                         driveOpState = AutoCode2.OperState.PREPC;
                     }
                     break;
@@ -519,31 +535,34 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(adrive, 1, astrafe, .4, autoChassis.zAngle+2);
+                    autoChassis.SetPresetMovement(adrive, 1, astrafe, .4, autoChassis.zAngle + 2);
                     driveOpState = OperState.A;
                     break;
                 case PREPB:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(bdrive, 1, bstrafe,.4, autoChassis.zAngle+2);
+                    autoChassis.SetPresetMovement(bdrive, 1, bstrafe, .4, autoChassis.zAngle + 2);
                     driveOpState = OperState.B;
                     break;
                 case PREPC:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(cdrive, 1,  cstrafe, .4, autoChassis.zAngle+2);
+                    autoChassis.SetPresetMovement(cdrive, 1, cstrafe, .4, autoChassis.zAngle + 2);
                     driveOpState = OperState.C;
                     break;
                 case A:
-                    if (autoChassis.MoveToLocation() == true) { }
+                    if (autoChassis.MoveToLocation() == true) {
+                    }
                     break;
                 case B:
-                    if (autoChassis.MoveToLocation() == true) { }
+                    if (autoChassis.MoveToLocation() == true) {
+                    }
                     break;
                 case C:
-                    if (autoChassis.MoveToLocation() == true) { }
+                    if (autoChassis.MoveToLocation() == true) {
+                    }
                     break;
                 case THIRDMOVE:
                     telemetry.addLine("THIRDMOVE");
@@ -564,8 +583,7 @@ public class AutoCode2 extends LinearOpMode {
                         if (servoTimer.time() > 0.5) {
                             driveOpState = AutoCode2.OperState.firsttimer;
                         }
-                    }
-                    else {
+                    } else {
                         driveOpState = AutoCode2.OperState.FIFTHMOVESETUP;
                     }
 
