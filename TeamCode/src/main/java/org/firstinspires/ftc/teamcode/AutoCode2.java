@@ -312,15 +312,15 @@ public class AutoCode2 extends LinearOpMode {
                       }
                     }
                     else {
-                      if (Powershots == 1) {
-                          powershotdrive = 1;
-                          powershotstrafe = 1;
-                      }
-                      else if (ShootGoals == 1) {
-                          topgoaldrive = 1;
-                          topgoalstrafe = 1;
-                      }
-                    }
+                          if (Powershots == 1) {
+                              powershotdrive = 1;
+                              powershotstrafe = 1;
+                          }
+                          else if (ShootGoals == 1) {
+                              topgoaldrive = 1;
+                              topgoalstrafe = 1;
+                          }
+                        }
                     switch (StartLocation) {
                         case 1:
                             moveandliftdrive = -19;
