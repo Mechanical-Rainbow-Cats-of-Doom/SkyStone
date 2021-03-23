@@ -57,11 +57,17 @@ public class AutoCode2 extends LinearOpMode {
         A,
         B,
         C,
+        PrepMoveToPowerShots,
+        PrepStrafeLeft1,
+        PrepStrafeLeft2,
+        PrepLaunchPark,
+        PrepMoveToGoals,
         MoveToPowerShots,
         StrafeLeft1,
         StrafeLeft2,
         LaunchPark,
         MoveToGoals,
+        NextLocation,
         Delayer
     }
 
@@ -82,7 +88,7 @@ public class AutoCode2 extends LinearOpMode {
         Save,
         AskIfDone,
         Redo,
-        ButtonWaiter6,
+        ButtonWaiter6
     }
 
     @Override
@@ -117,6 +123,7 @@ public class AutoCode2 extends LinearOpMode {
 
         //menu variables
         boolean IsMenuDone = false;
+        boolean OnRed = true; //true is on red, false is on blue.
         int StartLocation = 0; //1 is Blue 1, 2 is Blue 2, 3 is Red 1, 4 is Red 2.
         int Powershots = 0; //1 is yes, 2 is no.
         int ShootGoals = 0; //1 is yes, 2 is no.
@@ -164,15 +171,19 @@ public class AutoCode2 extends LinearOpMode {
                     telemetry.update();
                     if (gamepad1.a) {
                         StartLocation = 1;
+                        OnRed = false;
                         menu = AutoCode2.Menu.ButtonWaiter0;
                     } else if (gamepad1.b) {
                         StartLocation = 2;
+                        OnRed = false;
                         menu = AutoCode2.Menu.ButtonWaiter0;
                     } else if (gamepad1.x) {
                         StartLocation = 3;
+                        OnRed = true;
                         menu = AutoCode2.Menu.ButtonWaiter0;
                     } else if (gamepad1.y) {
                         StartLocation = 4;
+                        OnRed = true;
                         menu = AutoCode2.Menu.ButtonWaiter0;
                     }
                     break;
@@ -318,24 +329,7 @@ public class AutoCode2 extends LinearOpMode {
                     menu = AutoCode2.Menu.StartLocation;
                     break;
                 case Save:
-                    if (DelayAndGo == 1) {
-                        driveOpState = AutoCode2.OperState.Delayer;
-                        if (Powershots == 1) {
-                            powershotdrive = 1;
-                            powershotstrafe = 1;
-                        } else if (ShootGoals == 1) {
-                            topgoaldrive = 1;
-                            topgoalstrafe = 1;
-                        }
-                    } else {
-                        if (Powershots == 1) {
-                            powershotdrive = 1;
-                            powershotstrafe = 1;
-                        } else if (ShootGoals == 1) {
-                            topgoaldrive = 1;
-                            topgoalstrafe = 1;
-                        }
-                    }
+                    if (DelayAndGo == 1) { driveOpState = AutoCode2.OperState.Delayer; }
                     switch (StartLocation) {
                         case 1:
                             moveandliftdrive = -19;
@@ -346,8 +340,16 @@ public class AutoCode2 extends LinearOpMode {
                             bstrafe = -9.5;
                             cdrive = -82;
                             cstrafe = 7;
-                            powershotstrafe = -powershotstrafe;
-                            topgoalstrafe = -topgoalstrafe;
+                            if (DelayAndGo == 1) {
+                                if (Powershots == 1) {
+                                    powershotdrive = 0;
+                                    powershotstrafe = 0;
+                                }
+                                if (ShootGoals == 1) {
+                                    topgoaldrive = 0;
+                                    topgoalstrafe = 0;
+                                }
+                            }
                             break;
 
                         case 2:
@@ -359,8 +361,16 @@ public class AutoCode2 extends LinearOpMode {
                             bstrafe = 14;
                             cdrive = -82;
                             cstrafe = 30.5;
-                            powershotstrafe = -powershotstrafe;
-                            topgoalstrafe = -topgoalstrafe;
+                            if (DelayAndGo == 1) {
+                                if (Powershots == 1) {
+                                    powershotdrive = 0;
+                                    powershotstrafe = 0;
+                                }
+                                if (ShootGoals == 1) {
+                                    topgoaldrive = 0;
+                                    topgoalstrafe = 0;
+                                }
+                            }
                             break;
 
                         case 3:
@@ -372,6 +382,16 @@ public class AutoCode2 extends LinearOpMode {
                             bstrafe = -14;
                             cdrive = -82;
                             cstrafe = -30.5;
+                            if (DelayAndGo == 1) {
+                                if (Powershots == 1) {
+                                    powershotdrive = 0;
+                                    powershotstrafe = 0;
+                                }
+                                if (ShootGoals == 1) {
+                                    topgoaldrive = 0;
+                                    topgoalstrafe = 0;
+                                }
+                            }
                             break;
 
                         case 4:
@@ -383,16 +403,24 @@ public class AutoCode2 extends LinearOpMode {
                             bstrafe = 9.5;
                             cdrive = -82;
                             cstrafe = -7;
+                            if (DelayAndGo == 1) {
+                                if (Powershots == 1) {
+                                    powershotdrive = 0;
+                                    powershotstrafe = 0;
+                                }
+                                if (ShootGoals == 1) {
+                                    topgoaldrive = 0;
+                                    topgoalstrafe = 0;
+                                }
+                            }
                             break;
 
                     }
                     telemetry.addLine("Choices have been saved. You may now tell the ref you are ready.");
                     telemetry.update();
-
                     IsMenuDone = true;
                     break;
             }
-
         }
 
         waitForStart();
@@ -407,7 +435,6 @@ public class AutoCode2 extends LinearOpMode {
             launcher.LauncherRun();
             ring.MeasureDistance();
             telemetry.addData("where you are in strafe", Math.abs(autoChassis.strafePreset - autoChassis.trueStrafe));
-
             switch (driveOpState) {
                 case FIRSTMOVE:
                     telemetry.addLine("FIRSTMOVE");
@@ -423,199 +450,244 @@ public class AutoCode2 extends LinearOpMode {
                     MeasureWait.reset();
                     driveOpState = AutoCode2.OperState.MEASURE;
                     break;
+
                 case Delayer:
                     if (servoTimer.time() >= 11) {
                         if (Powershots == 1) {
-                            driveOpState = AutoCode2.OperState.MoveToPowerShots;
+                            driveOpState = AutoCode2.OperState.PrepMoveToPowerShots;
                         } else if (ShootGoals == 1) {
-                            driveOpState = AutoCode2.OperState.MoveToGoals;
+                            driveOpState = AutoCode2.OperState.PrepMoveToGoals;
                         }
                     }
-                    break;
-                case PREPMOVEANDLIFT:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(moveandliftdrive, 0.5, 0, 0, autoChassis.zAngle);
-                    servoTimer.reset();
-                    driveOpState = OperState.MOVEANDLIFT;
-                    break;
-                case MOVEANDLIFT:
-                    telemetry.addLine("newsecondmoveE");
-                    telemetry.addData("driveStrafe", drivePreset);
-                    telemetry.addData("strafePreset", strafePreset);
-                    telemetry.addData("rotate", autoChassis.rotation);
-                    telemetry.addData("drivevalue", autoChassis.trueDrive);
-                    telemetry.addData("strafevalue", autoChassis.trueStrafe);
-                    telemetry.addData("drive", autoChassis.drive);
-                    telemetry.addData("strafe", autoChassis.strafe);
-                    telemetry.addData("back left wheel", autoChassis.backLeft);
-                    telemetry.addData("back right wheel", autoChassis.backRight);
-                    telemetry.addData("front right wheel", autoChassis.frontRight);
-                    telemetry.addData("front left wheel", autoChassis.frontLeft);
-                    telemetry.addData("firstSignumRotate", Math.signum(rotationGoal - autoChassis.zAngle));
-                    telemetry.addData("firstSignumStrafe", Math.signum(strafePreset - autoChassis.trueStrafe));
-                    telemetry.addData("firstSignumDrive", Math.signum(drivePreset - autoChassis.trueDrive));
-                    telemetry.addData("Math.maxRotate", (Math.max(0.2, Math.abs((rotationGoal - autoChassis.zAngle) / 180))));
-                    telemetry.addData("Math.maxStrafe", (Math.max(0.2, Math.abs((strafePreset - autoChassis.trueStrafe) / strafePreset))));
-                    telemetry.addData("Math.maxDrive", (Math.max(0.2, Math.abs((drivePreset - autoChassis.trueDrive) / drivePreset))));
-                    if (autoChassis.MoveToLocation() == true) {
-                        telemetry.addLine("done");
-                        driveOpState = AutoCode2.OperState.LIFTUP;
-                        servoTimer.reset();
-                    }
-                    break;
+                        break;
 
-                case LIFTUP:
-                    lift.MoveServo(-1);
-                    if (servoTimer.time() >= 2) {
-                        lift.MoveServo(0);
-                        driveOpState = AutoCode2.OperState.PREPMOVERIGHT;
-                    }
-                    break;
-                case PREPMOVERIGHT:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0, 0, moverightstrafe, 0.4, autoChassis.zAngle);
-                    servoTimer.reset();
-                    driveOpState = OperState.MOVERIGHT;
-                    break;
-                case MOVERIGHT:
-                    telemetry.addData("front left wheel", autoChassis.frontLeft + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (-1 * autoChassis.rotation));
-                    telemetry.addData("back left wheel", autoChassis.backLeft + " = " + (-1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
-                    telemetry.addData("front right wheel", autoChassis.frontRight + " = " + (1 * autoChassis.drive) + " + " + (-1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
-                    telemetry.addData("back right wheel", autoChassis.backRight + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
-                    if (autoChassis.MoveToLocation() == true) {
-                        driveOpState = OperState.MEASURE;
-                        MeasureWait.reset();
-                    }
-                    break;
-                case MEASURE:
-                    if (MeasureWait.time(TimeUnit.SECONDS) >= 1) {
-                        ring.MeasureDistance();
-                        ringCount = ring.RingHeight();
-                        driveOpState = OperState.PREPMOVEBACK;
-                    }
-                    break;
-                case PREPMOVEBACK:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0, 0, -moverightstrafe, 0.4, autoChassis.zAngle);
-                    driveOpState = OperState.MOVEBACK;
-                    break;
-                case MOVEBACK:
-                    telemetry.addData("front left wheel", autoChassis.frontLeft + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (-1 * autoChassis.rotation));
-                    telemetry.addData("back left wheel", autoChassis.backLeft + " = " + (-1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
-                    telemetry.addData("front right wheel", autoChassis.frontRight + " = " + (1 * autoChassis.drive) + " + " + (-1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
-                    telemetry.addData("back right wheel", autoChassis.backRight + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
-                    if (autoChassis.MoveToLocation() == true) {
-                        servoTimer.reset();
-                        driveOpState = OperState.LIFTDOWN;
-                    }
-                    break;
-                case LIFTDOWN:
-                    lift.MoveServo(1);
-                    if (servoTimer.time() >= 2) {
-                        lift.MoveServo(0);
-                        driveOpState = AutoCode2.OperState.DECIDE;
-                    }
-                    break;
-                case DECIDE:
-                    if (ringCount == 0) {
-                        driveOpState = AutoCode2.OperState.PREPA;
-                    } else if (ringCount == 1) {
-                        driveOpState = AutoCode2.OperState.PREPB;
-                    } else if (ringCount == 4) {
-                        driveOpState = AutoCode2.OperState.PREPC;
-                    }
-                    break;
-                case PREPA:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(adrive, 1, astrafe, .4, autoChassis.zAngle + 2);
-                    driveOpState = OperState.A;
-                    break;
-                case PREPB:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(bdrive, 1, bstrafe, .4, autoChassis.zAngle + 2);
-                    driveOpState = OperState.B;
-                    break;
-                case PREPC:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(cdrive, 1, cstrafe, .4, autoChassis.zAngle + 2);
-                    driveOpState = OperState.C;
-                    break;
-                case A:
-                    if (autoChassis.MoveToLocation() == true) {
-                    }
-                    break;
-                case B:
-                    if (autoChassis.MoveToLocation() == true) {
-                    }
-                    break;
-                case C:
-                    if (autoChassis.MoveToLocation() == true) {
-                    }
-                    break;
-                case THIRDMOVE:
-                    telemetry.addLine("THIRDMOVE");
-                    lift.MoveServo(-1);
+                        case PREPMOVEANDLIFT:
+                            autoChassis.SetAxisMovement();
+                            autoChassis.ZeroEncoders();
+                            autoChassis.SetAxisMovement();
+                            autoChassis.SetPresetMovement(moveandliftdrive, 0.5, 0, 0, autoChassis.zAngle);
+                            servoTimer.reset();
+                            driveOpState = OperState.MOVEANDLIFT;
+                            break;
 
-                    if (servoTimer.time() >= 2) {
-                        lift.MoveServo(0);
-                        driveOpState = AutoCode2.OperState.STARTLAUNCHER;
+                        case MOVEANDLIFT:
+                            telemetry.addLine("newsecondmoveE");
+                            telemetry.addData("driveStrafe", drivePreset);
+                            telemetry.addData("strafePreset", strafePreset);
+                            telemetry.addData("rotate", autoChassis.rotation);
+                            telemetry.addData("drivevalue", autoChassis.trueDrive);
+                            telemetry.addData("strafevalue", autoChassis.trueStrafe);
+                            telemetry.addData("drive", autoChassis.drive);
+                            telemetry.addData("strafe", autoChassis.strafe);
+                            telemetry.addData("back left wheel", autoChassis.backLeft);
+                            telemetry.addData("back right wheel", autoChassis.backRight);
+                            telemetry.addData("front right wheel", autoChassis.frontRight);
+                            telemetry.addData("front left wheel", autoChassis.frontLeft);
+                            telemetry.addData("firstSignumRotate", Math.signum(rotationGoal - autoChassis.zAngle));
+                            telemetry.addData("firstSignumStrafe", Math.signum(strafePreset - autoChassis.trueStrafe));
+                            telemetry.addData("firstSignumDrive", Math.signum(drivePreset - autoChassis.trueDrive));
+                            telemetry.addData("Math.maxRotate", (Math.max(0.2, Math.abs((rotationGoal - autoChassis.zAngle) / 180))));
+                            telemetry.addData("Math.maxStrafe", (Math.max(0.2, Math.abs((strafePreset - autoChassis.trueStrafe) / strafePreset))));
+                            telemetry.addData("Math.maxDrive", (Math.max(0.2, Math.abs((drivePreset - autoChassis.trueDrive) / drivePreset))));
+
+                            if (autoChassis.MoveToLocation() == true) {
+                                telemetry.addLine("done");
+                                driveOpState = AutoCode2.OperState.LIFTUP;
+                                servoTimer.reset();
+                            }
+
+                            break;
+                        case LIFTUP:
+                            lift.MoveServo(-1);
+                            if (servoTimer.time() >= 2) {
+                                lift.MoveServo(0);
+                                driveOpState = AutoCode2.OperState.PREPMOVERIGHT;
+                            }
+                            break;
+                        case PREPMOVERIGHT:
+                            autoChassis.SetAxisMovement();
+                            autoChassis.ZeroEncoders();
+                            autoChassis.SetAxisMovement();
+                            autoChassis.SetPresetMovement(0, 0, moverightstrafe, 0.4, autoChassis.zAngle);
+                            servoTimer.reset();
+                            driveOpState = OperState.MOVERIGHT;
+                            break;
+                        case MOVERIGHT:
+                            telemetry.addData("front left wheel", autoChassis.frontLeft + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (-1 * autoChassis.rotation));
+                            telemetry.addData("back left wheel", autoChassis.backLeft + " = " + (-1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
+                            telemetry.addData("front right wheel", autoChassis.frontRight + " = " + (1 * autoChassis.drive) + " + " + (-1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
+                            telemetry.addData("back right wheel", autoChassis.backRight + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
+                            if (autoChassis.MoveToLocation() == true) {
+                                driveOpState = OperState.MEASURE;
+                                MeasureWait.reset();
+                            }
+                            break;
+                        case MEASURE:
+                            if (MeasureWait.time(TimeUnit.SECONDS) >= 1) {
+                                ring.MeasureDistance();
+                                ringCount = ring.RingHeight();
+                                driveOpState = OperState.PREPMOVEBACK;
+                            }
+                            break;
+                        case PREPMOVEBACK:
+                            autoChassis.SetAxisMovement();
+                            autoChassis.ZeroEncoders();
+                            autoChassis.SetAxisMovement();
+                            autoChassis.SetPresetMovement(0, 0, -moverightstrafe, 0.4, autoChassis.zAngle);
+                            driveOpState = OperState.MOVEBACK;
+                            break;
+                        case MOVEBACK:
+                            telemetry.addData("front left wheel", autoChassis.frontLeft + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (-1 * autoChassis.rotation));
+                            telemetry.addData("back left wheel", autoChassis.backLeft + " = " + (-1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
+                            telemetry.addData("front right wheel", autoChassis.frontRight + " = " + (1 * autoChassis.drive) + " + " + (-1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
+                            telemetry.addData("back right wheel", autoChassis.backRight + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
+                            if (autoChassis.MoveToLocation() == true) {
+                                servoTimer.reset();
+                                driveOpState = OperState.LIFTDOWN;
+                            }
+                            break;
+                        case LIFTDOWN:
+                            lift.MoveServo(1);
+                            if (servoTimer.time() >= 2) {
+                                lift.MoveServo(0);
+                                driveOpState = AutoCode2.OperState.DECIDE;
+                            }
+                            break;
+                        case DECIDE:
+                            if (ringCount == 0) {
+                                if (Powershots == 1) {
+                                    powershotdrive = 1;
+                                    powershotstrafe = 1;
+                                    if (!OnRed) { powershotstrafe = -powershotstrafe; }
+                                }
+                                if (ShootGoals == 1) {
+                                    topgoaldrive = 1;
+                                    topgoalstrafe = 1;
+                                    if (!OnRed) { topgoalstrafe = -topgoalstrafe; }
+                                }
+                                driveOpState = AutoCode2.OperState.PREPA;
+                            } else if (ringCount == 1) {
+                                if (Powershots == 1) {
+                                    powershotdrive = 1;
+                                    powershotstrafe = 1;
+                                    if (!OnRed) { powershotstrafe = -powershotstrafe; }
+                                }
+                                if (ShootGoals == 1) {
+                                    topgoaldrive = 1;
+                                    topgoalstrafe = 1;
+                                    if (!OnRed) { topgoalstrafe = -topgoalstrafe; }
+                                }
+                                driveOpState = AutoCode2.OperState.PREPB;
+                            } else if (ringCount == 4) {
+                                if (Powershots == 1) {
+                                    powershotdrive = 1;
+                                    powershotstrafe = 1;
+                                    if (!OnRed) { powershotstrafe = -powershotstrafe; }
+                                }
+                                if (ShootGoals == 1) {
+                                    topgoaldrive = 1;
+                                    topgoalstrafe = 1;
+                                    if (!OnRed) { topgoalstrafe = -topgoalstrafe; }
+                                }
+                                driveOpState = AutoCode2.OperState.PREPC;
+                            }
+                            break;
+                        case PREPA:
+                            autoChassis.SetAxisMovement();
+                            autoChassis.ZeroEncoders();
+                            autoChassis.SetAxisMovement();
+                            autoChassis.SetPresetMovement(adrive, 1, astrafe, .4, autoChassis.zAngle);
+                            driveOpState = OperState.A;
+                            break;
+                        case PREPB:
+                            autoChassis.SetAxisMovement();
+                            autoChassis.ZeroEncoders();
+                            autoChassis.SetAxisMovement();
+                            autoChassis.SetPresetMovement(bdrive, 1, bstrafe, .4, autoChassis.zAngle);
+                            driveOpState = OperState.B;
+                            break;
+                        case PREPC:
+                            autoChassis.SetAxisMovement();
+                            autoChassis.ZeroEncoders();
+                            autoChassis.SetAxisMovement();
+                            autoChassis.SetPresetMovement(cdrive, 1, cstrafe, .4, autoChassis.zAngle);
+                            driveOpState = OperState.C;
+                            break;
+                        case A:
+                            if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2.OperState.NextLocation; }
+                            break;
+                        case B:
+                            if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2.OperState.NextLocation; }
+                            break;
+                        case C:
+                            if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2.OperState.NextLocation; }
+                            break;
+
+                        case NextLocation:
+                            if (Powershots == 1) { driveOpState = AutoCode2.OperState.PrepMoveToPowerShots; }
+                            else if (ShootGoals == 1) { driveOpState = AutoCode2.OperState.PrepMoveToGoals; }
+                            break;
+                        case PrepMoveToPowerShots:
+                            autoChassis.SetAxisMovement();
+                            autoChassis.ZeroEncoders();
+                            autoChassis.SetAxisMovement();
+                            autoChassis.SetPresetMovement(powershotdrive, 1, powershotstrafe, .4, autoChassis.zAngle);
+                            driveOpState = AutoCode2.OperState.MoveToPowerShots;
+                            break;
+                        case PrepMoveToGoals:
+                            break;
+                        case THIRDMOVE:
+                            telemetry.addLine("THIRDMOVE");
+                            lift.MoveServo(-1);
+
+                            if (servoTimer.time() >= 2) {
+                                lift.MoveServo(0);
+                                driveOpState = AutoCode2.OperState.STARTLAUNCHER;
+                            }
+                            break;
+
+                        case STARTLAUNCHER:
+                            launcher.LauncherToggle();
+                            driveOpState = AutoCode2.OperState.FOURTHMOVESETUP;
+
+                        case SHOOT1:
+                            if (shootWait < 6) {
+                                if (servoTimer.time() > 0.5) {
+                                    driveOpState = AutoCode2.OperState.firsttimer;
+                                }
+                            } else {
+                                driveOpState = AutoCode2.OperState.FIFTHMOVESETUP;
+                            }
+
+                            break;
+                        case firsttimer:
+                            servoTimer.reset();
+                            driveOpState = AutoCode2.OperState.Load;
+                            break;
+
+                        case Load:
+                            launcher.Shoot();
+                            if (servoTimer.time() >= 0.15) {
+                                driveOpState = AutoCode2.OperState.secondtimer;
+                            }
+                            break;
+
+                        case secondtimer:
+                            servoTimer.reset();
+                            driveOpState = AutoCode2.OperState.ResetPosition;
+                            break;
+
+                        case ResetPosition:
+                            launcher.Reload();
+                            if (servoTimer.time() >= 0.15) {
+                                shootWait += 1;
+                                servoTimer.reset();
+                                driveOpState = AutoCode2.OperState.SHOOT1;
+                            }
+                            break;
+
                     }
-                    break;
-
-                case STARTLAUNCHER:
-                    launcher.LauncherToggle();
-                    driveOpState = AutoCode2.OperState.FOURTHMOVESETUP;
-
-                case SHOOT1:
-                    if (shootWait < 6) {
-                        if (servoTimer.time() > 0.5) {
-                            driveOpState = AutoCode2.OperState.firsttimer;
-                        }
-                    } else {
-                        driveOpState = AutoCode2.OperState.FIFTHMOVESETUP;
-                    }
-
-                    break;
-                case firsttimer:
-                    servoTimer.reset();
-                    driveOpState = AutoCode2.OperState.Load;
-                    break;
-
-                case Load:
-                    launcher.Shoot();
-                    if (servoTimer.time() >= 0.15) {
-                        driveOpState = AutoCode2.OperState.secondtimer;
-                    }
-                    break;
-
-                case secondtimer:
-                    servoTimer.reset();
-                    driveOpState = AutoCode2.OperState.ResetPosition;
-                    break;
-
-                case ResetPosition:
-                    launcher.Reload();
-                    if (servoTimer.time() >= 0.15) {
-                        shootWait += 1;
-                        servoTimer.reset();
-                        driveOpState = AutoCode2.OperState.SHOOT1;
-                    }
-                    break;
-
+                    telemetry.update();
             }
-            telemetry.update();
         }
     }
-}
