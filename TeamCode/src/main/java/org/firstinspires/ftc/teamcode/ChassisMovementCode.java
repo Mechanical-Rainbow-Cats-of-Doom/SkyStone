@@ -159,10 +159,6 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
             return (isDone);
         }
 
-
-
-
-
         public void SetTrueAxis() {
             trueX = trueStrafe*Math.cos((trueRotate))+trueDrive*(Math.cos(trueRotate+(Math.PI/2))) + presetX;
             trueY = trueStrafe*Math.sin((trueRotate))+trueDrive*(Math.sin(trueRotate+(Math.PI/2))) + presetY;
@@ -220,10 +216,6 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
             }
             zAngle = (newZAngle + rotations*360);
         }
-
-
-
-
 
         public void LeftAndRight(double drivePreset) {
             front_right_wheel.setPower(-1 * frontRightMultiplier * Math.signum(drivePreset - trueStrafe) * Math.max(0.15, Math.abs((drivePreset - trueStrafe) / drivePreset)));

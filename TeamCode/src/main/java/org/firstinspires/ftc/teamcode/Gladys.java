@@ -20,6 +20,8 @@ public class Gladys extends LinearOpMode {
     
     private double LeftStickValue;
     private double RightStickValue;
+    public DcMotor IntakeMotor;
+    public DcMotor IntakeMotor2;
     private Blinker Control_Hub;
     private Blinker expansion_Hub_2;
     ElapsedTime mytimer = new ElapsedTime();
@@ -46,8 +48,8 @@ public class Gladys extends LinearOpMode {
         lift.ForkServo = hardwareMap.get(CRServo.class, "LiftServo");
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
-        launcher.IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
-        launcher.IntakeMotor2 = hardwareMap.get(DcMotor.class, "IntakeMotor2");
+        IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
+        IntakeMotor2 = hardwareMap.get(DcMotor.class, "IntakeMotor2");
         chasty.imu = hardwareMap.get(BNO055IMU.class, "imu");
         chasty.front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
         chasty.front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
@@ -130,9 +132,6 @@ public class Gladys extends LinearOpMode {
                     if (this.gamepad2.b) {
                         launchStates = InitialLauncherAndIntakeCode.LauncherStates.Pressed;
                     }
-                    if (this.gamepad2.x) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed2;
-                    }
                     break;
                 case Pressed:
                     if (!this.gamepad2.b) {
@@ -169,16 +168,7 @@ public class Gladys extends LinearOpMode {
                         launchStates = InitialLauncherAndIntakeCode.LauncherStates.ToggleLauncher;
                     }
                     break;
-                case ButtonPushed2:
-                    if (!this.gamepad2.x) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ToggleIntake;
-                        break;
-                    }
 
-                case ToggleIntake:
-                    launcher.IntakeToggle();
-                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
-                    break;
                 case ToggleLauncher:
                     launcher.LauncherToggle();
                     launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
