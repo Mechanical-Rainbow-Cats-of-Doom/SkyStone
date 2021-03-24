@@ -58,19 +58,17 @@ public class AutoCode2 extends LinearOpMode {
         B,
         C,
         PrepMoveToPowerShots,
-        PrepStrafeLeft1,
-        PrepStrafeLeft2,
+        PrepStrafeLeft,
         PrepLaunchPark,
         PrepMoveToGoals,
         MoveToPowerShots,
-        StrafeLeft1,
-        StrafeLeft2,
+        StrafeLeft,
         LaunchPark,
         MoveToGoals,
         NextLocation,
         PrepSpinAround,
         SpinAround,
-        StartLaunching,
+        Launch,
         Delayer
     }
 
@@ -127,6 +125,7 @@ public class AutoCode2 extends LinearOpMode {
         //menu variables
         boolean IsMenuDone = false;
         boolean OnRed = true; //true is on red, false is on blue.
+        boolean DoneMeasuring = false;
         int StartLocation = 0; //1 is Blue 1, 2 is Blue 2, 3 is Red 1, 4 is Red 2.
         int Powershots = 0; //1 is yes, 2 is no.
         int ShootGoals = 0; //1 is yes, 2 is no.
@@ -162,6 +161,7 @@ public class AutoCode2 extends LinearOpMode {
         int isRotate = 0;
         int isStrafe = 0;
         int isDrive = 0;
+        int launchCount = 0;
         int ringCount = 0;
         ElapsedTime MeasureWait = new ElapsedTime();
         double driveValue = 0;
@@ -332,7 +332,9 @@ public class AutoCode2 extends LinearOpMode {
                     menu = AutoCode2.Menu.StartLocation;
                     break;
                 case Save:
-                    if (DelayAndGo == 1) { driveOpState = AutoCode2.OperState.Delayer; }
+                    if (DelayAndGo == 1) {
+                        driveOpState = AutoCode2.OperState.Delayer;
+                    }
                     switch (StartLocation) {
                         case 1:
                             moveandliftdrive = -19;
@@ -436,7 +438,7 @@ public class AutoCode2 extends LinearOpMode {
 
             autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
             launcher.LauncherRun();
-            ring.MeasureDistance();
+            if (!DoneMeasuring) { ring.MeasureDistance(); }
             telemetry.addData("where you are in strafe", Math.abs(autoChassis.strafePreset - autoChassis.trueStrafe));
             switch (driveOpState) {
                 case FIRSTMOVE:
@@ -606,6 +608,7 @@ public class AutoCode2 extends LinearOpMode {
                         }
                         driveOpState = AutoCode2.OperState.PREPC;
                     }
+                    DoneMeasuring = true;
                     break;
                 case PREPA:
                     autoChassis.SetAxisMovement();
@@ -629,13 +632,19 @@ public class AutoCode2 extends LinearOpMode {
                     driveOpState = OperState.C;
                     break;
                 case A:
-                    if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2.OperState.NextLocation; }
+                    if (autoChassis.MoveToLocation() == true) {
+                        driveOpState = AutoCode2.OperState.NextLocation;
+                    }
                     break;
                 case B:
-                    if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2.OperState.NextLocation; }
+                    if (autoChassis.MoveToLocation() == true) {
+                        driveOpState = AutoCode2.OperState.NextLocation;
+                    }
                     break;
                 case C:
-                    if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2.OperState.NextLocation; }
+                    if (autoChassis.MoveToLocation() == true) {
+                        driveOpState = AutoCode2.OperState.NextLocation;
+                    }
                     break;
 
                 case NextLocation:
@@ -653,7 +662,9 @@ public class AutoCode2 extends LinearOpMode {
                     driveOpState = AutoCode2.OperState.MoveToPowerShots;
                     break;
                 case MoveToPowerShots:
-                    if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2.OperState.PrepSpinAround;}
+                    if (autoChassis.MoveToLocation() == true) {
+                        driveOpState = AutoCode2.OperState.PrepSpinAround;
+                    }
                     break;
                 case PrepMoveToGoals:
                     autoChassis.SetAxisMovement();
@@ -663,26 +674,56 @@ public class AutoCode2 extends LinearOpMode {
                     driveOpState = AutoCode2.OperState.MoveToGoals;
                     break;
                 case MoveToGoals:
-                    if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2.OperState.PrepSpinAround;}
+                    if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2.OperState.PrepSpinAround; }
                     break;
                 case PrepSpinAround:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
                     autoChassis.SetPresetMovement(0, 1, 0, 1, 180);
+                    launcher.LauncherToggle();
                     driveOpState = AutoCode2.OperState.SpinAround;
                     break;
                 case SpinAround:
-                    if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2.OperState.StartLaunching;}
+                    if (autoChassis.MoveToLocation() == true) {
+                        servoTimer.reset();
+                        driveOpState = AutoCode2.OperState.Launch;
+                    }
+                    break;
+                case Launch:
+                    if (launchCount < 2 ) {
+                        if (servoTimer.time() >= 0.17) {
+                            launcher.Shoot();
+                            launchCount++;
+                            if (ShootGoals == 1) { servoTimer.reset(); }
+                            else if (Powershots == 1 & launchCount < 2) { driveOpState = AutoCode2.OperState.PrepStrafeLeft; }
+                        }
+                    }
+                    else { driveOpState = AutoCode2.OperState.PrepLaunchPark; }
+                    break;
+                case PrepStrafeLeft:
+                    autoChassis.SetAxisMovement();
+                    autoChassis.ZeroEncoders();
+                    autoChassis.SetAxisMovement();
+                    autoChassis.SetPresetMovement(0, 1, -4, .4, autoChassis.zAngle);
+                    driveOpState = AutoCode2.OperState.StrafeLeft;
+                    break;
+                case StrafeLeft:
+                    if (autoChassis.MoveToLocation() == true) {
+                        servoTimer.reset();
+                        driveOpState = AutoCode2.OperState.Launch;
+                    }
                     break;
                 case PrepLaunchPark:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(-5, 1, 0, .4, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(5, 1, 0, .4, autoChassis.zAngle);
                     driveOpState = AutoCode2.OperState.LaunchPark;
                 case LaunchPark:
-                    if (autoChassis.MoveToLocation() == true) { telemetry.addLine("done"); }
+                    if (autoChassis.MoveToLocation() == true) {
+                        telemetry.addLine("done");
+                    }
                     break;
                 case THIRDMOVE:
                     telemetry.addLine("THIRDMOVE");
@@ -735,7 +776,7 @@ public class AutoCode2 extends LinearOpMode {
                     break;
 
             }
-                    telemetry.update();
-            }
+            telemetry.update();
         }
     }
+}
