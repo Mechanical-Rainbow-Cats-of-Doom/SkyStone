@@ -292,16 +292,8 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     break;
                 case CheckForInvalid:
-                    if (Powershots == 2 & ShootGoals == 2 & OnlyPark == 2 & AreYouMoving == 2) {
-                        StartLocation = 0;
-                        Powershots = 0;
-                        ShootGoals = 0;
-                        OnlyPark = 0;
-                        AreYouMoving = 0;
-                        menu = AutoCode2.Menu.StartLocation;
-                    } else {
-                        menu = AutoCode2.Menu.AskIfDone;
-                    }
+                    if (Powershots == 2 & ShootGoals == 2 & OnlyPark == 2 & AreYouMoving == 2) { menu = AutoCode2.Menu.Redo; } 
+                    else { menu = AutoCode2.Menu.AskIfDone; }
                     break;
                 case AskIfDone:
                     telemetry.addLine("Would you like to save these changes? Yes(Y) No(X)");
