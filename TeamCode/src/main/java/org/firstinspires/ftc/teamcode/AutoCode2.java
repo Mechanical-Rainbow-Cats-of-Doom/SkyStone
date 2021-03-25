@@ -324,7 +324,10 @@ public class AutoCode2 extends LinearOpMode {
                     menu = AutoCode2.Menu.StartLocation;
                     break;
                 case Save:
-                    if (DelayAndGo == 1) { driveOpState = AutoCode2.OperState.Delayer; }
+                    if (DelayAndGo == 1) { 
+                        driveOpState = AutoCode2.OperState.Delayer;
+                        DoneMeasuring = true;
+                    }
                     switch (StartLocation) {
                         case 1:
                             moveandliftdrive = -19;
@@ -522,7 +525,6 @@ public class AutoCode2 extends LinearOpMode {
                     break;
                 case MEASURE:
                     if (MeasureWait.time(TimeUnit.SECONDS) >= 1) {
-                        ring.MeasureDistance();
                         ringCount = ring.RingHeight();
                         driveOpState = OperState.PREPMOVEBACK;
                     }
