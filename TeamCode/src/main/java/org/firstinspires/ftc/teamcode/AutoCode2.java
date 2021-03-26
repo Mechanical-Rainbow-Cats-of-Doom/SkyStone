@@ -54,9 +54,7 @@ public class AutoCode2 extends LinearOpMode {
         PREPA,
         PREPB,
         PREPC,
-        A,
-        B,
-        C,
+        GoToTargetZone,
         PrepMoveToPowerShots,
         PrepStrafeLeft,
         PrepLaunchPark,
@@ -324,7 +322,7 @@ public class AutoCode2 extends LinearOpMode {
                     menu = AutoCode2.Menu.StartLocation;
                     break;
                 case Save:
-                    if (DelayAndGo == 1) { 
+                    if (DelayAndGo == 2) {
                         driveOpState = AutoCode2.OperState.Delayer;
                         DoneMeasuring = true;
                     }
@@ -332,11 +330,11 @@ public class AutoCode2 extends LinearOpMode {
                         case 1:
                             moveandliftdrive = -19;
                             moverightstrafe = -6.5;
-                            adrive = -38.5;
+                            adrive = -28;
                             astrafe = 7;
-                            bdrive = -61;
+                            bdrive = -51;
                             bstrafe = -9.5;
-                            cdrive = -82;
+                            cdrive = -72;
                             cstrafe = 7;
                             if (DelayAndGo == 1) {
                                 if (Powershots == 1) {
@@ -354,11 +352,11 @@ public class AutoCode2 extends LinearOpMode {
                         case 2:
                             moveandliftdrive = -19;
                             moverightstrafe = 17;
-                            adrive = -38.5;
+                            adrive = -28;
                             astrafe = 30.5;
-                            bdrive = -61;
+                            bdrive = -51;
                             bstrafe = 14;
-                            cdrive = -82;
+                            cdrive = -72;
                             cstrafe = 30.5;
                             if (DelayAndGo == 1) {
                                 if (Powershots == 1) {
@@ -376,11 +374,11 @@ public class AutoCode2 extends LinearOpMode {
                         case 3:
                             moveandliftdrive = -19;
                             moverightstrafe = -6.5;
-                            adrive = -38.5;
+                            adrive = -28;
                             astrafe = -30.5;
-                            bdrive = -61;
+                            bdrive = -51;
                             bstrafe = -14;
-                            cdrive = -82;
+                            cdrive = -72;
                             cstrafe = -30.5;
                             if (DelayAndGo == 1) {
                                 if (Powershots == 1) {
@@ -398,11 +396,11 @@ public class AutoCode2 extends LinearOpMode {
                         case 4:
                             moveandliftdrive = -19;
                             moverightstrafe = 17;
-                            adrive = -38.5;
+                            adrive = -28;
                             astrafe = -7;
-                            bdrive = -61;
+                            bdrive = -51;
                             bstrafe = 9.5;
-                            cdrive = -82;
+                            cdrive = -72;
                             cstrafe = -7;
                             if (DelayAndGo == 1) {
                                 if (Powershots == 1) {
@@ -437,10 +435,15 @@ public class AutoCode2 extends LinearOpMode {
             launcher.LauncherRun();
             if (!DoneMeasuring) { ring.MeasureDistance(); }
             telemetry.addData("where you are in strafe", Math.abs(autoChassis.strafePreset - autoChassis.trueStrafe));
+            telemetry.addData("driveopstate", driveOpState);
+            telemetry.addData("IMPORTANT, DRIVE PRESET", autoChassis.drivePreset);
+            telemetry.addData("IMPORTANT, STRAFE PRESET", autoChassis.strafePreset);
+
             switch (driveOpState) {
                 case FIRSTMOVE:
                     telemetry.addLine("FIRSTMOVE");
                     lift.MoveServo(1);
+                    originalRotation = autoChassis.zAngle;
 
                     if (servoTimer.time() >= 2) {
                         lift.MoveServo(0);
@@ -467,7 +470,7 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(moveandliftdrive, 0.5, 0, 0, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(-19., 0.5, 0, 0.000000000000001, autoChassis.zAngle);
                     servoTimer.reset();
                     driveOpState = OperState.MOVEANDLIFT;
                     break;
@@ -508,7 +511,7 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0, 0, moverightstrafe, 0.4, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(0, 0,moverightstrafe, 0.4, autoChassis.zAngle);
                     servoTimer.reset();
                     driveOpState = OperState.MOVERIGHT;
                     break;
@@ -524,7 +527,7 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     break;
                 case MEASURE:
-                    if (MeasureWait.time(TimeUnit.SECONDS) >= 1) {
+                    if (MeasureWait.time(TimeUnit.SECONDS) >= 0.6) {
                         ringCount = ring.RingHeight();
                         driveOpState = OperState.PREPMOVEBACK;
                     }
@@ -611,33 +614,24 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
                     autoChassis.SetPresetMovement(adrive, 1, astrafe, .4, autoChassis.zAngle);
-                    driveOpState = OperState.A;
+                    driveOpState = OperState.GoToTargetZone;
                     break;
                 case PREPB:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
                     autoChassis.SetPresetMovement(bdrive, 1, bstrafe, .4, autoChassis.zAngle);
-                    driveOpState = OperState.B;
+                    driveOpState = OperState.GoToTargetZone;
                     break;
                 case PREPC:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
                     autoChassis.SetPresetMovement(cdrive, 1, cstrafe, .4, autoChassis.zAngle);
-                    driveOpState = OperState.C;
+                    driveOpState = OperState.GoToTargetZone;
                     break;
-                case A:
-                    if (autoChassis.MoveToLocation() == true) {
-                        driveOpState = AutoCode2.OperState.NextLocation;
-                    }
-                    break;
-                case B:
-                    if (autoChassis.MoveToLocation() == true) {
-                        driveOpState = AutoCode2.OperState.NextLocation;
-                    }
-                    break;
-                case C:
+                case GoToTargetZone:
+                    autoChassis.rotationPreset -= 0.105;
                     if (autoChassis.MoveToLocation() == true) {
                         driveOpState = AutoCode2.OperState.NextLocation;
                     }
@@ -656,6 +650,7 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.SetPresetMovement(powershotdrive, 1, powershotstrafe, .4, autoChassis.zAngle);
                     driveOpState = AutoCode2.OperState.MoveToPowerShots;
+                    launcher.LauncherToggle();
                     break;
                 case MoveToPowerShots:
                     if (autoChassis.MoveToLocation() == true) {
@@ -668,32 +663,32 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.SetPresetMovement(topgoaldrive, 1, topgoalstrafe, .4, autoChassis.zAngle);
                     driveOpState = AutoCode2.OperState.MoveToGoals;
+                    launcher.LauncherToggle();
                     break;
                 case MoveToGoals:
                     if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2.OperState.PrepSpinAround; }
                     break;
                 case PrepSpinAround:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0, 1, 0, 1, 180);
-                    launcher.LauncherToggle();
-                    driveOpState = AutoCode2.OperState.SpinAround;
-                    break;
-                case SpinAround:
-                    if (autoChassis.MoveToLocation() == true) {
-                        servoTimer.reset();
+                    if ((Math.abs(autoChassis.zAngle - (originalRotation-180)) >= 2)) {
+                        autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, (originalRotation-180)));
+                        autoChassis.Drive();
+                        autoChassis.SetAxisMovement();
+                        autoChassis.ZeroEncoders();
+                        autoChassis.SetAxisMovement();
+                        rotationGoal = autoChassis.zAngle;
+                    }
+                    else {
                         driveOpState = AutoCode2.OperState.Launch;
                     }
                     break;
                 case Launch:
-                    if (launchCount < 2 && servoTimer.time() >= 0.17) {
+                    if (launchCount < 2 && ((ShootGoals == 1 && servoTimer.time() >= 0.5) || (Powershots == 1 && servoTimer.time() >= 0.15))) {
                         launcher.Shoot();
                         launchCount++;
                         if (ShootGoals == 1) { servoTimer.reset(); }
                         else if (Powershots == 1 && launchCount < 2) { driveOpState = AutoCode2.OperState.PrepStrafeLeft; }
                     }
-                    else if (launchCount < 2) { driveOpState = AutoCode2.OperState.PrepLaunchPark; }
+                    else if (launchCount > 2) { driveOpState = AutoCode2.OperState.PrepLaunchPark; }
                     break;
                 case PrepStrafeLeft:
                     autoChassis.SetAxisMovement();
