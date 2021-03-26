@@ -100,6 +100,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         double autonomousTestStep = 0;
         double rotationGoal = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle;
         double banana2 = -1;
+        boolean servoState = false;
 
         //double timerStopTime = 0;
         waitForStart();
@@ -512,26 +513,29 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             }
             switch (RingWiperSwitch) {
                 case WaitingForPushY:
-                    if (gamepad2.x) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForRelease; }
-                    else { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors; }
+                    if (gamepad2.y) { RingWiperSwitch = TwentyTwentyOneOpModeCode.RingWiper.WaitingForReleaseY; }
+                    else { RingWiperSwitch = TwentyTwentyOneOpModeCode.RingWiper.ChangeServo; }
                     break;
                 case WaitingForReleaseY:
-                    if (!gamepad2.x) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeValue; }
+                    if (!gamepad2.y) { RingWiperSwitch = TwentyTwentyOneOpModeCode.RingWiper.ToggleValue; }
                     break;
                 case ToggleValue:
-                    MotorState = !MotorState;
-                    IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors;
+                    servoState = !servoState;
+                    RingWiperSwitch = TwentyTwentyOneOpModeCode.RingWiper.ChangeServo;
                     break;
                 case ChangeServo:
-                    if (MotorState) {
-                        WiperServo.setPosition(0.2);
+                    if (servoState) {
+                        WiperServo.setPosition(0.75);
                     }
-                    else if (!MotorState) {
-                        WiperServo.setPosition(0);
+                    else if (!servoState) {
+                        WiperServo.setPosition(.95);
                     }
-                    IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForPush;
+                    RingWiperSwitch = TwentyTwentyOneOpModeCode.RingWiper.WaitingForPushY;
                     break;
             }
+            telemetry.addData("Wiper state: ",RingWiperSwitch);
+            telemetry.addData("Wiper position", WiperServo.getPosition());
+            telemetry.addData("is Y pressed", gamepad2.y);
         }
     }
 }
