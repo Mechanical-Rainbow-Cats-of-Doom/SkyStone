@@ -330,11 +330,11 @@ public class AutoCode2 extends LinearOpMode {
                         case 1:
                             moveandliftdrive = -19;
                             moverightstrafe = -6.5;
-                            adrive = -31.5;
+                            adrive = -28;
                             astrafe = 7;
-                            bdrive = -61;
+                            bdrive = -51;
                             bstrafe = -9.5;
-                            cdrive = -82;
+                            cdrive = -72;
                             cstrafe = 7;
                             if (DelayAndGo == 1) {
                                 if (Powershots == 1) {
@@ -352,11 +352,11 @@ public class AutoCode2 extends LinearOpMode {
                         case 2:
                             moveandliftdrive = -19;
                             moverightstrafe = 17;
-                            adrive = -31.5;
+                            adrive = -28;
                             astrafe = 30.5;
-                            bdrive = -61;
+                            bdrive = -51;
                             bstrafe = 14;
-                            cdrive = -82;
+                            cdrive = -72;
                             cstrafe = 30.5;
                             if (DelayAndGo == 1) {
                                 if (Powershots == 1) {
@@ -374,11 +374,11 @@ public class AutoCode2 extends LinearOpMode {
                         case 3:
                             moveandliftdrive = -19;
                             moverightstrafe = -6.5;
-                            adrive = -31.5;
+                            adrive = -28;
                             astrafe = -30.5;
-                            bdrive = -61;
+                            bdrive = -51;
                             bstrafe = -14;
-                            cdrive = -82;
+                            cdrive = -72;
                             cstrafe = -30.5;
                             if (DelayAndGo == 1) {
                                 if (Powershots == 1) {
@@ -396,11 +396,11 @@ public class AutoCode2 extends LinearOpMode {
                         case 4:
                             moveandliftdrive = -19;
                             moverightstrafe = 17;
-                            adrive = -31.5;
+                            adrive = -28;
                             astrafe = -7;
-                            bdrive = -61;
+                            bdrive = -51;
                             bstrafe = 9.5;
-                            cdrive = -82;
+                            cdrive = -72;
                             cstrafe = -7;
                             if (DelayAndGo == 1) {
                                 if (Powershots == 1) {
@@ -682,7 +682,7 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     break;
                 case Launch:
-                    if (launchCount < 2 && servoTimer.time() >= 0.5) {
+                    if (launchCount < 2 && ((ShootGoals == 1 && servoTimer.time() >= 0.5) || (Powershots == 1 && servoTimer.time() >= 0.15))) {
                         launcher.Shoot();
                         launchCount++;
                         if (ShootGoals == 1) { servoTimer.reset(); }
