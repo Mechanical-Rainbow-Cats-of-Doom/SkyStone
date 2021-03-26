@@ -527,7 +527,7 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     break;
                 case MEASURE:
-                    if (MeasureWait.time(TimeUnit.SECONDS) >= 1) {
+                    if (MeasureWait.time(TimeUnit.SECONDS) >= 0.6) {
                         ringCount = ring.RingHeight();
                         driveOpState = OperState.PREPMOVEBACK;
                     }
