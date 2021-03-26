@@ -688,7 +688,7 @@ public class AutoCode2 extends LinearOpMode {
                         if (ShootGoals == 1) { servoTimer.reset(); }
                         else if (Powershots == 1 && launchCount < 2) { driveOpState = AutoCode2.OperState.PrepStrafeLeft; }
                     }
-                    else if (launchCount < 2) { driveOpState = AutoCode2.OperState.PrepLaunchPark; }
+                    else if (launchCount > 2) { driveOpState = AutoCode2.OperState.PrepLaunchPark; }
                     break;
                 case PrepStrafeLeft:
                     autoChassis.SetAxisMovement();
