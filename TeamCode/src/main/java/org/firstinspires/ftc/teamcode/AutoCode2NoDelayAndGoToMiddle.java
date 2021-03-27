@@ -14,12 +14,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
-import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
 //Created by mostly Ethan, partly Patrick
 @Autonomous
-public class AutoCode2 extends LinearOpMode {
+public class AutoCode2NoDelayAndGoToMiddle extends LinearOpMode {
 
     private Blinker Control_Hub;
     private Blinker expansion_Hub_2;
@@ -97,8 +96,8 @@ public class AutoCode2 extends LinearOpMode {
         InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
         InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
         ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
-        AutoCode2.OperState driveOpState = AutoCode2.OperState.FIRSTMOVE;
-        AutoCode2.Menu menu = AutoCode2.Menu.StartLocation;
+        AutoCode2NoDelayAndGoToMiddle.OperState driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.FIRSTMOVE;
+        AutoCode2NoDelayAndGoToMiddle.Menu menu = AutoCode2NoDelayAndGoToMiddle.Menu.StartLocation;
         DistanceSensorClass.RingClass ring = new DistanceSensorClass.RingClass();
 
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
@@ -175,30 +174,30 @@ public class AutoCode2 extends LinearOpMode {
                     if (gamepad1.a) {
                         StartLocation = 1;
                         OnRed = false;
-                        menu = AutoCode2.Menu.ButtonWaiter0;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter0;
                     } else if (gamepad1.b) {
                         StartLocation = 2;
                         OnRed = false;
-                        menu = AutoCode2.Menu.ButtonWaiter0;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter0;
                     } else if (gamepad1.x) {
                         StartLocation = 3;
                         OnRed = true;
-                        menu = AutoCode2.Menu.ButtonWaiter0;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter0;
                     } else if (gamepad1.y) {
                         StartLocation = 4;
                         OnRed = true;
-                        menu = AutoCode2.Menu.ButtonWaiter0;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter0;
                     }
                     break;
                 case ButtonWaiter0:
                     if ((StartLocation == 1) && (!gamepad1.a)) {
-                        menu = AutoCode2.Menu.DelayAndGo;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.DelayAndGo;
                     } else if ((StartLocation == 2) && (!gamepad1.b)) {
-                        menu = AutoCode2.Menu.DelayAndGo;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.DelayAndGo;
                     } else if ((StartLocation == 3) && (!gamepad1.x)) {
-                        menu = AutoCode2.Menu.DelayAndGo;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.DelayAndGo;
                     } else if ((StartLocation == 4) && (!gamepad1.y)) {
-                        menu = AutoCode2.Menu.DelayAndGo;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.DelayAndGo;
                     }
                     break;
                 case DelayAndGo:
@@ -206,17 +205,17 @@ public class AutoCode2 extends LinearOpMode {
                     telemetry.update();
                     if (gamepad1.x) {
                         DelayAndGo = 2;
-                        menu = AutoCode2.Menu.ButtonWaiter1;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter1;
                     } else if (gamepad1.y) {
                         DelayAndGo = 1;
-                        menu = AutoCode2.Menu.ButtonWaiter1;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter1;
                     }
                     break;
                 case ButtonWaiter1:
                     if ((DelayAndGo == 2) && (!gamepad1.x)) {
-                        menu = AutoCode2.Menu.Powershots;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.Powershots;
                     } else if ((DelayAndGo == 1) && (!gamepad1.y)) {
-                        menu = AutoCode2.Menu.Powershots;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.Powershots;
                     }
                     break;
                 case Powershots:
@@ -224,17 +223,17 @@ public class AutoCode2 extends LinearOpMode {
                     telemetry.update();
                     if (gamepad1.x) {
                         Powershots = 2;
-                        menu = AutoCode2.Menu.ButtonWaiter2;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter2;
                     } else if (gamepad1.y) {
                         Powershots = 1;
-                        menu = AutoCode2.Menu.ButtonWaiter2;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter2;
                     }
                     break;
                 case ButtonWaiter2:
                     if ((Powershots == 2) && (!gamepad1.x)) {
-                        menu = AutoCode2.Menu.Goals;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.Goals;
                     } else if ((Powershots == 1) && (!gamepad1.y)) {
-                        menu = AutoCode2.Menu.CheckForInvalid;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.CheckForInvalid;
                     }
                     break;
                 case Goals:
@@ -242,17 +241,17 @@ public class AutoCode2 extends LinearOpMode {
                     telemetry.update();
                     if (gamepad1.x) {
                         ShootGoals = 2;
-                        menu = AutoCode2.Menu.ButtonWaiter3;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter3;
                     } else if (gamepad1.y) {
                         ShootGoals = 1;
-                        menu = AutoCode2.Menu.ButtonWaiter3;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter3;
                     }
                     break;
                 case ButtonWaiter3:
                     if ((ShootGoals == 2) & (!gamepad1.x)) {
-                        menu = AutoCode2.Menu.OnlyPark;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.OnlyPark;
                     } else if ((ShootGoals == 1) & (!gamepad1.y)) {
-                        menu = AutoCode2.Menu.CheckForInvalid;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.CheckForInvalid;
                     }
                     break;
                 case OnlyPark:
@@ -260,17 +259,17 @@ public class AutoCode2 extends LinearOpMode {
                     telemetry.update();
                     if (gamepad1.x) {
                         OnlyPark = 2;
-                        menu = AutoCode2.Menu.ButtonWaiter4;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter4;
                     } else if (gamepad1.y) {
                         OnlyPark = 1;
-                        menu = AutoCode2.Menu.ButtonWaiter4;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter4;
                     }
                     break;
                 case ButtonWaiter4:
                     if ((OnlyPark == 2) & (!gamepad1.x)) {
-                        menu = AutoCode2.Menu.AreYouMoving;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.AreYouMoving;
                     } else if ((OnlyPark == 1) & (!gamepad1.y)) {
-                        menu = AutoCode2.Menu.CheckForInvalid;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.CheckForInvalid;
                     }
                     break;
                 case AreYouMoving:
@@ -278,39 +277,39 @@ public class AutoCode2 extends LinearOpMode {
                     telemetry.update();
                     if (gamepad1.x) {
                         AreYouMoving = 2;
-                        menu = AutoCode2.Menu.ButtonWaiter5;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter5;
                     } else if (gamepad1.y) {
                         AreYouMoving = 1;
-                        menu = AutoCode2.Menu.ButtonWaiter5;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter5;
                     }
                     break;
                 case ButtonWaiter5:
                     if ((AreYouMoving == 2) & (!gamepad1.x)) {
-                        menu = AutoCode2.Menu.CheckForInvalid;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.CheckForInvalid;
                     } else if ((AreYouMoving == 1) & (!gamepad1.y)) {
-                        menu = AutoCode2.Menu.CheckForInvalid;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.CheckForInvalid;
                     }
                     break;
                 case CheckForInvalid:
-                    if (Powershots == 2 & ShootGoals == 2 & OnlyPark == 2 & AreYouMoving == 2) { menu = AutoCode2.Menu.Redo; } 
-                    else { menu = AutoCode2.Menu.AskIfDone; }
+                    if (Powershots == 2 & ShootGoals == 2 & OnlyPark == 2 & AreYouMoving == 2) { menu = AutoCode2NoDelayAndGoToMiddle.Menu.Redo; }
+                    else { menu = AutoCode2NoDelayAndGoToMiddle.Menu.AskIfDone; }
                     break;
                 case AskIfDone:
                     telemetry.addLine("Would you like to save these changes? Yes(Y) No(X)");
                     telemetry.update();
                     if (gamepad1.x) {
                         Save = 2;
-                        menu = AutoCode2.Menu.ButtonWaiter6;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter6;
                     } else if (gamepad1.y) {
                         Save = 1;
-                        menu = AutoCode2.Menu.ButtonWaiter6;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.ButtonWaiter6;
                     }
                     break;
                 case ButtonWaiter6:
                     if ((Save == 2) & (!gamepad1.x)) {
-                        menu = AutoCode2.Menu.Redo;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.Redo;
                     } else if ((Save == 1) & (!gamepad1.y)) {
-                        menu = AutoCode2.Menu.Save;
+                        menu = AutoCode2NoDelayAndGoToMiddle.Menu.Save;
                     }
                     break;
                 case Redo:
@@ -321,11 +320,11 @@ public class AutoCode2 extends LinearOpMode {
                     AreYouMoving = 0;
                     Save = 0;
                     DelayAndGo = 0;
-                    menu = AutoCode2.Menu.StartLocation;
+                    menu = AutoCode2NoDelayAndGoToMiddle.Menu.StartLocation;
                     break;
                 case Save:
                     if (DelayAndGo == 2) {
-                        driveOpState = AutoCode2.OperState.Delayer;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.Delayer;
                         DoneMeasuring = true;
                     }
                     switch (StartLocation) {
@@ -451,21 +450,21 @@ public class AutoCode2 extends LinearOpMode {
 
                     if (servoTimer.time() >= 2) {
                         lift.MoveServo(0);
-                        driveOpState = AutoCode2.OperState.PREPMOVEANDLIFT;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.PREPMOVEANDLIFT;
                     }
                     break;
 
                 case RESETTIMER:
                     MeasureWait.reset();
-                    driveOpState = AutoCode2.OperState.MEASURE;
+                    driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.MEASURE;
                     break;
 
                 case Delayer:
-                    if (servoTimer.time() >= 13.5) {
+                    if (servoTimer.time() >= 0.25) {
                         if (Powershots == 1) {
-                            driveOpState = AutoCode2.OperState.PrepMoveToPowerShots;
+                            driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.PrepMoveToPowerShots;
                         } else if (ShootGoals == 1) {
-                            driveOpState = AutoCode2.OperState.PrepMoveToGoals;
+                            driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.PrepMoveToGoals;
                             servoTimer.reset();
                         }
                     }
@@ -501,7 +500,7 @@ public class AutoCode2 extends LinearOpMode {
                     telemetry.addData("Math.maxDrive", (Math.max(0.2, Math.abs((drivePreset - autoChassis.trueDrive) / drivePreset))));
                     if (autoChassis.MoveToLocation() == true) {
                         telemetry.addLine("done");
-                        driveOpState = AutoCode2.OperState.LIFTUP;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.LIFTUP;
                         servoTimer.reset();
                     }
                     break;
@@ -509,7 +508,7 @@ public class AutoCode2 extends LinearOpMode {
                     lift.MoveServo(-1);
                     if (servoTimer.time() >= 2) {
                         lift.MoveServo(0);
-                        driveOpState = AutoCode2.OperState.PREPMOVERIGHT;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.PREPMOVERIGHT;
                     }
                     break;
                 case PREPMOVERIGHT:
@@ -559,7 +558,7 @@ public class AutoCode2 extends LinearOpMode {
                     lift.MoveServo(1);
                     if (servoTimer.time() >= 2) {
                         lift.MoveServo(0);
-                        driveOpState = AutoCode2.OperState.DECIDE;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.DECIDE;
                     }
                     break;
                 case DECIDE:
@@ -578,7 +577,7 @@ public class AutoCode2 extends LinearOpMode {
                                 topgoalstrafe = -topgoalstrafe;
                             }
                         }
-                        driveOpState = AutoCode2.OperState.PREPA;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.PREPA;
                     } else if (ringCount == 1) {
                         if (Powershots == 1) {
                             powershotdrive = 1;
@@ -594,7 +593,7 @@ public class AutoCode2 extends LinearOpMode {
                                 topgoalstrafe = -topgoalstrafe;
                             }
                         }
-                        driveOpState = AutoCode2.OperState.PREPB;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.PREPB;
                     } else if (ringCount == 4) {
                         if (Powershots == 1) {
                             powershotdrive = 1;
@@ -610,7 +609,7 @@ public class AutoCode2 extends LinearOpMode {
                                 topgoalstrafe = -topgoalstrafe;
                             }
                         }
-                        driveOpState = AutoCode2.OperState.PREPC;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.PREPC;
                     }
                     DoneMeasuring = true;
                     break;
@@ -638,15 +637,15 @@ public class AutoCode2 extends LinearOpMode {
                 case GoToTargetZone:
                     autoChassis.rotationPreset -= 0.105;
                     if (autoChassis.MoveToLocation() == true) {
-                        driveOpState = AutoCode2.OperState.NextLocation;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.NextLocation;
                     }
                     break;
 
                 case NextLocation:
                     if (Powershots == 1) {
-                        driveOpState = AutoCode2.OperState.PrepMoveToPowerShots;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.PrepMoveToPowerShots;
                     } else if (ShootGoals == 1) {
-                        driveOpState = AutoCode2.OperState.PrepMoveToGoals;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.PrepMoveToGoals;
                     }
                     break;
                 case PrepMoveToPowerShots:
@@ -654,12 +653,12 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
                     autoChassis.SetPresetMovement(powershotdrive, 1, powershotstrafe, .4, autoChassis.zAngle);
-                    driveOpState = AutoCode2.OperState.MoveToPowerShots;
+                    driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.MoveToPowerShots;
                     launcher.LauncherToggle();
                     break;
                 case MoveToPowerShots:
                     if (autoChassis.MoveToLocation() == true) {
-                        driveOpState = AutoCode2.OperState.PrepSpinAround;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.PrepSpinAround;
                     }
                     break;
                 case PrepMoveToGoals:
@@ -667,10 +666,10 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
                     autoChassis.SetPresetMovement(topgoaldrive, 1.2, topgoalstrafe, .4, autoChassis.zAngle);
-                    driveOpState = AutoCode2.OperState.MoveToGoals;
+                    driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.MoveToGoals;
                     break;
                 case MoveToGoals:
-                    if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2.OperState.Launch; }
+                    if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.Launch; }
                     break;
                 case PrepSpinAround:
                     if ((Math.abs(autoChassis.zAngle - (originalRotation-180)) >= 2)) {
@@ -682,7 +681,7 @@ public class AutoCode2 extends LinearOpMode {
                         rotationGoal = autoChassis.zAngle;
                     }
                     else {
-                        driveOpState = AutoCode2.OperState.Launch;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.Launch;
                     }
                     break;
                 case Launch:
@@ -690,18 +689,18 @@ public class AutoCode2 extends LinearOpMode {
                         launcher.Shoot();
                         launchCount++;
                         if (ShootGoals == 1) {
-                            driveOpState = AutoCode2.OperState.Reload;
+                            driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.Reload;
                             MeasureWait.reset();
                         }
-                        else if (Powershots == 1 && launchCount < 2) { driveOpState = AutoCode2.OperState.PrepStrafeLeft; }
+                        else if (Powershots == 1 && launchCount < 2) { driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.PrepStrafeLeft; }
                         MeasureWait.reset();
                     }
-                    else if (launchCount > 2) { driveOpState = AutoCode2.OperState.PrepLaunchPark; }
+                    else if (launchCount > 2) { driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.PrepLaunchPark; }
                     break;
                 case Reload:
                     if (MeasureWait.time(TimeUnit.SECONDS) >= 1.3 ) {
                         launcher.Reload();
-                        driveOpState = AutoCode2.OperState.Launch;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.Launch;
                         servoTimer.reset();
                     }
                     break;
@@ -710,19 +709,19 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
                     autoChassis.SetPresetMovement(13, 1, 0, .4, autoChassis.zAngle);
-                    driveOpState = AutoCode2.OperState.StrafeLeft;
+                    driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.StrafeLeft;
                     break;
                 case StrafeLeft:
                     if (autoChassis.MoveToLocation() == true) {
-                        driveOpState = AutoCode2.OperState.Reload;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.Reload;
                     }
                     break;
                 case PrepLaunchPark:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(13, 1, 0, .4, autoChassis.zAngle);
-                    driveOpState = AutoCode2.OperState.LaunchPark;
+                    autoChassis.SetPresetMovement(13, 1, 20, .41, autoChassis.zAngle);
+                    driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.LaunchPark;
                 case LaunchPark:
                     if (autoChassis.MoveToLocation() == true) {
                         telemetry.addLine("done");
@@ -734,39 +733,39 @@ public class AutoCode2 extends LinearOpMode {
 
                     if (servoTimer.time() >= 2) {
                         lift.MoveServo(0);
-                        driveOpState = AutoCode2.OperState.STARTLAUNCHER;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.STARTLAUNCHER;
                     }
                     break;
 
                 case STARTLAUNCHER:
                     launcher.LauncherToggle();
-                    driveOpState = AutoCode2.OperState.FOURTHMOVESETUP;
+                    driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.FOURTHMOVESETUP;
 
                 case SHOOT1:
                     if (shootWait < 6) {
                         if (servoTimer.time() > 0.5) {
-                            driveOpState = AutoCode2.OperState.firsttimer;
+                            driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.firsttimer;
                         }
                     } else {
-                        driveOpState = AutoCode2.OperState.FIFTHMOVESETUP;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.FIFTHMOVESETUP;
                     }
 
                     break;
                 case firsttimer:
                     servoTimer.reset();
-                    driveOpState = AutoCode2.OperState.Load;
+                    driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.Load;
                     break;
 
                 case Load:
                     launcher.Shoot();
                     if (servoTimer.time() >= 0.15) {
-                        driveOpState = AutoCode2.OperState.secondtimer;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.secondtimer;
                     }
                     break;
 
                 case secondtimer:
                     servoTimer.reset();
-                    driveOpState = AutoCode2.OperState.ResetPosition;
+                    driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.ResetPosition;
                     break;
 
                 case ResetPosition:
@@ -774,7 +773,7 @@ public class AutoCode2 extends LinearOpMode {
                     if (servoTimer.time() >= 0.15) {
                         shootWait += 1;
                         servoTimer.reset();
-                        driveOpState = AutoCode2.OperState.SHOOT1;
+                        driveOpState = AutoCode2NoDelayAndGoToMiddle.OperState.SHOOT1;
                     }
                     break;
 
