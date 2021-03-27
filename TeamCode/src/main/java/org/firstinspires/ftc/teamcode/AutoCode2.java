@@ -346,7 +346,7 @@ public class AutoCode2 extends LinearOpMode {
                                 
                                 if (ShootGoals == 1) {
                                     topgoaldrive = 56.5;
-                                    topgoalstrafe = -22.5;
+                                    topgoalstrafe = 22.5;
                                 }
                             }
                             break;
@@ -368,7 +368,7 @@ public class AutoCode2 extends LinearOpMode {
                                 
                                 if (ShootGoals == 1) {
                                     topgoaldrive = 56.5;
-                                    topgoalstrafe = 4;
+                                    topgoalstrafe = -4;
                                 }
                             }
                             break;
@@ -461,7 +461,7 @@ public class AutoCode2 extends LinearOpMode {
                     break;
 
                 case Delayer:
-                    if (servoTimer.time() >= 9.5) {
+                    if (servoTimer.time() >= 13.5) {
                         if (Powershots == 1) {
                             driveOpState = AutoCode2.OperState.PrepMoveToPowerShots;
                         } else if (ShootGoals == 1) {
@@ -686,7 +686,7 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     break;
                 case Launch:
-                    if (launchCount < 2 && ((ShootGoals == 1 && servoTimer.time() >= 2) || (Powershots == 1 && servoTimer.time() >= 0.125))) {
+                    if (launchCount <= 2 && ((ShootGoals == 1 && servoTimer.time() >= 1.3) || (Powershots == 1 && servoTimer.time() >= 0.125))) {
                         launcher.Shoot();
                         launchCount++;
                         if (ShootGoals == 1) {
@@ -699,7 +699,7 @@ public class AutoCode2 extends LinearOpMode {
                     else if (launchCount > 2) { driveOpState = AutoCode2.OperState.PrepLaunchPark; }
                     break;
                 case Reload:
-                    if (MeasureWait.time(TimeUnit.SECONDS) >= 2 ) {
+                    if (MeasureWait.time(TimeUnit.SECONDS) >= 1.3 ) {
                         launcher.Reload();
                         driveOpState = AutoCode2.OperState.Launch;
                         servoTimer.reset();
