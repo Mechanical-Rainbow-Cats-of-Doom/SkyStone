@@ -666,7 +666,7 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(topgoaldrive, 1, topgoalstrafe, .4, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(topgoaldrive, 1.2, topgoalstrafe, .4, autoChassis.zAngle);
                     driveOpState = AutoCode2.OperState.MoveToGoals;
                     break;
                 case MoveToGoals:
