@@ -461,7 +461,7 @@ public class AutoCode2 extends LinearOpMode {
                     break;
 
                 case Delayer:
-                    if (servoTimer.time() >= 13.5) {
+                    if (servoTimer.time() >= 0.25) {
                         if (Powershots == 1) {
                             driveOpState = AutoCode2.OperState.PrepMoveToPowerShots;
                         } else if (ShootGoals == 1) {
@@ -721,7 +721,7 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(13, 1, 0, .4, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(13, 1, 20, .41, autoChassis.zAngle);
                     driveOpState = AutoCode2.OperState.LaunchPark;
                 case LaunchPark:
                     if (autoChassis.MoveToLocation() == true) {
