@@ -58,7 +58,7 @@ public class InitialLauncherAndIntakeCode {
         }
 
         public void Shoot () {
-            LaunchServo.setPosition(0.8);
+            LaunchServo.setPosition(0.7);
         }
 
         public void Reload () {
