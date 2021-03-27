@@ -14,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
+import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
 //Created by mostly Ethan, partly Patrick
@@ -67,7 +68,8 @@ public class AutoCode2 extends LinearOpMode {
         PrepSpinAround,
         SpinAround,
         Launch,
-        Delayer
+        Delayer,
+        Reload
     }
 
     enum Menu {
@@ -336,15 +338,15 @@ public class AutoCode2 extends LinearOpMode {
                             bstrafe = -9.5;
                             cdrive = -72;
                             cstrafe = 7;
-                            if (DelayAndGo == 1) {
+                            if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
                                     powershotdrive = 0;
                                     powershotstrafe = 0;
                                 }
                                 
                                 if (ShootGoals == 1) {
-                                    topgoaldrive = 0;
-                                    topgoalstrafe = 0;
+                                    topgoaldrive = 56.5;
+                                    topgoalstrafe = -22.5;
                                 }
                             }
                             break;
@@ -358,15 +360,15 @@ public class AutoCode2 extends LinearOpMode {
                             bstrafe = 14;
                             cdrive = -72;
                             cstrafe = 30.5;
-                            if (DelayAndGo == 1) {
+                            if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
                                     powershotdrive = 0;
                                     powershotstrafe = 0;
                                 }
                                 
                                 if (ShootGoals == 1) {
-                                    topgoaldrive = 0;
-                                    topgoalstrafe = 0;
+                                    topgoaldrive = 56.5;
+                                    topgoalstrafe = 4;
                                 }
                             }
                             break;
@@ -380,15 +382,15 @@ public class AutoCode2 extends LinearOpMode {
                             bstrafe = -14;
                             cdrive = -72;
                             cstrafe = -30.5;
-                            if (DelayAndGo == 1) {
+                            if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
                                     powershotdrive = 0;
                                     powershotstrafe = 0;
                                 }
                                 
                                 if (ShootGoals == 1) {
-                                    topgoaldrive = 0;
-                                    topgoalstrafe = 0;
+                                    topgoaldrive = 56.5;
+                                    topgoalstrafe = 22.5;
                                 }
                             }
                             break;
@@ -402,15 +404,15 @@ public class AutoCode2 extends LinearOpMode {
                             bstrafe = 9.5;
                             cdrive = -72;
                             cstrafe = -7;
-                            if (DelayAndGo == 1) {
+                            if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
-                                    powershotdrive = 0;
-                                    powershotstrafe = 0;
+                                    powershotdrive = 56.5;
+                                    powershotstrafe = -4;
                                 }
                                 
                                 if (ShootGoals == 1) {
-                                    topgoaldrive = 0;
-                                    topgoalstrafe = 0;
+                                    topgoaldrive = 56.5;
+                                    topgoalstrafe = -4;
                                 }
                             }
                             break;
@@ -425,6 +427,7 @@ public class AutoCode2 extends LinearOpMode {
 
         waitForStart();
         servoTimer.reset();
+        launcher.LauncherToggle();
 /*                    if (autoChassis.MoveToLocation() == true) {
                         telemetry.addLine("done");
                     }
@@ -457,11 +460,12 @@ public class AutoCode2 extends LinearOpMode {
                     break;
 
                 case Delayer:
-                    if (servoTimer.time() >= 11) {
+                    if (servoTimer.time() >= 9.5) {
                         if (Powershots == 1) {
                             driveOpState = AutoCode2.OperState.PrepMoveToPowerShots;
                         } else if (ShootGoals == 1) {
                             driveOpState = AutoCode2.OperState.PrepMoveToGoals;
+                            servoTimer.reset();
                         }
                     }
                     break;
@@ -663,10 +667,9 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.SetPresetMovement(topgoaldrive, 1, topgoalstrafe, .4, autoChassis.zAngle);
                     driveOpState = AutoCode2.OperState.MoveToGoals;
-                    launcher.LauncherToggle();
                     break;
                 case MoveToGoals:
-                    if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2.OperState.PrepSpinAround; }
+                    if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2.OperState.Launch; }
                     break;
                 case PrepSpinAround:
                     if ((Math.abs(autoChassis.zAngle - (originalRotation-180)) >= 2)) {
@@ -682,32 +685,42 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     break;
                 case Launch:
-                    if (launchCount < 2 && ((ShootGoals == 1 && servoTimer.time() >= 0.5) || (Powershots == 1 && servoTimer.time() >= 0.15))) {
+                    if (launchCount < 2 && ((ShootGoals == 1 && servoTimer.time() >= 2) || (Powershots == 1 && servoTimer.time() >= 0.125))) {
                         launcher.Shoot();
                         launchCount++;
-                        if (ShootGoals == 1) { servoTimer.reset(); }
+                        if (ShootGoals == 1) {
+                            driveOpState = AutoCode2.OperState.Reload;
+                            servoTimer.reset();
+                        }
                         else if (Powershots == 1 && launchCount < 2) { driveOpState = AutoCode2.OperState.PrepStrafeLeft; }
+                        MeasureWait.reset();
                     }
                     else if (launchCount > 2) { driveOpState = AutoCode2.OperState.PrepLaunchPark; }
+                    break;
+                case Reload:
+                    if (MeasureWait.time(TimeUnit.SECONDS) >= 2 ) {
+                        launcher.Reload();
+                        driveOpState = AutoCode2.OperState.Launch;
+                        servoTimer.reset();
+                    }
                     break;
                 case PrepStrafeLeft:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0, 1, -4, .4, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(13, 1, 0, .4, autoChassis.zAngle);
                     driveOpState = AutoCode2.OperState.StrafeLeft;
                     break;
                 case StrafeLeft:
                     if (autoChassis.MoveToLocation() == true) {
-                        servoTimer.reset();
-                        driveOpState = AutoCode2.OperState.Launch;
+                        driveOpState = AutoCode2.OperState.Reload;
                     }
                     break;
                 case PrepLaunchPark:
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(5, 1, 0, .4, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(13, 1, 0, .4, autoChassis.zAngle);
                     driveOpState = AutoCode2.OperState.LaunchPark;
                 case LaunchPark:
                     if (autoChassis.MoveToLocation() == true) {

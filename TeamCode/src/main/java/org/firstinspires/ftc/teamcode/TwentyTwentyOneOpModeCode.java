@@ -509,6 +509,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     MotorState1 = !MotorState1;
                     IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors;
                     break;
+                    //56.5 13 4
                 case WaitingForDpadRelease:
                     if (!gamepad2.dpad_up) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeFrontValue;}
                     break;
