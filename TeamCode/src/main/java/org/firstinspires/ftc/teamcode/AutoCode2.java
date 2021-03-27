@@ -427,6 +427,7 @@ public class AutoCode2 extends LinearOpMode {
 
         waitForStart();
         servoTimer.reset();
+        launcher.Reload();
         launcher.LauncherToggle();
 /*                    if (autoChassis.MoveToLocation() == true) {
                         telemetry.addLine("done");
@@ -441,7 +442,7 @@ public class AutoCode2 extends LinearOpMode {
             telemetry.addData("driveopstate", driveOpState);
             telemetry.addData("IMPORTANT, DRIVE PRESET", autoChassis.drivePreset);
             telemetry.addData("IMPORTANT, STRAFE PRESET", autoChassis.strafePreset);
-
+            telemetry.addData("Launch Count", launchCount);
             switch (driveOpState) {
                 case FIRSTMOVE:
                     telemetry.addLine("FIRSTMOVE");
@@ -690,7 +691,7 @@ public class AutoCode2 extends LinearOpMode {
                         launchCount++;
                         if (ShootGoals == 1) {
                             driveOpState = AutoCode2.OperState.Reload;
-                            servoTimer.reset();
+                            MeasureWait.reset();
                         }
                         else if (Powershots == 1 && launchCount < 2) { driveOpState = AutoCode2.OperState.PrepStrafeLeft; }
                         MeasureWait.reset();
