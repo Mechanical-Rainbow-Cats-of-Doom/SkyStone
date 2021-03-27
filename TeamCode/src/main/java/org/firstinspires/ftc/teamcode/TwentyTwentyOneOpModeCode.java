@@ -31,6 +31,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     private Servo WiperServo;
     private boolean MotorState1 = false; //false = off, true = on.
     private boolean MotorState2 = false;
+    private int intakeDirection = 1;
     private Blinker Control_Hub;
     private Blinker expansion_Hub_2;
     ElapsedTime mytimer = new ElapsedTime();
@@ -46,7 +47,9 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         ChangeValue,
         ChangeMotors,
         WaitingForDpadRelease,
-        ChangeFrontValue
+        ChangeFrontValue,
+        WaitingForDownRelease,
+        SwitchIntakeDirection
     }
     enum RingWiper {
         WaitingForPushY,
@@ -495,6 +498,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                 case WaitingForPush:
                     if (gamepad2.x) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForRelease; }
                     else if (gamepad2.dpad_up) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForDpadRelease;}
+                    else if (gamepad2.dpad_down) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForDownRelease;}
                     else { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors; }
                     break;
                 case WaitingForRelease:
@@ -512,6 +516,13 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     MotorState1 = !MotorState1;
                     IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors;
                     break;
+                case WaitingForDownRelease:
+                    if (!gamepad2.dpad_up) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.SwitchIntakeDirection;}
+                    break;
+                case SwitchIntakeDirection:
+                    intakeDirection *= -1;
+                    IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors;
+                    break;
                 case ChangeMotors:
                     if (MotorState2) {
                         IntakeMotor2.setPower(1);
@@ -520,7 +531,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                         IntakeMotor2.setPower(0);
                     }
                     if (MotorState1) {
-                        IntakeMotor.setPower(-1);
+                        IntakeMotor.setPower(-1*intakeDirection);
                     }
                     else if (!MotorState1) {
                         IntakeMotor.setPower(0);
