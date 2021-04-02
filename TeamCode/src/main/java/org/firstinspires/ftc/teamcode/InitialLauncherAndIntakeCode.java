@@ -23,8 +23,8 @@ public class InitialLauncherAndIntakeCode {
         public void LauncherRun(double power) {
             if (power == null) { power == 1 }
             if (launcherOn && power <= 1 && power >= -1) {
-                power = power * maxPower;
-                LaunchMotor.setPower(-power);
+                power = power * -maxPower;
+                LaunchMotor.setPower(power);
             } else {
                 LaunchMotor.setPower(0);
             }
