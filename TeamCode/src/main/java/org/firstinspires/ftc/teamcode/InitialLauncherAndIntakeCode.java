@@ -39,24 +39,23 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class InitialLauncherAndIntakeCode {
     private Blinker expansion_Hub_1;
     ElapsedTime mytimer = new ElapsedTime();
+
     public static class Launcher {
         public DcMotor LaunchMotor;
         public Servo LaunchServo;
         public boolean launcherOn = false;
 
-        public void LauncherToggle () {
+        public void LauncherToggle() {
             launcherOn = !launcherOn;
         }
 
-        public void LauncherRun (double Power) {
-            if (launcherOn) {
+        public void LauncherRun(double Power) {
+            if (Power >= 0.9 && launcherOn) {
                 LaunchMotor.setPower(-Power);
-            }
-            else {
+            } else {
                 LaunchMotor.setPower(0);
             }
         }
-
         public void Shoot () {
             LaunchServo.setPosition(0.7);
         }
