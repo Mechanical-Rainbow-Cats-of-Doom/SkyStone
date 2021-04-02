@@ -95,7 +95,7 @@ public class firstAutonomousMode extends LinearOpMode {
 
         while (opModeIsActive()) {
             autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
-            launcher.LauncherRun(0.9);
+            launcher.LauncherRun(1);
 /*
             switch(driveOpState) {
                 case FIRSTMOVE:

@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import java.sql.Time;
 import java.util.concurrent.TimeUnit;
 
-//Created by mostly Ethan, partly Patrick
+//At this point it's almost entirely created by Ethan
 @Autonomous
 public class AutoCode2 extends LinearOpMode {
 
@@ -436,7 +436,7 @@ public class AutoCode2 extends LinearOpMode {
         while (opModeIsActive()) {
 
             autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
-            launcher.LauncherRun(0.848);
+            launcher.LauncherRun(0.9422);
             if (!DoneMeasuring) { ring.MeasureDistance(); }
             telemetry.addData("where you are in strafe", Math.abs(autoChassis.strafePreset - autoChassis.trueStrafe));
             telemetry.addData("driveopstate", driveOpState);

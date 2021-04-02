@@ -44,18 +44,22 @@ public class InitialLauncherAndIntakeCode {
         public DcMotor LaunchMotor;
         public Servo LaunchServo;
         public boolean launcherOn = false;
+        private double maxPower = 0.9;
 
         public void LauncherToggle() {
             launcherOn = !launcherOn;
         }
 
-        public void LauncherRun(double Power) {
-            if (!(Power >= 0.9) && launcherOn) {
-                LaunchMotor.setPower(-Power);
+        public void LauncherRun(double power) {
+            if (power == null) { power == 1 }
+            if (launcherOn && power <= 1 && power >= -1) {
+                power = power * 0.9;
+                LaunchMotor.setPower(-power);
             } else {
                 LaunchMotor.setPower(0);
             }
         }
+    }
         public void Shoot () {
             LaunchServo.setPosition(0.7);
         }
