@@ -435,7 +435,7 @@ public class AutoCode2NoDelayAndGoToMiddle extends LinearOpMode {
         while (opModeIsActive()) {
 
             autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
-            launcher.LauncherRun();
+            launcher.LauncherRun(0.9);
             if (!DoneMeasuring) { ring.MeasureDistance(); }
             telemetry.addData("where you are in strafe", Math.abs(autoChassis.strafePreset - autoChassis.trueStrafe));
             telemetry.addData("driveopstate", driveOpState);

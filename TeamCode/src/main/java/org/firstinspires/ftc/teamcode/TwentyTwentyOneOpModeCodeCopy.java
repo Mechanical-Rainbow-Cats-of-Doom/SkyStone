@@ -184,7 +184,7 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
                     launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
                     break;
             }
-            launcher.LauncherRun();
+            launcher.LauncherRun(0.9);
             switch (driveOpState) {
                 case NORMALDRIVE:
                     drive = -this.gamepad1.left_stick_y;

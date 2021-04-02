@@ -174,7 +174,7 @@ public class Gladys extends LinearOpMode {
                     launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
                     break;
             }
-            launcher.LauncherRun();
+            launcher.LauncherRun(0.9);
             switch (driveOpState) {
                 case NORMALDRIVE:
 
