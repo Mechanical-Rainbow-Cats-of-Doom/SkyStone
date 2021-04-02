@@ -50,7 +50,7 @@ public class InitialLauncherAndIntakeCode {
         }
 
         public void LauncherRun(double Power) {
-            if (Power >= 0.9 && launcherOn) {
+            if (!(Power >= 0.9) && launcherOn) {
                 LaunchMotor.setPower(-Power);
             } else {
                 LaunchMotor.setPower(0);
