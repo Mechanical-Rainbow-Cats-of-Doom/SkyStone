@@ -203,7 +203,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
                     break;
             }
-            launcher.LauncherRun();
+            launcher.LauncherRun(0.7);
             switch (driveOpState) {
                 case NORMALDRIVE:
 

@@ -48,9 +48,9 @@ public class InitialLauncherAndIntakeCode {
             launcherOn = !launcherOn;
         }
 
-        public void LauncherRun () {
+        public void LauncherRun (double Power) {
             if (launcherOn) {
-                LaunchMotor.setPower(-0.9);
+                LaunchMotor.setPower(-Power);
             }
             else {
                 LaunchMotor.setPower(0);
@@ -60,7 +60,6 @@ public class InitialLauncherAndIntakeCode {
         public void Shoot () {
             LaunchServo.setPosition(0.7);
         }
-
         public void Reload () {
             LaunchServo.setPosition(1.0);
         }
@@ -81,7 +80,6 @@ public class InitialLauncherAndIntakeCode {
     @Override
     public void runOpMode() {
         InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
-
         expansion_Hub_1 = hardwareMap.get(Blinker.class, "Nihal");
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class,"LaunchServo");
