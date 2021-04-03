@@ -56,10 +56,9 @@ public class AutoCode2 extends LinearOpMode {
         PREPB,
         PREPC,
         GoToTargetZone,
-        PrepMoveToPowerShots,
         PrepStrafeLeft,
         PrepLaunchPark,
-        PrepMoveToGoals,
+        PrepMoveToShooting,
         MoveToPowerShots,
         StrafeLeft,
         LaunchPark,
@@ -153,10 +152,8 @@ public class AutoCode2 extends LinearOpMode {
         double bstrafe = 0;
         double cdrive = 0;
         double cstrafe = 0;
-        double powershotdrive = 0;
-        double topgoaldrive = 0;
-        double powershotstrafe = 0;
-        double topgoalstrafe = 0;
+        double shootdrive = 0;
+        double shootstrafe = 0;
 
         int isRotate = 0;
         int isStrafe = 0;
@@ -340,13 +337,13 @@ public class AutoCode2 extends LinearOpMode {
                             cstrafe = 7;
                             if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
-                                    powershotdrive = 0;
-                                    powershotstrafe = 0;
+                                    shootdrive = 0;
+                                    shootstrafe = 0;
                                 }
                                 
                                 if (ShootGoals == 1) {
-                                    topgoaldrive = 56.5;
-                                    topgoalstrafe = 22.5;
+                                    shootdrive = 56.5;
+                                    shootstrafe = 22.5;
                                 }
                             }
                             break;
@@ -362,13 +359,13 @@ public class AutoCode2 extends LinearOpMode {
                             cstrafe = 30.5;
                             if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
-                                    powershotdrive = 0;
-                                    powershotstrafe = 0;
+                                    shootdrive = 0;
+                                    shootstrafe = 0;
                                 }
                                 
                                 if (ShootGoals == 1) {
-                                    topgoaldrive = 56.5;
-                                    topgoalstrafe = -4;
+                                    shootdrive = 56.5;
+                                    shootstrafe = -4;
                                 }
                             }
                             break;
@@ -384,13 +381,13 @@ public class AutoCode2 extends LinearOpMode {
                             cstrafe = -30.5;
                             if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
-                                    powershotdrive = 0;
-                                    powershotstrafe = 0;
+                                    shootdrive = 62;
+                                    shootstrafe = 9.125;
                                 }
                                 
                                 if (ShootGoals == 1) {
-                                    topgoaldrive = 56.5;
-                                    topgoalstrafe = 22.5;
+                                    shootdrive = 56.5;
+                                    shootstrafe = 22.5;
                                 }
                             }
                             break;
@@ -406,13 +403,13 @@ public class AutoCode2 extends LinearOpMode {
                             cstrafe = -7;
                             if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
-                                    powershotdrive = 56.5;
-                                    powershotstrafe = -4;
+                                    shootdrive = 56.5;
+                                    shootstrafe = -4;
                                 }
                                 
                                 if (ShootGoals == 1) {
-                                    topgoaldrive = 56.5;
-                                    topgoalstrafe = -4;
+                                    shootdrive = 56.5;
+                                    shootstrafe = -4;
                                 }
                             }
                             break;
@@ -428,13 +425,11 @@ public class AutoCode2 extends LinearOpMode {
         waitForStart();
         servoTimer.reset();
         launcher.Reload();
-        launcher.LauncherToggle();
 /*                    if (autoChassis.MoveToLocation() == true) {
                         telemetry.addLine("done");
                     }
 */
         while (opModeIsActive()) {
-
             autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
             launcher.LauncherRun(0.9422);
             if (!DoneMeasuring) { ring.MeasureDistance(); }
@@ -462,12 +457,8 @@ public class AutoCode2 extends LinearOpMode {
 
                 case Delayer:
                     if (servoTimer.time() >= 13.5) {
-                        if (Powershots == 1) {
-                            driveOpState = AutoCode2.OperState.PrepMoveToPowerShots;
-                        } else if (ShootGoals == 1) {
-                            driveOpState = AutoCode2.OperState.PrepMoveToGoals;
-                            servoTimer.reset();
-                        }
+                        driveOpState = AutoCode2.OperState.PrepMoveToShooting;
+                        servoTimer.reset();
                     }
                     break;
 
@@ -565,49 +556,49 @@ public class AutoCode2 extends LinearOpMode {
                 case DECIDE:
                     if (ringCount == 0) {
                         if (Powershots == 1) {
-                            powershotdrive = 1;
-                            powershotstrafe = 1;
+                            shootdrive = 1;
+                            shootstrafe = 1;
                             if (!OnRed) {
-                                powershotstrafe = -powershotstrafe;
+                                shootstrafe = -shootstrafe;
                             }
                         }
                         if (ShootGoals == 1) {
-                            topgoaldrive = 1;
-                            topgoalstrafe = 1;
+                            shootdrive = 1;
+                            shootstrafe = 1;
                             if (!OnRed) {
-                                topgoalstrafe = -topgoalstrafe;
+                                shootstrafe = -shootstrafe;
                             }
                         }
                         driveOpState = AutoCode2.OperState.PREPA;
                     } else if (ringCount == 1) {
                         if (Powershots == 1) {
-                            powershotdrive = 1;
-                            powershotstrafe = 1;
+                            shootdrive = 1;
+                            shootstrafe = 1;
                             if (!OnRed) {
-                                powershotstrafe = -powershotstrafe;
+                                shootstrafe = -shootstrafe;
                             }
                         }
                         if (ShootGoals == 1) {
-                            topgoaldrive = 1;
-                            topgoalstrafe = 1;
+                            shootdrive = 1;
+                            shootstrafe = 1;
                             if (!OnRed) {
-                                topgoalstrafe = -topgoalstrafe;
+                                shootstrafe = -shootstrafe;
                             }
                         }
                         driveOpState = AutoCode2.OperState.PREPB;
                     } else if (ringCount == 4) {
                         if (Powershots == 1) {
-                            powershotdrive = 1;
-                            powershotstrafe = 1;
+                            shootdrive = 1;
+                            shootstrafe = 1;
                             if (!OnRed) {
-                                powershotstrafe = -powershotstrafe;
+                                shootstrafe = -shootstrafe;
                             }
                         }
                         if (ShootGoals == 1) {
-                            topgoaldrive = 1;
-                            topgoalstrafe = 1;
+                            shootdrive = 1;
+                            shootstrafe = 1;
                             if (!OnRed) {
-                                topgoalstrafe = -topgoalstrafe;
+                                shootstrafe = -shootstrafe;
                             }
                         }
                         driveOpState = AutoCode2.OperState.PREPC;
@@ -638,35 +629,21 @@ public class AutoCode2 extends LinearOpMode {
                 case GoToTargetZone:
                     autoChassis.rotationPreset -= 0.105;
                     if (autoChassis.MoveToLocation() == true) {
-                        driveOpState = AutoCode2.OperState.NextLocation;
+                        driveOpState = AutoCode2.OperState.PrepMoveToShooting;
                     }
                     break;
 
-                case NextLocation:
-                    if (Powershots == 1) {
-                        driveOpState = AutoCode2.OperState.PrepMoveToPowerShots;
-                    } else if (ShootGoals == 1) {
-                        driveOpState = AutoCode2.OperState.PrepMoveToGoals;
-                    }
-                    break;
-                case PrepMoveToPowerShots:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(powershotdrive, 1, powershotstrafe, .4, autoChassis.zAngle);
-                    driveOpState = AutoCode2.OperState.MoveToPowerShots;
-                    launcher.LauncherToggle();
-                    break;
                 case MoveToPowerShots:
                     if (autoChassis.MoveToLocation() == true) {
                         driveOpState = AutoCode2.OperState.PrepSpinAround;
                     }
                     break;
-                case PrepMoveToGoals:
+                case PrepMoveToShooting:
+                    launcher.LauncherToggle();
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(topgoaldrive, 1.2, topgoalstrafe, .4, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(shootdrive, 1.2, shootstrafe, .4, autoChassis.zAngle);
                     driveOpState = AutoCode2.OperState.MoveToGoals;
                     break;
                 case MoveToGoals:
@@ -728,6 +705,7 @@ public class AutoCode2 extends LinearOpMode {
                         telemetry.addLine("done");
                     }
                     break;
+                /*
                 case THIRDMOVE:
                     telemetry.addLine("THIRDMOVE");
                     lift.MoveServo(-1);
@@ -777,7 +755,7 @@ public class AutoCode2 extends LinearOpMode {
                         driveOpState = AutoCode2.OperState.SHOOT1;
                     }
                     break;
-
+*/
             }
             telemetry.update();
         }
