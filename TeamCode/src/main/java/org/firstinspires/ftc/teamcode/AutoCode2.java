@@ -154,6 +154,7 @@ public class AutoCode2 extends LinearOpMode {
         double cstrafe = 0;
         double shootdrive = 0;
         double shootstrafe = 0;
+        double strafeslightleft = -6.25;
 
         int isRotate = 0;
         int isStrafe = 0;
@@ -317,6 +318,7 @@ public class AutoCode2 extends LinearOpMode {
                         driveOpState = AutoCode2.OperState.Delayer;
                         DoneMeasuring = true;
                     }
+                    if (Powershots == 1 && !OnRed) { strafeslightleft = -strafeslightleft; }
                     switch (StartLocation) {
                         case 1:
                             moveandliftdrive = -19;
@@ -639,7 +641,10 @@ public class AutoCode2 extends LinearOpMode {
                     driveOpState = AutoCode2.OperState.MoveToGoals;
                     break;
                 case MoveToGoals:
-                    if (autoChassis.MoveToLocation() == true) { driveOpState = AutoCode2.OperState.Launch; }
+                    if (autoChassis.MoveToLocation() == true) {
+                        driveOpState = AutoCode2.OperState.Launch;
+                        servoTimer.reset();
+                    }
                     break;
                 case PrepSpinAround:
                     if ((Math.abs(autoChassis.zAngle - (originalRotation-180)) >= 2)) {
@@ -663,7 +668,6 @@ public class AutoCode2 extends LinearOpMode {
                             MeasureWait.reset();
                         }
                         else if (Powershots == 1 && launchCount < 2) { driveOpState = AutoCode2.OperState.PrepStrafeLeft; }
-                        MeasureWait.reset();
                     }
                     else if (launchCount > 2) { driveOpState = AutoCode2.OperState.PrepLaunchPark; }
                     break;
@@ -678,12 +682,13 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0, 0, 6.25, .46, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(0, .4, strafeslightleft, .46, autoChassis.zAngle);
                     driveOpState = AutoCode2.OperState.StrafeLeft;
                     break;
                 case StrafeLeft:
                     if (autoChassis.MoveToLocation() == true) {
                         driveOpState = AutoCode2.OperState.Reload;
+                        MeasureWait.reset();
                     }
                     break;
                 case PrepLaunchPark:
