@@ -93,7 +93,6 @@ public class rotate360onA extends LinearOpMode {
             launcher.LauncherRun(1);
 
             switch (driveOpState) {
-
                 case SETUP:
                     telemetry.addData("Right Encoder", autoChassis.back_right_wheel.getCurrentPosition());
                     telemetry.addData("Left Encoder", -autoChassis.front_right_wheel.getCurrentPosition());
@@ -110,8 +109,6 @@ public class rotate360onA extends LinearOpMode {
                     telemetry.addData("Right Encoder Multiplier", (totalBack / (index-1)) / (totalRight / (index-1)) );
                     telemetry.addData("Left Encoder Multiplier", (totalBack / (index-1)) / (totalLeft / (index-1)) );
                     telemetry.addData("Back Encoder Multiplier" , 1);
-
-
 
                     if (gamepad1.a) {
                         if (index >= (ArraySize - 1)) {

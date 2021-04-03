@@ -154,7 +154,7 @@ public class AutoCode2 extends LinearOpMode {
         double cstrafe = 0;
         double shootdrive = 0;
         double shootstrafe = 0;
-        double strafeslightleft = -6.25;
+        double strafeslightleft = -4.25;
 
         int isRotate = 0;
         int isStrafe = 0;
@@ -311,7 +311,11 @@ public class AutoCode2 extends LinearOpMode {
                     AreYouMoving = 0;
                     Save = 0;
                     DelayAndGo = 0;
+                    OnRed = true;
+                    strafeslightleft = -8.25;
+                    driveOpState = AutoCode2.OperState.FIRSTMOVE;
                     menu = AutoCode2.Menu.StartLocation;
+                    DoneMeasuring = false;
                     break;
                 case Save:
                     if (DelayAndGo == 2) {
@@ -376,7 +380,7 @@ public class AutoCode2 extends LinearOpMode {
                             if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
                                     shootdrive = 62;
-                                    shootstrafe = 9.125;
+                                    shootstrafe = -.5;
                                 }
                                 
                                 if (ShootGoals == 1) {
@@ -663,18 +667,16 @@ public class AutoCode2 extends LinearOpMode {
                     if (launchCount <= 2 && (((Powershots == 1 && launchCount >= 1) && servoTimer.time() >= 0.165) || servoTimer.time() >= 1.26)) {
                         launcher.Shoot();
                         launchCount++;
-                        if (ShootGoals == 1) {
-                            driveOpState = AutoCode2.OperState.Reload;
-                            MeasureWait.reset();
-                        }
-                        else if (Powershots == 1 && launchCount < 2) { driveOpState = AutoCode2.OperState.PrepStrafeLeft; }
+                        driveOpState = AutoCode2.OperState.Reload;
+                        MeasureWait.reset();
                     }
                     else if (launchCount > 2) { driveOpState = AutoCode2.OperState.PrepLaunchPark; }
                     break;
                 case Reload:
                     if (MeasureWait.time(TimeUnit.SECONDS) >= 1.3 ) {
                         launcher.Reload();
-                        driveOpState = AutoCode2.OperState.Launch;
+                        if (Powershots == 1 && launchCount <= 2) { driveOpState = AutoCode2.OperState.PrepStrafeLeft; }
+                        else { driveOpState = AutoCode2.OperState.Launch; }
                         servoTimer.reset();
                     }
                     break;
@@ -682,14 +684,8 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0, .4, strafeslightleft, .46, autoChassis.zAngle);
-                    driveOpState = AutoCode2.OperState.StrafeLeft;
-                    break;
-                case StrafeLeft:
-                    if (autoChassis.MoveToLocation() == true) {
-                        driveOpState = AutoCode2.OperState.Reload;
-                        MeasureWait.reset();
-                    }
+                    autoChassis.SetPresetMovement(0, .01, strafeslightleft, .46, autoChassis.zAngle);
+                    driveOpState = AutoCode2.OperState.MoveToGoals; //we aren't actually moving to the goals, it's just that i don't want to have the same case being used twice. the case should really be renamed to MovingBeforeLaunch or something similar, but I really don't want to spend the time doing that right now. I probably should have really done that instead of writing this long-ass comment, but whatever. Also lmao we should probably removing the me swearing if we end up sending code to the judges for the state tournament.
                     break;
                 case PrepLaunchPark:
                     autoChassis.SetAxisMovement();
