@@ -188,15 +188,7 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     break;
                 case ButtonWaiter0:
-                    if ((StartLocation == 1) && (!gamepad1.a)) {
-                        menu = AutoCode2.Menu.DelayAndGo;
-                    } else if ((StartLocation == 2) && (!gamepad1.b)) {
-                        menu = AutoCode2.Menu.DelayAndGo;
-                    } else if ((StartLocation == 3) && (!gamepad1.x)) {
-                        menu = AutoCode2.Menu.DelayAndGo;
-                    } else if ((StartLocation == 4) && (!gamepad1.y)) {
-                        menu = AutoCode2.Menu.DelayAndGo;
-                    }
+                    if ((StartLocation == 1 && !gamepad1.a) || (StartLocation == 2 && !gamepad1.b) || (StartLocation == 3 && !gamepad1.x) || (StartLocation == 4 && !gamepad1.y) ) { menu = AutoCode2.Menu.DelayAndGo; }
                     break;
                 case DelayAndGo:
                     telemetry.addLine("Are you doing the Wobble Goals? If you aren't, then the robot will delay for 11 seconds and then go straight to the launch location. Yes (Y) No (X)");
@@ -228,9 +220,9 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     break;
                 case ButtonWaiter2:
-                    if ((Powershots == 2) && (!gamepad1.x)) {
+                    if ((Powershots == 2 && !gamepad1.x)) {
                         menu = AutoCode2.Menu.Goals;
-                    } else if ((Powershots == 1) && (!gamepad1.y)) {
+                    } else if ((Powershots == 1 && !gamepad1.y)) {
                         menu = AutoCode2.Menu.CheckForInvalid;
                     }
                     break;
@@ -663,7 +655,7 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     break;
                 case Launch:
-                    if (launchCount <= 2 && ((ShootGoals == 1 && servoTimer.time() >= 1.3) || (Powershots == 1 && servoTimer.time() >= 0.125))) {
+                    if (launchCount <= 2 && (((Powershots == 1 && launchCount >= 1) && servoTimer.time() >= 0.165) || servoTimer.time() >= 1.26)) {
                         launcher.Shoot();
                         launchCount++;
                         if (ShootGoals == 1) {
