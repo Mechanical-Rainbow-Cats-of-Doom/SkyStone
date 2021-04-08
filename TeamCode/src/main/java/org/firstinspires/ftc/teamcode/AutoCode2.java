@@ -120,6 +120,9 @@ public class AutoCode2 extends LinearOpMode {
         parameters.loggingTag = "IMU";
         autoChassis.imu.initialize(parameters);
         double drivePreset = 0;
+        double strafePreset = 0;
+        double rotationGoal = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        double originalRotation = rotationGoal;
 
         //menu variables
         boolean IsMenuDone = false;
@@ -132,16 +135,7 @@ public class AutoCode2 extends LinearOpMode {
         int AreYouMoving = 0; //1 is yes, 2 is no.
         int Save = 0; //1 is yes, 2 is no.
         int DelayAndGo = 0; //1 is yes, 2 is no.
-/*
-23.5 Inches Between the strips.
- */
-        double strafePreset = 0;
-        double rotationGoal = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-        double originalRotation = rotationGoal;
-        double shootWait = 0;
-        double rotate = 0;
-        double strafe = 0;
-        double drive = 0;
+        //23.5 Inches Between the strips.
 
         //All Constants For All Moves
         double moveandliftdrive = 0;
@@ -154,16 +148,10 @@ public class AutoCode2 extends LinearOpMode {
         double cstrafe = 0;
         double shootdrive = 0;
         double shootstrafe = 0;
-        double strafeslightleft = -4.25;
-
-        int isRotate = 0;
-        int isStrafe = 0;
-        int isDrive = 0;
+        double strafeslightleft = -4.75;
         int launchCount = 0;
         int ringCount = 0;
         ElapsedTime MeasureWait = new ElapsedTime();
-        double driveValue = 0;
-        double strafeValue = 0;
         autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         while (!IsMenuDone) {
             switch (menu) {
@@ -312,7 +300,7 @@ public class AutoCode2 extends LinearOpMode {
                     Save = 0;
                     DelayAndGo = 0;
                     OnRed = true;
-                    strafeslightleft = -8.25;
+                    strafeslightleft = -4.75;
                     driveOpState = AutoCode2.OperState.FIRSTMOVE;
                     menu = AutoCode2.Menu.StartLocation;
                     DoneMeasuring = false;
@@ -664,7 +652,7 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     break;
                 case Launch:
-                    if (launchCount <= 2 && (((Powershots == 1 && launchCount >= 1) && servoTimer.time() >= 0.165) || servoTimer.time() >= 1.26)) {
+                    if (launchCount <= 2 && (((Powershots == 1 && launchCount >= 1) && servoTimer.time() >= 0.185) || servoTimer.time() >= 1)) {
                         launcher.Shoot();
                         launchCount++;
                         driveOpState = AutoCode2.OperState.Reload;
@@ -673,7 +661,7 @@ public class AutoCode2 extends LinearOpMode {
                     else if (launchCount > 2) { driveOpState = AutoCode2.OperState.PrepLaunchPark; }
                     break;
                 case Reload:
-                    if (MeasureWait.time(TimeUnit.SECONDS) >= 1.3 ) {
+                    if (MeasureWait.time(TimeUnit.SECONDS) >= 1 ) {
                         launcher.Reload();
                         if (Powershots == 1 && launchCount <= 2) { driveOpState = AutoCode2.OperState.PrepStrafeLeft; }
                         else { driveOpState = AutoCode2.OperState.Launch; }
@@ -684,7 +672,7 @@ public class AutoCode2 extends LinearOpMode {
                     autoChassis.SetAxisMovement();
                     autoChassis.ZeroEncoders();
                     autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0, .001, strafeslightleft, .46, autoChassis.zAngle);
+                    autoChassis.SetPresetMovement(0, 0, strafeslightleft, .35, autoChassis.zAngle);
                     driveOpState = AutoCode2.OperState.MoveToGoals; //we aren't actually moving to the goals, it's just that i don't want to have the same case being used twice. the case should really be renamed to MovingBeforeLaunch or something similar, but I really don't want to spend the time doing that right now. I probably should have really done that instead of writing this long-ass comment, but whatever. Also lmao we should probably removing the me swearing if we end up sending code to the judges for the state tournament.
                     break;
                 case PrepLaunchPark:
