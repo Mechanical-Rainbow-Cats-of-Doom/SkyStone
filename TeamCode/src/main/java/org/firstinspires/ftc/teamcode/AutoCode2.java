@@ -37,21 +37,8 @@ public class AutoCode2 extends LinearOpMode {
         MOVEANDLIFT,
         MOVERIGHT,
         MOVEBACK,
-        NEWSECONDMOVESETUP,
-        SECONDMOVESETUP,
-        THIRDMOVESETUP,
-        THIRDMOVE,
-        STARTLAUNCHER,
-        FOURTHMOVESETUP,
-        FOURTHMOVE,
-        SHOOT1,
         RESETTIMER,
         MEASURE,
-        firsttimer,
-        Load,
-        secondtimer,
-        ResetPosition,
-        FIFTHMOVESETUP,
         PREPA,
         PREPB,
         PREPC,
@@ -399,7 +386,6 @@ public class AutoCode2 extends LinearOpMode {
                                 }
                             }
                             break;
-
                     }
                     telemetry.addLine("Choices have been saved. You may now tell the ref you are ready.");
                     telemetry.update();
@@ -647,9 +633,7 @@ public class AutoCode2 extends LinearOpMode {
                         autoChassis.SetAxisMovement();
                         rotationGoal = autoChassis.zAngle;
                     }
-                    else {
-                        driveOpState = AutoCode2.OperState.Launch;
-                    }
+                    else { driveOpState = AutoCode2.OperState.Launch; }
                     break;
                 case Launch:
                     if (launchCount <= 2 && (((Powershots == 1 && launchCount >= 1) && servoTimer.time() >= 0.185) || servoTimer.time() >= 1)) {
