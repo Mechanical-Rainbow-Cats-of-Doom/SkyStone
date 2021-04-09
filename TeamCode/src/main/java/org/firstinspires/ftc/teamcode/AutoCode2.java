@@ -309,7 +309,7 @@ public class AutoCode2 extends LinearOpMode {
                             if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
                                     shootdrive = 61.87;
-                                    shootstrafe = 24;
+                                    shootstrafe = 40;
                                 }
                                 
                                 if (ShootGoals == 1) {
@@ -330,7 +330,7 @@ public class AutoCode2 extends LinearOpMode {
                             if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
                                     shootdrive = 61.87;
-                                    shootstrafe = .5;
+                                    shootstrafe = 14.5;
                                 }
                                 
                                 if (ShootGoals == 1) {
