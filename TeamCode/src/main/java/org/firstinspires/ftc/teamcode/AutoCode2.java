@@ -125,7 +125,6 @@ public class AutoCode2 extends LinearOpMode {
         //23.5 Inches Between the strips.
 
         //All Constants For All Moves
-        double moveandliftdrive = 0;
         double moverightstrafe = 0;
         double adrive = 0;
         double astrafe = 0;
@@ -257,7 +256,7 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     break;
                 case CheckForInvalid:
-                    if (Powershots == 2 & ShootGoals == 2 & OnlyPark == 2 & AreYouMoving == 2) { menu = AutoCode2.Menu.Redo; } 
+                    if (Powershots == 2 & ShootGoals == 2 & OnlyPark == 2 & AreYouMoving == 2) { menu = AutoCode2.Menu.Redo; }
                     else { menu = AutoCode2.Menu.AskIfDone; }
                     break;
                 case AskIfDone:
@@ -300,7 +299,6 @@ public class AutoCode2 extends LinearOpMode {
                     if (Powershots == 1 && !OnRed) { strafeslightleft = -strafeslightleft; }
                     switch (StartLocation) {
                         case 1:
-                            moveandliftdrive = -19;
                             moverightstrafe = -6.5;
                             adrive = -28;
                             astrafe = 7;
@@ -310,8 +308,8 @@ public class AutoCode2 extends LinearOpMode {
                             cstrafe = 7;
                             if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
-                                    shootdrive = 0;
-                                    shootstrafe = 0;
+                                    shootdrive = 61.87;
+                                    shootstrafe = 24;
                                 }
                                 
                                 if (ShootGoals == 1) {
@@ -322,7 +320,6 @@ public class AutoCode2 extends LinearOpMode {
                             break;
 
                         case 2:
-                            moveandliftdrive = -19;
                             moverightstrafe = 17;
                             adrive = -28;
                             astrafe = 30.5;
@@ -332,8 +329,8 @@ public class AutoCode2 extends LinearOpMode {
                             cstrafe = 30.5;
                             if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
-                                    shootdrive = 0;
-                                    shootstrafe = 0;
+                                    shootdrive = 61.87;
+                                    shootstrafe = .5;
                                 }
                                 
                                 if (ShootGoals == 1) {
@@ -344,7 +341,6 @@ public class AutoCode2 extends LinearOpMode {
                             break;
 
                         case 3:
-                            moveandliftdrive = -19;
                             moverightstrafe = -6.5;
                             adrive = -28;
                             astrafe = -30.5;
@@ -354,7 +350,7 @@ public class AutoCode2 extends LinearOpMode {
                             cstrafe = -30.5;
                             if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
-                                    shootdrive = 62;
+                                    shootdrive = 61.87;
                                     shootstrafe = -.5;
                                 }
                                 
@@ -366,7 +362,6 @@ public class AutoCode2 extends LinearOpMode {
                             break;
 
                         case 4:
-                            moveandliftdrive = -19;
                             moverightstrafe = 17;
                             adrive = -28;
                             astrafe = -7;
@@ -376,8 +371,8 @@ public class AutoCode2 extends LinearOpMode {
                             cstrafe = -7;
                             if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
-                                    shootdrive = 56.5;
-                                    shootstrafe = -4;
+                                    shootdrive = 61.87;
+                                    shootstrafe = -24;
                                 }
                                 
                                 if (ShootGoals == 1) {
@@ -619,6 +614,10 @@ public class AutoCode2 extends LinearOpMode {
                     driveOpState = AutoCode2.OperState.MoveToGoals;
                     break;
                 case MoveToGoals:
+                    telemetry.addData("drivevalue", autoChassis.trueDrive);
+                    telemetry.addData("strafevalue", autoChassis.trueStrafe);
+                    telemetry.addData("drive", autoChassis.drive);
+                    telemetry.addData("strafe", autoChassis.strafe);
                     if (autoChassis.MoveToLocation() == true) {
                         driveOpState = AutoCode2.OperState.Launch;
                         servoTimer.reset();
