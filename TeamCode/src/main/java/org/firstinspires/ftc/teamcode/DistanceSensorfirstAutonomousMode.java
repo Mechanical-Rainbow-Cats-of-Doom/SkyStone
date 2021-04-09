@@ -93,7 +93,7 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
         int isStrafe = 0;
         int isDrive = 0;
         int ringCount;
-        ElapsedTime MeasureWait = new ElapsedTime();
+        ElapsedTime MultipleUsesTimer = new ElapsedTime();
 
         double driveValue = 0;
         double strafeValue = 0;
@@ -189,12 +189,12 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
 
                 case RESETTIMER:
-                    MeasureWait.reset();
+                    MultipleUsesTimer.reset();
                     driveOpState = DistanceSensorfirstAutonomousMode.OperState.MEASURE;
                     break;
 
                 case MEASURE:
-                    if (MeasureWait.time(TimeUnit.SECONDS) >= 1) {
+                    if (MultipleUsesTimer.time(TimeUnit.SECONDS) >= 1) {
                       ring.MeasureDistance();
                       ringCount = ring.RingHeight();
                       if (ringCount == 0) {

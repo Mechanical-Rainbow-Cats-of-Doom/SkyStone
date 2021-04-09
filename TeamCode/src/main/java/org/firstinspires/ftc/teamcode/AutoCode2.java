@@ -137,7 +137,7 @@ public class AutoCode2 extends LinearOpMode {
         double strafeslightleft = -4.75;
         int launchCount = 0;
         int ringCount = 0;
-        ElapsedTime MeasureWait = new ElapsedTime();
+        ElapsedTime MultipleUsesTimer = new ElapsedTime();
         autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         while (!IsMenuDone) {
             switch (menu) {
@@ -418,7 +418,7 @@ public class AutoCode2 extends LinearOpMode {
                     break;
 
                 case RESETTIMER:
-                    MeasureWait.reset();
+                    MultipleUsesTimer.reset();
                     driveOpState = AutoCode2.OperState.MEASURE;
                     break;
 
@@ -486,11 +486,11 @@ public class AutoCode2 extends LinearOpMode {
                     telemetry.addData("back right wheel", autoChassis.backRight + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
                     if (autoChassis.MoveToLocation() == true) {
                         driveOpState = OperState.MEASURE;
-                        MeasureWait.reset();
+                        MultipleUsesTimer.reset();
                     }
                     break;
                 case MEASURE:
-                    if (MeasureWait.time(TimeUnit.SECONDS) >= 0.6) {
+                    if (MultipleUsesTimer.time(TimeUnit.SECONDS) >= 0.6) {
                         ringCount = ring.RingHeight();
                         driveOpState = OperState.PREPMOVEBACK;
                     }
@@ -639,12 +639,12 @@ public class AutoCode2 extends LinearOpMode {
                         launcher.Shoot();
                         launchCount++;
                         driveOpState = AutoCode2.OperState.Reload;
-                        MeasureWait.reset();
+                        MultipleUsesTimer.reset();
                     }
                     else if (launchCount > 2) { driveOpState = AutoCode2.OperState.PrepLaunchPark; }
                     break;
                 case Reload:
-                    if (MeasureWait.time(TimeUnit.SECONDS) >= 1 ) {
+                    if (MultipleUsesTimer.time(TimeUnit.SECONDS) >= 1 ) {
                         launcher.Reload();
                         if (Powershots == 1 && launchCount <= 2) { driveOpState = AutoCode2.OperState.PrepStrafeLeft; }
                         else { driveOpState = AutoCode2.OperState.Launch; }
