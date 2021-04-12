@@ -21,12 +21,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     
     private double LeftStickValue;
     private double RightStickValue;
-    public DcMotor IntakeMotor;
-    public DcMotor IntakeMotor2;
     private Servo WiperServo;
-    private boolean MotorState1 = false; //false = off, true = on.
-    private boolean MotorState2 = false;
-    private int intakeDirection = 1;
     private Blinker Control_Hub;
     private Blinker expansion_Hub_2;
     ElapsedTime mytimer = new ElapsedTime();
@@ -36,16 +31,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         DEBUGSELECT,
         DEBUGONE
     }
-    enum Intake {
-        WaitingForPush,
-        WaitingForRelease,
-        ChangeValue,
-        ChangeMotors,
-        WaitingForDpadRelease,
-        ChangeFrontValue,
-        WaitingForDownRelease,
-        SwitchIntakeDirection
-    }
+
     enum RingWiper {
         WaitingForPushY,
         WaitingForReleaseY,
@@ -58,11 +44,11 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         ToolCode.LauncherStates launchStates = ToolCode.LauncherStates.Start;
         ToolCode.Lifter lift = new ToolCode.Lifter();
         ToolCode.Grabber grabber = new ToolCode.Grabber();
+        ToolCode.Intake intake = new ToolCode.Intake();
         NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
         ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
         TwentyTwentyOneOpModeCode.OperState debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGSELECT;
-        TwentyTwentyOneOpModeCode.Intake IntakeSwitch = Intake.WaitingForPush;
         TwentyTwentyOneOpModeCode.RingWiper RingWiperSwitch = RingWiper.WaitingForPushY;
 
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
@@ -72,8 +58,8 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
         WiperServo = hardwareMap.get(Servo.class, "WiperServo");
-        IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
-        IntakeMotor2 = hardwareMap.get(DcMotor.class, "IntakeMotor2");
+        intake.IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
+        intake.IntakeMotor2 = hardwareMap.get(DcMotor.class, "IntakeMotor2");
         grabber.GrabberLeft = hardwareMap.get(Servo.class, "GrabberLeft");
         grabber.GrabberRight = hardwareMap.get(Servo.class, "GrabberRight");
         chasty.imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -114,6 +100,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             this.RightStickValue = -gamepad2.right_stick_y;
             lift.MoveLift(this.LeftStickValue);
             lift.MoveServo(this.RightStickValue);
+            intake.Run(gamepad2.x, gamepad2.dpad_up, gamepad2.dpad_down);
             //telemetry.addData("testing LauncherOn:", launcher.launcherOn);
             //telemetry.addData("Lift Power", lift.LiftPower);
             //telemetry.addData("Fork Power", lift.ForkPower);
@@ -122,8 +109,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             double zAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
             double yAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).secondAngle;
             double xAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).thirdAngle;
-            switch (debugOpState) {
-                case DEBUGSELECT:
+            if (debugOpState == OperState.DEBUGSELECT) {
                     //telemetry.addData("Timer Stop Time: ", timerStopTime);
                     telemetry.update();
                     /*
@@ -132,7 +118,6 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                         debugTimer.reset();
                     }
                     */
-
                     break;
                 /*
                 case DEBUGONE:
@@ -492,52 +477,6 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     break;
             }
 
-            switch (IntakeSwitch) {
-                case WaitingForPush:
-                    if (gamepad2.x) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForRelease; }
-                    else if (gamepad2.dpad_up) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForDpadRelease;}
-                    else if (gamepad2.dpad_down) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForDownRelease;}
-                    else { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors; }
-                    break;
-                case WaitingForRelease:
-                    if (!gamepad2.x) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeValue; }
-                    break;
-                case ChangeValue:
-                    MotorState2 = !MotorState2;
-                    MotorState1 = !MotorState1;
-                    IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors;
-                    break;
-                    //56.5 13 4
-                case WaitingForDpadRelease:
-                    if (!gamepad2.dpad_up) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeFrontValue;}
-                    break;
-                case ChangeFrontValue:
-                    MotorState1 = !MotorState1;
-                    IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors;
-                    break;
-                case WaitingForDownRelease:
-                    if (!gamepad2.dpad_up) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.SwitchIntakeDirection;}
-                    break;
-                case SwitchIntakeDirection:
-                    intakeDirection *= -1;
-                    IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors;
-                    break;
-                case ChangeMotors:
-                    if (MotorState2) {
-                        IntakeMotor2.setPower(1);
-                    }
-                    else if (!MotorState2) {
-                        IntakeMotor2.setPower(0);
-                    }
-                    if (MotorState1) {
-                        IntakeMotor.setPower(-1*intakeDirection);
-                    }
-                    else if (!MotorState1) {
-                        IntakeMotor.setPower(0);
-                    }
-                    IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForPush;
-                    break;
-            }
             switch (RingWiperSwitch) {
                 case WaitingForPushY:
                     if (gamepad2.y) { RingWiperSwitch = TwentyTwentyOneOpModeCode.RingWiper.WaitingForReleaseY; }
