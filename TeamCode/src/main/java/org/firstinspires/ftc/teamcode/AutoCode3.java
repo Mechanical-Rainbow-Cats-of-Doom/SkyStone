@@ -79,8 +79,8 @@ public class AutoCode3 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
-        InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
+        LauncherCode.Launcher launcher = new LauncherCode.Launcher();
+        LifterCode.Lifter lift = new LifterCode.Lifter();
         ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
         AutoCode3.OperState driveOpState = AutoCode3.OperState.PrepSpinAround;
         AutoCode3.Menu menu = AutoCode3.Menu.StartLocation;

@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 //Created by Ethan Sanders
-public class InitialLifterCode {
+public class LifterCode {
     public static class Lifter {
         public double LiftPower;
         public double ForkPower;

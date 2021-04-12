@@ -32,9 +32,9 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
     
     @Override
     public void runOpMode() {
-        InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
-        InitialLauncherAndIntakeCode.LauncherStates launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
-        InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
+        LauncherCode.Launcher launcher = new LauncherCode.Launcher();
+        LauncherCode.LauncherStates launchStates = LauncherCode.LauncherStates.Start;
+        LifterCode.Lifter lift = new LifterCode.Lifter();
         NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
         ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
@@ -121,67 +121,67 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
 
                 case Start:
                     if (this.gamepad2.a) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed;
+                        launchStates = LauncherCode.LauncherStates.ButtonPushed;
                     }
 
                     if (this.gamepad2.b) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.Pressed;
+                        launchStates = LauncherCode.LauncherStates.Pressed;
                     }
                     /*
                     if (this.gamepad2.x) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed2;
+                        launchStates = LauncherCode.LauncherStates.ButtonPushed2;
                     }*/
                     break;
                 case Pressed:
                     if (!this.gamepad2.b) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.firsttimer;
+                        launchStates = LauncherCode.LauncherStates.firsttimer;
 
                     }
                     break;
                 case firsttimer:
                     mytimer.reset();
-                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.Load;
+                    launchStates = LauncherCode.LauncherStates.Load;
                     break;
 
                 case Load:
                     launcher.Shoot();
                     if (mytimer.time() >= 0.15) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.secondtimer;
+                        launchStates = LauncherCode.LauncherStates.secondtimer;
                     }
                     break;
 
                 case secondtimer:
                     mytimer.reset();
-                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.ResetPosition;
+                    launchStates = LauncherCode.LauncherStates.ResetPosition;
                     break;
 
                 case ResetPosition:
                     launcher.Reload();
                     if (mytimer.time() >= 0.15) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
+                        launchStates = LauncherCode.LauncherStates.Start;
                     }
                     break;
 
                 case ButtonPushed:
                     if (!this.gamepad2.a) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ToggleLauncher;
+                        launchStates = LauncherCode.LauncherStates.ToggleLauncher;
                     }
                     break;
                     /*
                 case ButtonPushed2:
                     if (!this.gamepad2.x) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ToggleIntake;
+                        launchStates = LauncherCode.LauncherStates.ToggleIntake;
                         break;
                     }
 
                 case ToggleIntake:
                     launcher.IntakeToggle();
-                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
+                    launchStates = LauncherCode.LauncherStates.Start;
                     break;
                     */
                 case ToggleLauncher:
                     launcher.LauncherToggle();
-                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
+                    launchStates = LauncherCode.LauncherStates.Start;
                     break;
             }
             launcher.LauncherRun(1);

@@ -1,24 +1,19 @@
 package org.firstinspires.ftc.teamcode;
-import android.os.DropBoxManager;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
 import java.lang.Math;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+
 @TeleOp
 //Merging, lift, and part of intake done by nahtE, the rest done by lahiN.
 //back right front right front left back left
@@ -59,9 +54,9 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     }
     @Override
     public void runOpMode() {
-        InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
-        InitialLauncherAndIntakeCode.LauncherStates launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
-        InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
+        LauncherCode.Launcher launcher = new LauncherCode.Launcher();
+        LauncherCode.LauncherStates launchStates = LauncherCode.LauncherStates.Start;
+        LifterCode.Lifter lift = new LifterCode.Lifter();
         NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
         ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
@@ -155,52 +150,52 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
 
                 case Start:
                     if (this.gamepad2.a) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ButtonPushed;
+                        launchStates = LauncherCode.LauncherStates.ButtonPushed;
                     }
                     if (this.gamepad2.b) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.Pressed;
+                        launchStates = LauncherCode.LauncherStates.Pressed;
                     }
 
                     break;
                 case Pressed:
                     if (!this.gamepad2.b) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.firsttimer;
+                        launchStates = LauncherCode.LauncherStates.firsttimer;
 
                     }
                     break;
                 case firsttimer:
                     mytimer.reset();
-                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.Load;
+                    launchStates = LauncherCode.LauncherStates.Load;
                     break;
 
                 case Load:
                     launcher.Shoot();
                     if (mytimer.time() >= 0.25) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.secondtimer;
+                        launchStates = LauncherCode.LauncherStates.secondtimer;
                     }
                     break;
 
                 case secondtimer:
                     mytimer.reset();
-                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.ResetPosition;
+                    launchStates = LauncherCode.LauncherStates.ResetPosition;
                     break;
 
                 case ResetPosition:
                     launcher.Reload();
                     if (mytimer.time() >= 0.25) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
+                        launchStates = LauncherCode.LauncherStates.Start;
                     }
                     break;
 
                 case ButtonPushed:
                     if (!this.gamepad2.a) {
-                        launchStates = InitialLauncherAndIntakeCode.LauncherStates.ToggleLauncher;
+                        launchStates = LauncherCode.LauncherStates.ToggleLauncher;
                     }
                     break;
 
                 case ToggleLauncher:
                     launcher.LauncherToggle();
-                    launchStates = InitialLauncherAndIntakeCode.LauncherStates.Start;
+                    launchStates = LauncherCode.LauncherStates.Start;
                     break;
             }
             launcher.LauncherRun(1);

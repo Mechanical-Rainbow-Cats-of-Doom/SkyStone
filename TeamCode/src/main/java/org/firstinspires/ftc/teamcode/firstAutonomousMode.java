@@ -3,26 +3,17 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;  //This is the package for controlling the IMU
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-import java.lang.Math;  //This is the standard Java package for a variety of math functions
-import java.lang.annotation.ElementType;
 //Created by mostly Patrick, partly Ethan
 @Autonomous
 public class firstAutonomousMode extends LinearOpMode {
@@ -61,8 +52,8 @@ public class firstAutonomousMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
-        InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
+        LauncherCode.Launcher launcher = new LauncherCode.Launcher();
+        LifterCode.Lifter lift = new LifterCode.Lifter();
         ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
         firstAutonomousMode.OperState driveOpState = firstAutonomousMode.OperState.FIRSTMOVE;
 

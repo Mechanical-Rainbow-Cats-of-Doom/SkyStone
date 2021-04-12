@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-public class InitialLauncherAndIntakeCode {
+public class LauncherCode {
     private Blinker expansion_Hub_1;
     ElapsedTime mytimer = new ElapsedTime();
 

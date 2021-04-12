@@ -7,14 +7,12 @@ import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 //Created by mostly Patrick, partly Ethan
 @Autonomous
@@ -39,8 +37,8 @@ public class rotate360onA extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        InitialLauncherAndIntakeCode.Launcher launcher = new InitialLauncherAndIntakeCode.Launcher();
-        InitialLifterCode.Lifter lift = new InitialLifterCode.Lifter();
+        LauncherCode.Launcher launcher = new LauncherCode.Launcher();
+        LifterCode.Lifter lift = new LifterCode.Lifter();
         ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
         rotate360onA.OperState driveOpState = rotate360onA.OperState.SETUP;
 
