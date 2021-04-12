@@ -55,8 +55,8 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        LauncherCode.Launcher launcher = new LauncherCode.Launcher();
-        LifterCode.Lifter lift = new LifterCode.Lifter();
+        ToolCode.Launcher launcher = new ToolCode.Launcher();
+        ToolCode.Lifter lift = new ToolCode.Lifter();
         ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
         DistanceSensorfirstAutonomousMode.OperState driveOpState = DistanceSensorfirstAutonomousMode.OperState.NEWSECONDMOVESETUP;
         DistanceSensorClass.RingClass ring = new DistanceSensorClass.RingClass();

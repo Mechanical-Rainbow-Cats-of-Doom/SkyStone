@@ -77,8 +77,8 @@ public class AutoCode2 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        LauncherCode.Launcher launcher = new LauncherCode.Launcher();
-        LifterCode.Lifter lift = new LifterCode.Lifter();
+        ToolCode.Launcher launcher = new ToolCode.Launcher();
+        ToolCode.Lifter lift = new ToolCode.Lifter();
         ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
         AutoCode2.OperState driveOpState = AutoCode2.OperState.FIRSTMOVE;
         AutoCode2.Menu menu = AutoCode2.Menu.StartLocation;

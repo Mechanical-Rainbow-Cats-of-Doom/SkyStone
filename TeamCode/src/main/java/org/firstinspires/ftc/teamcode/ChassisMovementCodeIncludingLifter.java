@@ -155,7 +155,7 @@ public class ChassisMovementCodeIncludingLifter extends LinearOpMode {
         double drivePreset = 0;
         ChassisMovementCodeIncludingLifter.Chassis chasty = new ChassisMovementCodeIncludingLifter.Chassis();
         ChassisMovementCodeIncludingLifter.OperState driveOpState = ChassisMovementCodeIncludingLifter.OperState.NORMALDRIVE;
-        LifterCode.Lifter lift = new LifterCode.Lifter();
+        ToolCode.Lifter lift = new ToolCode.Lifter();
         lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
         lift.ForkServo = hardwareMap.get(CRServo.class, "LiftServo");
         while (opModeIsActive()) {
