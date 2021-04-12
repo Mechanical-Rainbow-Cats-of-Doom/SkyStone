@@ -57,6 +57,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         LauncherCode.Launcher launcher = new LauncherCode.Launcher();
         LauncherCode.LauncherStates launchStates = LauncherCode.LauncherStates.Start;
         LifterCode.Lifter lift = new LifterCode.Lifter();
+        GrabberCode.Grabber grabber = new GrabberCode.Grabber();
         NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
         ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
@@ -73,6 +74,8 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         WiperServo = hardwareMap.get(Servo.class, "WiperServo");
         IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
         IntakeMotor2 = hardwareMap.get(DcMotor.class, "IntakeMotor2");
+        grabber.GrabberLeft = hardwareMap.get(Servo.class, "GrabberLeft");
+        grabber.GrabberRight = hardwareMap.get(Servo.class, "GrabberRight");
         chasty.imu = hardwareMap.get(BNO055IMU.class, "imu");
         chasty.front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
         chasty.front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
@@ -560,6 +563,8 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             telemetry.addData("Wiper state: ",RingWiperSwitch);
             telemetry.addData("Wiper position", WiperServo.getPosition());
             telemetry.addData("is Y pressed", gamepad2.y);
+            telemetry.addData("LeftGrabber", grabber.GrabberLeft);
+            telemetry.addData("RightGrabber", grabber.GrabberRight);
         }
     }
 }
