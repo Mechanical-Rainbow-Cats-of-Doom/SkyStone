@@ -82,7 +82,7 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
             this.LeftStickValue = -gamepad2.left_stick_y;
             this.RightStickValue = -gamepad2.right_stick_y;
             lift.MoveLift(this.LeftStickValue);
-            lift.MoveServo(this.RightStickValue);
+
             telemetry.addData("testing LauncherOn:", launcher.launcherOn);
             telemetry.addData("Lift Power", lift.LiftPower);
             telemetry.addData("Fork Power", lift.ForkPower);
@@ -105,10 +105,10 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
                 /*
                 case DEBUGONE:
                     if (this.gamepad2.right_trigger != 0) {
-                        lift.MoveServo(1);
+
                     }
                     else {
-                        lift.MoveServo(0);
+
                         timerStopTime = debugTimer.seconds();
                         debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGSELECT;
                     }

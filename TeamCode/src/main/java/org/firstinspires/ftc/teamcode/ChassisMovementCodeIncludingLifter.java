@@ -162,7 +162,7 @@ public class ChassisMovementCodeIncludingLifter extends LinearOpMode {
             NewLeftStickValue = -gamepad2.left_stick_y;
             NewRightStickValue = -gamepad2.right_stick_y;
             lift.MoveLift(this.NewLeftStickValue);
-            lift.MoveServo(this.NewRightStickValue);
+
             telemetry.addData("Lift Power", lift.LiftPower);
             telemetry.addData("Fork Power", lift.ForkPower);
             telemetry.update();

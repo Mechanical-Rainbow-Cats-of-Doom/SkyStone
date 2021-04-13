@@ -91,10 +91,10 @@ public class firstAutonomousMode extends LinearOpMode {
             switch(driveOpState) {
                 case FIRSTMOVE:
                     telemetry.addLine("FIRSTMOVE");
-                    lift.MoveServo(1);
+
 
                     if (servoTimer.time()  >= 5) {
-                        lift.MoveServo(0);
+
                         driveOpState = firstAutonomousMode.OperState.SECONDMOVESETUP;
                     }
 
@@ -165,10 +165,10 @@ public class firstAutonomousMode extends LinearOpMode {
 
                 case THIRDMOVE:
                     telemetry.addLine("THIRDMOVE");
-                    lift.MoveServo(-1);
+                    ;
 
                     if (servoTimer.time() >= 2) {
-                        lift.MoveServo(0);
+
                         driveOpState = firstAutonomousMode.OperState.STARTLAUNCHER;
                     }
 

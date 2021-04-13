@@ -276,10 +276,10 @@ public class rotate360onA extends LinearOpMode {
 
                 case THIRDMOVE:
                     telemetry.addLine("THIRDMOVE");
-                    lift.MoveServo(-1);
+                    ;
 
                     if (servoTimer.time() >= 2) {
-                        lift.MoveServo(0);
+
                         driveOpState = firstAutonomousMode.OperState.STARTLAUNCHER;
                     }
 

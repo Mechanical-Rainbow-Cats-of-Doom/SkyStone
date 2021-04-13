@@ -405,11 +405,11 @@ public class AutoCode2 extends LinearOpMode {
             switch (driveOpState) {
                 case FIRSTMOVE:
                     telemetry.addLine("FIRSTMOVE");
-                    lift.MoveServo(1);
+
                     originalRotation = autoChassis.zAngle;
 
                     if (servoTimer.time() >= 2) {
-                        lift.MoveServo(0);
+
                         driveOpState = AutoCode2.OperState.PREPMOVEANDLIFT;
                     }
                     break;
@@ -461,9 +461,9 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     break;
                 case LIFTUP:
-                    lift.MoveServo(-1);
+                    ;
                     if (servoTimer.time() >= 2) {
-                        lift.MoveServo(0);
+
                         driveOpState = AutoCode2.OperState.PREPMOVERIGHT;
                     }
                     break;
@@ -511,9 +511,9 @@ public class AutoCode2 extends LinearOpMode {
                     break;
 
                 case LIFTDOWN:
-                    lift.MoveServo(1);
+
                     if (servoTimer.time() >= 2) {
-                        lift.MoveServo(0);
+
                         driveOpState = AutoCode2.OperState.DECIDE;
                     }
                     break;
@@ -669,10 +669,10 @@ public class AutoCode2 extends LinearOpMode {
                 /*
                 case THIRDMOVE:
                     telemetry.addLine("THIRDMOVE");
-                    lift.MoveServo(-1);
+                    ;
 
                     if (servoTimer.time() >= 2) {
-                        lift.MoveServo(0);
+
                         driveOpState = AutoCode2.OperState.STARTLAUNCHER;
                     }
                     break;

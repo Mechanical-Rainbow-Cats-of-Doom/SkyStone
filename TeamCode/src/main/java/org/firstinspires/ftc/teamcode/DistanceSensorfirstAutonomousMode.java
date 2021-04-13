@@ -109,10 +109,10 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
             switch(driveOpState) {
                 case FIRSTMOVE:
                     telemetry.addLine("FIRSTMOVE");
-                    lift.MoveServo(1);
+
 
                     if (servoTimer.time()  >= 5) {
-                        lift.MoveServo(0);
+
                         driveOpState = DistanceSensorfirstAutonomousMode.OperState.SECONDMOVESETUP;
                     }
                     break;
@@ -241,10 +241,10 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
                 case THIRDMOVE:
                     telemetry.addLine("THIRDMOVE");
-                    lift.MoveServo(-1);
+                    ;
 
                     if (servoTimer.time() >= 2) {
-                        lift.MoveServo(0);
+
                         driveOpState = DistanceSensorfirstAutonomousMode.OperState.STARTLAUNCHER;
                     }
                     break;
