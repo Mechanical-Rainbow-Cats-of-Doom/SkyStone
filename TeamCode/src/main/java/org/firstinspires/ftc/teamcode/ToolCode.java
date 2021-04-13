@@ -18,7 +18,6 @@ public class ToolCode {
         firsttimer,
         secondtimer
     }
-
     public static class Launcher { //The states in the enum
         public DcMotor LaunchMotor;
         public Servo LaunchServo;
@@ -57,19 +56,14 @@ public class ToolCode {
             GrabberRight.setPosition(0);
             GrabberClosed = false;
         }
-
         public void Close() {
             GrabberLeft.setPosition(1);
             GrabberRight.setPosition(1);
             GrabberClosed = true;
         }
-
         public void Toggle() {
-            if (GrabberClosed) {
-                this.Open();
-            } else {
-                this.Close();
-            }
+            if (GrabberClosed) { this.Open(); }
+            else { this.Close(); }
         }
     }
 
@@ -95,84 +89,6 @@ public class ToolCode {
         public void MoveServo(double RightStick) {
             this.ForkServo.setPower(RightStick);
             this.ForkPower = RightStick;
-        }
-    }
-
-    public enum IntakeEnum {
-        WaitingForPush,
-        WaitingForRelease,
-        ChangeValue,
-        ChangeMotors,
-        WaitingForDpadRelease,
-        ChangeFrontValue,
-        WaitingForDownRelease,
-        SwitchIntakeDirection
-    }
-
-    public static class Intake {
-        public DcMotor IntakeMotor;
-        public DcMotor IntakeMotor2;
-        private boolean MotorState1 = false; //false = off, true = on.
-        private boolean MotorState2 = false;
-        private int intakeDirection = 1;
-        ToolCode.IntakeEnum IntakeSwitch = IntakeEnum.WaitingForPush;
-
-        public void Run(boolean x, boolean up, boolean down) {
-            switch (IntakeSwitch) {
-                case WaitingForPush:
-                    if (x) {
-                        IntakeSwitch = ToolCode.IntakeEnum.WaitingForRelease;
-                    } else if (up) {
-                        IntakeSwitch = ToolCode.IntakeEnum.WaitingForDpadRelease;
-                    } else if (down) {
-                        IntakeSwitch = ToolCode.IntakeEnum.WaitingForDownRelease;
-                    } else {
-                        IntakeSwitch = ToolCode.IntakeEnum.ChangeMotors;
-                    }
-                    break;
-                case WaitingForRelease:
-                    if (!x) {
-                        IntakeSwitch = ToolCode.IntakeEnum.ChangeValue;
-                    }
-                    break;
-                case ChangeValue:
-                    MotorState2 = !MotorState2;
-                    MotorState1 = !MotorState1;
-                    IntakeSwitch = ToolCode.IntakeEnum.ChangeMotors;
-                    break;
-                //56.5 13 4
-                case WaitingForDpadRelease:
-                    if (!up) {
-                        IntakeSwitch = ToolCode.IntakeEnum.ChangeFrontValue;
-                    }
-                    break;
-                case ChangeFrontValue:
-                    MotorState1 = !MotorState1;
-                    IntakeSwitch = ToolCode.IntakeEnum.ChangeMotors;
-                    break;
-                case WaitingForDownRelease:
-                    if (!up) {
-                        IntakeSwitch = ToolCode.IntakeEnum.SwitchIntakeDirection;
-                    }
-                    break;
-                case SwitchIntakeDirection:
-                    intakeDirection *= -1;
-                    IntakeSwitch = ToolCode.IntakeEnum.ChangeMotors;
-                    break;
-                case ChangeMotors:
-                    if (MotorState2) {
-                        IntakeMotor2.setPower(1);
-                    } else if (!MotorState2) {
-                        IntakeMotor2.setPower(0);
-                    }
-                    if (MotorState1) {
-                        IntakeMotor.setPower(-1 * intakeDirection);
-                    } else if (!MotorState1) {
-                        IntakeMotor.setPower(0);
-                    }
-                    IntakeSwitch = ToolCode.IntakeEnum.WaitingForPush;
-                    break;
-            }
         }
     }
 }
