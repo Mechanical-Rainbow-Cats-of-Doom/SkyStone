@@ -37,8 +37,8 @@ public class rotate360onA extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        ToolCode.Launcher launcher = new ToolCode.Launcher();
-        ToolCode.Lifter lift = new ToolCode.Lifter();
+        LauncherCode.Launcher launcher = new LauncherCode.Launcher();
+        LifterCode.Lifter lift = new LifterCode.Lifter();
         ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
         rotate360onA.OperState driveOpState = rotate360onA.OperState.SETUP;
 

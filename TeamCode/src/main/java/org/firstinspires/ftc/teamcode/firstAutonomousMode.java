@@ -52,8 +52,8 @@ public class firstAutonomousMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        ToolCode.Launcher launcher = new ToolCode.Launcher();
-        ToolCode.Lifter lift = new ToolCode.Lifter();
+        LauncherCode.Launcher launcher = new LauncherCode.Launcher();
+        LifterCode.Lifter lift = new LifterCode.Lifter();
         ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
         firstAutonomousMode.OperState driveOpState = firstAutonomousMode.OperState.FIRSTMOVE;
 
