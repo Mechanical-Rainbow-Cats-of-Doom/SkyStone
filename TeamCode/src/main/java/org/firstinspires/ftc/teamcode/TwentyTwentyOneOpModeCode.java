@@ -563,8 +563,8 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             telemetry.addData("Wiper state: ",RingWiperSwitch);
             telemetry.addData("Wiper position", WiperServo.getPosition());
             telemetry.addData("is Y pressed", gamepad2.y);
-            telemetry.addData("LeftGrabber", grabber.GrabberLeft);
-            telemetry.addData("RightGrabber", grabber.GrabberRight);
+            telemetry.addData("LeftGrabber", grabber.GrabberLeft.getPosition());
+            telemetry.addData("RightGrabber", grabber.GrabberRight.getPosition());
         }
     }
 }
