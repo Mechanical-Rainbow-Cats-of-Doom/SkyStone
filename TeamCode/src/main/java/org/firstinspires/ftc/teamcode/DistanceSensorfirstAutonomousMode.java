@@ -55,8 +55,8 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        ToolCode.Launcher launcher = new ToolCode.Launcher();
-        ToolCode.Lifter lift = new ToolCode.Lifter();
+        LauncherCode.Launcher launcher = new LauncherCode.Launcher();
+        LifterCode.Lifter lift = new LifterCode.Lifter();
         ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
         DistanceSensorfirstAutonomousMode.OperState driveOpState = DistanceSensorfirstAutonomousMode.OperState.NEWSECONDMOVESETUP;
         DistanceSensorClass.RingClass ring = new DistanceSensorClass.RingClass();
@@ -64,7 +64,7 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
         expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
         lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
-
+        lift.ForkServo = hardwareMap.get(CRServo.class, "LiftServo");
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
         autoChassis.imu = hardwareMap.get(BNO055IMU.class, "imu");

@@ -21,6 +21,12 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     
     private double LeftStickValue;
     private double RightStickValue;
+    public DcMotor IntakeMotor;
+    public DcMotor IntakeMotor2;
+    private Servo WiperServo;
+    private boolean MotorState1 = false; //false = off, true = on.
+    private boolean MotorState2 = false;
+    private int intakeDirection = 1;
     private Blinker Control_Hub;
     private Blinker expansion_Hub_2;
     ElapsedTime mytimer = new ElapsedTime();
@@ -30,26 +36,43 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         DEBUGSELECT,
         DEBUGONE
     }
+    enum Intake {
+        WaitingForPush,
+        WaitingForRelease,
+        ChangeValue,
+        ChangeMotors,
+        WaitingForDpadRelease,
+        ChangeFrontValue,
+        WaitingForDownRelease,
+        SwitchIntakeDirection
+    }
+    enum RingWiper {
+        WaitingForPushY,
+        WaitingForReleaseY,
+        ToggleValue,
+        ChangeServo
+    }
     @Override
     public void runOpMode() {
-        ToolCode.Launcher launcher = new ToolCode.Launcher();
-        ToolCode.LauncherStates launchStates = ToolCode.LauncherStates.Start;
-        ToolCode.Lifter lift = new ToolCode.Lifter();
-        ToolCode.Grabber grabber = new ToolCode.Grabber();
-        ToolCode.Intake intake = new ToolCode.Intake();
-        ToolCode.Wiper wiper = new ToolCode.Wiper();
+        LauncherCode.Launcher launcher = new LauncherCode.Launcher();
+        LauncherCode.LauncherStates launchStates = LauncherCode.LauncherStates.Start;
+        LifterCode.Lifter lift = new LifterCode.Lifter();
+        GrabberCode.Grabber grabber = new GrabberCode.Grabber();
         NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
         ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
         TwentyTwentyOneOpModeCode.OperState debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGSELECT;
+        TwentyTwentyOneOpModeCode.Intake IntakeSwitch = Intake.WaitingForPush;
+        TwentyTwentyOneOpModeCode.RingWiper RingWiperSwitch = RingWiper.WaitingForPushY;
+
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
         expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
         lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
-        wiper.WiperServo = hardwareMap.get(Servo.class, "WiperServo");
-        intake.IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
-        intake.IntakeMotor2 = hardwareMap.get(DcMotor.class, "IntakeMotor2");
+        WiperServo = hardwareMap.get(Servo.class, "WiperServo");
+        IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
+        IntakeMotor2 = hardwareMap.get(DcMotor.class, "IntakeMotor2");
         grabber.GrabberLeft = hardwareMap.get(Servo.class, "GrabberLeft");
         grabber.GrabberRight = hardwareMap.get(Servo.class, "GrabberRight");
         chasty.imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -80,6 +103,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         double autonomousTestStep = 0;
         double rotationGoal = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle;
         double banana2 = -1;
+        boolean servoState = false;
 
         //double timerStopTime = 0;
         waitForStart();
@@ -88,8 +112,6 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             this.LeftStickValue = -gamepad2.left_stick_y;
             this.RightStickValue = -gamepad2.right_stick_y;
             lift.MoveLift(this.LeftStickValue);
-            intake.Run(gamepad2.x, gamepad2.dpad_up, gamepad2.dpad_down);
-            wiper.Run(gamepad2.y);
             //telemetry.addData("testing LauncherOn:", launcher.launcherOn);
             //telemetry.addData("Lift Power", lift.LiftPower);
             //telemetry.addData("Fork Power", lift.ForkPower);
@@ -98,7 +120,8 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             double zAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
             double yAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).secondAngle;
             double xAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).thirdAngle;
-            if (debugOpState == OperState.DEBUGSELECT) {
+            switch (debugOpState) {
+                case DEBUGSELECT:
                     //telemetry.addData("Timer Stop Time: ", timerStopTime);
                     telemetry.update();
                     /*
@@ -107,14 +130,15 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                         debugTimer.reset();
                     }
                     */
+
                     break;
                 /*
                 case DEBUGONE:
                     if (this.gamepad2.right_trigger != 0) {
-                        (1);
+                        lift.MoveServo(1);
                     }
                     else {
-                        (0);
+                        lift.MoveServo(0);
                         timerStopTime = debugTimer.seconds();
                         debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGSELECT;
                     }
@@ -127,52 +151,52 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
 
                 case Start:
                     if (this.gamepad2.a) {
-                        launchStates = ToolCode.LauncherStates.ButtonPushed;
+                        launchStates = LauncherCode.LauncherStates.ButtonPushed;
                     }
                     if (this.gamepad2.b) {
-                        launchStates = ToolCode.LauncherStates.Pressed;
+                        launchStates = LauncherCode.LauncherStates.Pressed;
                     }
 
                     break;
                 case Pressed:
                     if (!this.gamepad2.b) {
-                        launchStates = ToolCode.LauncherStates.firsttimer;
+                        launchStates = LauncherCode.LauncherStates.firsttimer;
 
                     }
                     break;
                 case firsttimer:
                     mytimer.reset();
-                    launchStates = ToolCode.LauncherStates.Load;
+                    launchStates = LauncherCode.LauncherStates.Load;
                     break;
 
                 case Load:
                     launcher.Shoot();
                     if (mytimer.time() >= 0.25) {
-                        launchStates = ToolCode.LauncherStates.secondtimer;
+                        launchStates = LauncherCode.LauncherStates.secondtimer;
                     }
                     break;
 
                 case secondtimer:
                     mytimer.reset();
-                    launchStates = ToolCode.LauncherStates.ResetPosition;
+                    launchStates = LauncherCode.LauncherStates.ResetPosition;
                     break;
 
                 case ResetPosition:
                     launcher.Reload();
                     if (mytimer.time() >= 0.25) {
-                        launchStates = ToolCode.LauncherStates.Start;
+                        launchStates = LauncherCode.LauncherStates.Start;
                     }
                     break;
 
                 case ButtonPushed:
                     if (!this.gamepad2.a) {
-                        launchStates = ToolCode.LauncherStates.ToggleLauncher;
+                        launchStates = LauncherCode.LauncherStates.ToggleLauncher;
                     }
                     break;
 
                 case ToggleLauncher:
                     launcher.LauncherToggle();
-                    launchStates = ToolCode.LauncherStates.Start;
+                    launchStates = LauncherCode.LauncherStates.Start;
                     break;
             }
             launcher.LauncherRun(1);
@@ -465,10 +489,80 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                 default :
                     break;
             }
-            telemetry.addData("Wiper position", wiper.WiperServo.getPosition());
+
+            switch (IntakeSwitch) {
+                case WaitingForPush:
+                    if (gamepad2.x) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForRelease; }
+                    else if (gamepad2.dpad_up) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForDpadRelease;}
+                    else if (gamepad2.dpad_down) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForDownRelease;}
+                    else { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors; }
+                    break;
+                case WaitingForRelease:
+                    if (!gamepad2.x) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeValue; }
+                    break;
+                case ChangeValue:
+                    MotorState2 = !MotorState2;
+                    MotorState1 = !MotorState1;
+                    IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors;
+                    break;
+                    //56.5 13 4
+                case WaitingForDpadRelease:
+                    if (!gamepad2.dpad_up) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeFrontValue;}
+                    break;
+                case ChangeFrontValue:
+                    MotorState1 = !MotorState1;
+                    IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors;
+                    break;
+                case WaitingForDownRelease:
+                    if (!gamepad2.dpad_up) { IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.SwitchIntakeDirection;}
+                    break;
+                case SwitchIntakeDirection:
+                    intakeDirection *= -1;
+                    IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.ChangeMotors;
+                    break;
+                case ChangeMotors:
+                    if (MotorState2) {
+                        IntakeMotor2.setPower(1);
+                    }
+                    else if (!MotorState2) {
+                        IntakeMotor2.setPower(0);
+                    }
+                    if (MotorState1) {
+                        IntakeMotor.setPower(-1*intakeDirection);
+                    }
+                    else if (!MotorState1) {
+                        IntakeMotor.setPower(0);
+                    }
+                    IntakeSwitch = TwentyTwentyOneOpModeCode.Intake.WaitingForPush;
+                    break;
+            }
+            switch (RingWiperSwitch) {
+                case WaitingForPushY:
+                    if (gamepad2.y) { RingWiperSwitch = TwentyTwentyOneOpModeCode.RingWiper.WaitingForReleaseY; }
+                    else { RingWiperSwitch = TwentyTwentyOneOpModeCode.RingWiper.ChangeServo; }
+                    break;
+                case WaitingForReleaseY:
+                    if (!gamepad2.y) { RingWiperSwitch = TwentyTwentyOneOpModeCode.RingWiper.ToggleValue; }
+                    break;
+                case ToggleValue:
+                    servoState = !servoState;
+                    RingWiperSwitch = TwentyTwentyOneOpModeCode.RingWiper.ChangeServo;
+                    break;
+                case ChangeServo:
+                    if (servoState) {
+                        WiperServo.setPosition(0.75);
+                    }
+                    else if (!servoState) {
+                        WiperServo.setPosition(.95);
+                    }
+                    RingWiperSwitch = TwentyTwentyOneOpModeCode.RingWiper.WaitingForPushY;
+                    break;
+            }
+            telemetry.addData("Wiper state: ",RingWiperSwitch);
+            telemetry.addData("Wiper position", WiperServo.getPosition());
             telemetry.addData("is Y pressed", gamepad2.y);
-            telemetry.addData("LeftGrabber", grabber.GrabberLeft);
-            telemetry.addData("RightGrabber", grabber.GrabberRight);
+            telemetry.addData("LeftGrabber", grabber.GrabberLeft.getPosition());
+            telemetry.addData("RightGrabber", grabber.GrabberRight.getPosition());
         }
     }
 }

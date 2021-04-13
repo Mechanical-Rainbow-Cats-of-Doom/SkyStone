@@ -34,9 +34,9 @@ public class Gladys extends LinearOpMode {
     
     @Override
     public void runOpMode() {
-        ToolCode.Launcher launcher = new ToolCode.Launcher();
-        ToolCode.LauncherStates launchStates = ToolCode.LauncherStates.Start;
-        ToolCode.Lifter lift = new ToolCode.Lifter();
+        LauncherCode.Launcher launcher = new LauncherCode.Launcher();
+        LauncherCode.LauncherStates launchStates = LauncherCode.LauncherStates.Start;
+        LifterCode.Lifter lift = new LifterCode.Lifter();
         NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
         ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
@@ -45,7 +45,7 @@ public class Gladys extends LinearOpMode {
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
         expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
         lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
-
+        lift.ForkServo = hardwareMap.get(CRServo.class, "LiftServo");
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
         IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
@@ -126,52 +126,52 @@ public class Gladys extends LinearOpMode {
 
                 case Start:
                     if (this.gamepad2.a) {
-                        launchStates = ToolCode.LauncherStates.ButtonPushed;
+                        launchStates = LauncherCode.LauncherStates.ButtonPushed;
                     }
 
                     if (this.gamepad2.b) {
-                        launchStates = ToolCode.LauncherStates.Pressed;
+                        launchStates = LauncherCode.LauncherStates.Pressed;
                     }
                     break;
                 case Pressed:
                     if (!this.gamepad2.b) {
-                        launchStates = ToolCode.LauncherStates.firsttimer;
+                        launchStates = LauncherCode.LauncherStates.firsttimer;
 
                     }
                     break;
                 case firsttimer:
                     mytimer.reset();
-                    launchStates = ToolCode.LauncherStates.Load;
+                    launchStates = LauncherCode.LauncherStates.Load;
                     break;
 
                 case Load:
                     launcher.Shoot();
                     if (mytimer.time() >= 0.15) {
-                        launchStates = ToolCode.LauncherStates.secondtimer;
+                        launchStates = LauncherCode.LauncherStates.secondtimer;
                     }
                     break;
 
                 case secondtimer:
                     mytimer.reset();
-                    launchStates = ToolCode.LauncherStates.ResetPosition;
+                    launchStates = LauncherCode.LauncherStates.ResetPosition;
                     break;
 
                 case ResetPosition:
                     launcher.Reload();
                     if (mytimer.time() >= 0.15) {
-                        launchStates = ToolCode.LauncherStates.Start;
+                        launchStates = LauncherCode.LauncherStates.Start;
                     }
                     break;
 
                 case ButtonPushed:
                     if (!this.gamepad2.a) {
-                        launchStates = ToolCode.LauncherStates.ToggleLauncher;
+                        launchStates = LauncherCode.LauncherStates.ToggleLauncher;
                     }
                     break;
 
                 case ToggleLauncher:
                     launcher.LauncherToggle();
-                    launchStates = ToolCode.LauncherStates.Start;
+                    launchStates = LauncherCode.LauncherStates.Start;
                     break;
             }
             launcher.LauncherRun(1);
