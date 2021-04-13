@@ -465,7 +465,6 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                 default :
                     break;
             }
-
             telemetry.addData("Wiper position", wiper.WiperServo.getPosition());
             telemetry.addData("is Y pressed", gamepad2.y);
             telemetry.addData("LeftGrabber", grabber.GrabberLeft);
