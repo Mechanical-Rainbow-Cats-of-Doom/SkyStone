@@ -175,6 +175,47 @@ public class ToolCode {
             }
         }
     }
+
+    public enum RingWiper {
+        WaitingForPushY,
+        WaitingForReleaseY,
+        ToggleValue,
+        ChangeServo
+    }
+
+    public static class Wiper {
+        ToolCode.RingWiper RingWiperSwitch = RingWiper.WaitingForPushY;
+        public Servo WiperServo;
+        private boolean servoState = false;
+        public void Run(boolean y) {
+            switch (RingWiperSwitch) {
+                case WaitingForPushY:
+                    if (y) {
+                        RingWiperSwitch = ToolCode.RingWiper.WaitingForReleaseY;
+                    } else {
+                        RingWiperSwitch = ToolCode.RingWiper.ChangeServo;
+                    }
+                    break;
+                case WaitingForReleaseY:
+                    if (!y) {
+                        RingWiperSwitch = ToolCode.RingWiper.ToggleValue;
+                    }
+                    break;
+                case ToggleValue:
+                    servoState = !servoState;
+                    RingWiperSwitch = ToolCode.RingWiper.ChangeServo;
+                    break;
+                case ChangeServo:
+                    if (servoState) {
+                        WiperServo.setPosition(0.75);
+                    } else if (!servoState) {
+                        WiperServo.setPosition(.95);
+                    }
+                    RingWiperSwitch = ToolCode.RingWiper.WaitingForPushY;
+                    break;
+            }
+        }
+    }
 }
 
 
