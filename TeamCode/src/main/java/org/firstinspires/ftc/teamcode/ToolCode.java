@@ -8,17 +8,7 @@ import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 public class ToolCode {
-    public enum LauncherStates {
-        Start,
-        ButtonPushed,
-        ToggleLauncher,
-        Pressed,
-        Load,
-        ResetPosition,
-        firsttimer,
-        secondtimer
-    }
-    public static class Launcher { //The states in the enum
+    public static class Launcher {
         public DcMotor LaunchMotor;
         public Servo LaunchServo;
         public boolean launcherOn = false;
@@ -46,6 +36,18 @@ public class ToolCode {
         }
     }
 
+    public enum LauncherStates {
+        Start,
+        ButtonPushed,
+        ToggleLauncher,
+        Pressed,
+        Load,
+        ResetPosition,
+        firsttimer,
+        secondtimer
+    }
+
+
     public static class Grabber {
         public Servo GrabberLeft;
         public Servo GrabberRight;
@@ -66,6 +68,7 @@ public class ToolCode {
             else { this.Close(); }
         }
     }
+
 
     public static class Lifter {
         public double LiftPower;
