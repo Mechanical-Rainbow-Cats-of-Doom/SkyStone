@@ -111,10 +111,10 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                 /*
                 case DEBUGONE:
                     if (this.gamepad2.right_trigger != 0) {
-                        lift.MoveServo(1);
+                        (1);
                     }
                     else {
-                        lift.MoveServo(0);
+                        (0);
                         timerStopTime = debugTimer.seconds();
                         debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGSELECT;
                     }
