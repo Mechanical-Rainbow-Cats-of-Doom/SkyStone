@@ -7,7 +7,6 @@ public class LifterCode {
         public double LiftPower;
         public double ForkPower;
         public DcMotor LiftMotor;
-
         public void MoveLift(double LeftStick) {
             if (LeftStick == 0) {
                 this.LiftMotor.setPower(-0.1);
@@ -20,5 +19,6 @@ public class LifterCode {
                 this.LiftPower = (LeftStick * -1);
             }
         }
+
     }
 }

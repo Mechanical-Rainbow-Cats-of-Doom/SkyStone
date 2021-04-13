@@ -68,7 +68,6 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
         expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
         lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
-
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
         WiperServo = hardwareMap.get(Servo.class, "WiperServo");
@@ -113,7 +112,6 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             this.LeftStickValue = -gamepad2.left_stick_y;
             this.RightStickValue = -gamepad2.right_stick_y;
             lift.MoveLift(this.LeftStickValue);
-
             //telemetry.addData("testing LauncherOn:", launcher.launcherOn);
             //telemetry.addData("Lift Power", lift.LiftPower);
             //telemetry.addData("Fork Power", lift.ForkPower);
@@ -137,10 +135,10 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                 /*
                 case DEBUGONE:
                     if (this.gamepad2.right_trigger != 0) {
-
+                        lift.MoveServo(1);
                     }
                     else {
-
+                        lift.MoveServo(0);
                         timerStopTime = debugTimer.seconds();
                         debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGSELECT;
                     }
