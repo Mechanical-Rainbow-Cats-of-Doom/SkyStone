@@ -46,7 +46,7 @@ public class rotate360onA extends LinearOpMode {
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
         expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
         lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
-        lift.ForkServo = hardwareMap.get(CRServo.class, "LiftServo");
+
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
         autoChassis.imu = hardwareMap.get(BNO055IMU.class, "imu");

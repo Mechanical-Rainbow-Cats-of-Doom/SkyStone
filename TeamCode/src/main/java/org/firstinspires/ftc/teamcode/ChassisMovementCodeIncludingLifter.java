@@ -157,7 +157,7 @@ public class ChassisMovementCodeIncludingLifter extends LinearOpMode {
         ChassisMovementCodeIncludingLifter.OperState driveOpState = ChassisMovementCodeIncludingLifter.OperState.NORMALDRIVE;
         ToolCode.Lifter lift = new ToolCode.Lifter();
         lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
-        lift.ForkServo = hardwareMap.get(CRServo.class, "LiftServo");
+
         while (opModeIsActive()) {
             NewLeftStickValue = -gamepad2.left_stick_y;
             NewRightStickValue = -gamepad2.right_stick_y;
