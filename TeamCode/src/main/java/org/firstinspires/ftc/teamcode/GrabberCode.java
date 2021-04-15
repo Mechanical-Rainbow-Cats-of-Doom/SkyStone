@@ -8,12 +8,12 @@ public class GrabberCode {
         private boolean Waiting = false;
         private void Open() {
             GrabberLeft.setPosition(0);
-           // GrabberRight.setPosition(0);
+           //GrabberRight.setPosition(0);
             GrabberClosed = false;
         }
         private void Close() {
             GrabberLeft.setPosition(1);
-            GrabberRight.setPosition(1);
+            //GrabberRight.setPosition(1);
             GrabberClosed = true;
         }
 
