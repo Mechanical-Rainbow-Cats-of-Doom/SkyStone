@@ -12,11 +12,10 @@ public class GrabberCode {
             GrabberClosed = false;
         }
         private void Close() {
-            GrabberLeft.setPosition(1);
+            GrabberLeft.setPosition(0.5);
             //GrabberRight.setPosition(1);
             GrabberClosed = true;
         }
-
         public void Toggle(boolean rbump) {
             if (rbump && !Waiting) { Waiting = true; }
             else if (Waiting && !rbump) {
