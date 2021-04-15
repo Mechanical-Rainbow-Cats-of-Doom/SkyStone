@@ -17,9 +17,9 @@ public class GrabberCode {
             GrabberClosed = true;
         }
 
-        public void Toggle(boolean x) {
-            if (x && !Waiting) { Waiting = true; }
-            else if (Waiting && !x) {
+        public void Toggle(boolean rbump) {
+            if (rbump && !Waiting) { Waiting = true; }
+            else if (Waiting && !rbump) {
                 Waiting = false;
                 if (GrabberClosed) { this.Open(); }
                 else { this.Close();}
