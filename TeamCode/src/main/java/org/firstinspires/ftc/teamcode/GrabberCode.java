@@ -7,13 +7,13 @@ public class GrabberCode {
         private boolean GrabberClosed = false;
         private boolean Waiting = false;
         private void Open() {
-            GrabberLeft.setPosition(0);
-           //GrabberRight.setPosition(0);
+            GrabberLeft.setPosition(0.49);
+            GrabberRight.setPosition(0.405);
             GrabberClosed = false;
         }
         private void Close() {
-            GrabberLeft.setPosition(0.5);
-            //GrabberRight.setPosition(1);
+            GrabberLeft.setPosition(0.11);
+            GrabberRight.setPosition(.776);
             GrabberClosed = true;
         }
         public void Toggle(boolean rbump) {
