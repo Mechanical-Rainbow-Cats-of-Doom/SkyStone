@@ -22,7 +22,7 @@ public class GrabberCode {
             else if (Waiting && !x) {
                 Waiting = false;
                 if (GrabberClosed) { this.Open(); }
-                else if (!GrabberClosed) { this.Close();}
+                else { this.Close();}
             }
         }
     }
