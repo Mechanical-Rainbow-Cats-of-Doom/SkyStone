@@ -410,7 +410,7 @@ public class AutoCode3 extends LinearOpMode {
 */
         while (opModeIsActive()) {
             chassis.SetRotation(chassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
-            telemetry.addData("zAngle", chassis.zAngle);
+            telemetry.addData("how close", chassis.zAngle - (originalRotation+initrotation));
             launcher.LauncherRun(0.9422);
             if (!DoneMeasuring) { ring.MeasureDistance(); }
             telemetry.addData("where you are in strafe", Math.abs(chassis.strafePreset - chassis.trueStrafe));
@@ -444,7 +444,7 @@ public class AutoCode3 extends LinearOpMode {
                     if (chassis.MoveToLocation()) { driveOpState = AutoCode3.OperState.Rotate; }
                     break;
                 case Rotate:
-                    if ((Math.abs(chassis.zAngle - (originalRotation+initrotation)) >= 4)) {
+                    if ((Math.abs(chassis.zAngle - (originalRotation+initrotation)) >= 6.5)) {
                         chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation),0.55));
                         chassis.Drive();
                         chassis.SetAxisMovement();
