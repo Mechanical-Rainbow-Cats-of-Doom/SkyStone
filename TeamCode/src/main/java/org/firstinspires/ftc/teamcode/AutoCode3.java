@@ -425,7 +425,7 @@ public class AutoCode3 extends LinearOpMode {
                     chassis.SetAxisMovement();
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
-                    chassis.SetPresetMovement(22.5, 1, 0, .4, chassis.zAngle);
+                    chassis.SetPresetMovement(-22.5, 1, 0, .4, chassis.zAngle);
                     driveOpState = OperState.FIRSTMOVE;
                     break;
                 case FIRSTMOVE:
