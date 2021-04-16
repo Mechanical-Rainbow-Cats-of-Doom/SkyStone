@@ -178,7 +178,7 @@ public class rotate360onA extends LinearOpMode {
                 case rotate:
                     telemetry.addLine("Rotate");
                     if ((Math.abs(chassis.zAngle - (rotationGoal - 180)) >= 2)) {
-                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (rotationGoal - 180)));
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (rotationGoal - 180),1));
                         chassis.Drive();
                         chassis.SetAxisMovement();
                         chassis.ZeroEncoders();
