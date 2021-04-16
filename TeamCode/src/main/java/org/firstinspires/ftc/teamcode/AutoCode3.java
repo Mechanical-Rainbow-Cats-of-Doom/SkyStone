@@ -91,7 +91,8 @@ public class AutoCode3 extends LinearOpMode {
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
         expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
         lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
-
+        grabber.GrabberLeft = hardwareMap.get(Servo.class, "GrabberLeft");
+        grabber.GrabberRight = hardwareMap.get(Servo.class, "GrabberRight");
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
         chassis.imu = hardwareMap.get(BNO055IMU.class, "imu");
