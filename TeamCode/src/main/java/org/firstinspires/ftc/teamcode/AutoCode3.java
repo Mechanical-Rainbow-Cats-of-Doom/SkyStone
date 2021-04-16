@@ -28,6 +28,7 @@ public class AutoCode3 extends LinearOpMode {
 
     enum OperState {
         FIRSTMOVE,
+        Rotate,
         PREPMOVEANDLIFT,
         LIFTUP,
         DECIDE,
@@ -125,6 +126,7 @@ public class AutoCode3 extends LinearOpMode {
 
         //All Constants For All Moves
         double moverightstrafe = 0;
+        double initrotation = 0;
         double adrive = 0;
         double astrafe = 0;
         double bdrive = 0;
@@ -299,6 +301,7 @@ public class AutoCode3 extends LinearOpMode {
                     switch (StartLocation) {
                         case 1:
                             moverightstrafe = -6.5;
+                            initrotation = 0;
                             adrive = -28;
                             astrafe = 7;
                             bdrive = -51;
@@ -320,6 +323,7 @@ public class AutoCode3 extends LinearOpMode {
 
                         case 2:
                             moverightstrafe = 17;
+                            initrotation = 0;
                             adrive = -28;
                             astrafe = 30.5;
                             bdrive = -51;
@@ -341,6 +345,7 @@ public class AutoCode3 extends LinearOpMode {
 
                         case 3:
                             moverightstrafe = -6.5;
+                            initrotation = 0;
                             adrive = -28;
                             astrafe = -30.5;
                             bdrive = -51;
@@ -362,6 +367,7 @@ public class AutoCode3 extends LinearOpMode {
 
                         case 4:
                             moverightstrafe = 17;
+                            initrotation = -45;
                             adrive = -28;
                             astrafe = -7;
                             bdrive = -51;
@@ -393,13 +399,13 @@ public class AutoCode3 extends LinearOpMode {
         launcher.Reload();
         grabber.Toggle(gamepad2.right_bumper);
         originalRotation = chassis.zAngle;
+        initrotation = -initrotation;
 /*                    if (chassis.MoveToLocation() == true) {
                         telemetry.addLine("done");
                     }
 */
         while (opModeIsActive()) {
             chassis.SetRotation(chassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
-
             launcher.LauncherRun(0.9422);
             if (!DoneMeasuring) { ring.MeasureDistance(); }
             telemetry.addData("where you are in strafe", Math.abs(chassis.strafePreset - chassis.trueStrafe));
@@ -418,8 +424,18 @@ public class AutoCode3 extends LinearOpMode {
                     chassis.SetAxisMovement();
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
-                    chassis.SetPresetMovement(adrive, 1, 0, .4, chassis.zAngle);
-                    driveOpState = OperState.GoToTargetZone;
+                    chassis.SetPresetMovement(22.5, 1, 0, .4, chassis.zAngle);
+                    driveOpState = OperState.Rotate;
+                case Rotate:
+                    if ((Math.abs(chassis.zAngle - (originalRotation+initrotation)) >= 3)) {
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation)));
+                        chassis.Drive();
+                        chassis.SetAxisMovement();
+                        chassis.ZeroEncoders();
+                        chassis.SetAxisMovement();
+                        rotationGoal = chassis.zAngle;
+                    }
+                    else {  }
                 case RESETTIMER:
                     MultipleUsesTimer.reset();
                     driveOpState = AutoCode3.OperState.MEASURE;
