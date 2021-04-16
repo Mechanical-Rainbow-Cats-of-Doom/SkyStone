@@ -21,7 +21,7 @@ public class AutoCode2 extends LinearOpMode {
     private Blinker Control_Hub;
     private Blinker expansion_Hub_2;
     ElapsedTime servoTimer = new ElapsedTime();
-    ElapsedTime NewMeasureTimer = new ElapsedTime();
+    ElapsedTime GeneralTimer = new ElapsedTime();
 
     enum OperState {
         FIRSTMOVE,

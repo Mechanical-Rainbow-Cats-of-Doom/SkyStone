@@ -23,10 +23,13 @@ public class AutoCode3 extends LinearOpMode {
     private Blinker Control_Hub;
     private Blinker expansion_Hub_2;
     ElapsedTime servoTimer = new ElapsedTime();
-    ElapsedTime NewMeasureTimer = new ElapsedTime();
+    ElapsedTime GeneralTimer = new ElapsedTime();
+
     private double RotationPreset = 0;
 
     enum OperState {
+        PrepClose,
+        TimeClose,
         FIRSTMOVE,
         PrepFMove,
         Rotate,
@@ -399,7 +402,6 @@ public class AutoCode3 extends LinearOpMode {
         waitForStart();
         servoTimer.reset();
         launcher.Reload();
-        grabber.Open();
         originalRotation = chassis.zAngle;
         initrotation = -initrotation;
 /*                    if (chassis.MoveToLocation() == true) {
@@ -408,6 +410,7 @@ public class AutoCode3 extends LinearOpMode {
 */
         while (opModeIsActive()) {
             chassis.SetRotation(chassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
+            telemetry.addData("zAngle", chassis.zAngle);
             launcher.LauncherRun(0.9422);
             if (!DoneMeasuring) { ring.MeasureDistance(); }
             telemetry.addData("where you are in strafe", Math.abs(chassis.strafePreset - chassis.trueStrafe));
@@ -422,6 +425,14 @@ public class AutoCode3 extends LinearOpMode {
                     if (servoTimer.time() >= 2) { driveOpState = AutoCode3.OperState.PREPMOVEANDLIFT; }
                     break;
                */
+                case PrepClose:
+                    grabber.Close();
+                    GeneralTimer.reset();
+                    driveOpState = OperState.TimeClose;
+                    break;
+                case TimeClose:
+                    if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.4) { driveOpState = OperState.PrepFMove; }
+                    break;
                 case PrepFMove:
                     chassis.SetAxisMovement();
                     chassis.ZeroEncoders();
