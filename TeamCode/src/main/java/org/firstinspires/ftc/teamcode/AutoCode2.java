@@ -79,7 +79,7 @@ public class AutoCode2 extends LinearOpMode {
     public void runOpMode() {
         LauncherCode.Launcher launcher = new LauncherCode.Launcher();
         LifterCode.Lifter lift = new LifterCode.Lifter();
-        ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
+        ChassisMovementCode.Chassis chassis = new ChassisMovementCode.Chassis();
         AutoCode2.OperState driveOpState = AutoCode2.OperState.FIRSTMOVE;
         AutoCode2.Menu menu = AutoCode2.Menu.StartLocation;
         DistanceSensorClass.RingClass ring = new DistanceSensorClass.RingClass();
@@ -89,11 +89,11 @@ public class AutoCode2 extends LinearOpMode {
         lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
-        autoChassis.imu = hardwareMap.get(BNO055IMU.class, "imu");
-        autoChassis.front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
-        autoChassis.front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
-        autoChassis.back_left_wheel = hardwareMap.get(DcMotor.class, "back left wheel");
-        autoChassis.back_right_wheel = hardwareMap.get(DcMotor.class, "back right wheel");
+        chassis.imu = hardwareMap.get(BNO055IMU.class, "imu");
+        chassis.front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
+        chassis.front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
+        chassis.back_left_wheel = hardwareMap.get(DcMotor.class, "back left wheel");
+        chassis.back_right_wheel = hardwareMap.get(DcMotor.class, "back right wheel");
         ring.DistanceSensor = hardwareMap.get(DistanceSensor.class, "Distance Sensor");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -101,10 +101,10 @@ public class AutoCode2 extends LinearOpMode {
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled = true;
         parameters.loggingTag = "IMU";
-        autoChassis.imu.initialize(parameters);
+        chassis.imu.initialize(parameters);
         double drivePreset = 0;
         double strafePreset = 0;
-        double rotationGoal = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        double rotationGoal = chassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
         double originalRotation = rotationGoal;
 
         //menu variables
@@ -134,7 +134,7 @@ public class AutoCode2 extends LinearOpMode {
         int launchCount = 0;
         int ringCount = 0;
         ElapsedTime MultipleUsesTimer = new ElapsedTime();
-        autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
+        chassis.SetRotation(chassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         while (!IsMenuDone) {
             switch (menu) {
                 case StartLocation:
@@ -388,24 +388,24 @@ public class AutoCode2 extends LinearOpMode {
         waitForStart();
         servoTimer.reset();
         launcher.Reload();
-/*                    if (autoChassis.MoveToLocation() == true) {
+/*                    if (chassis.MoveToLocation() == true) {
                         telemetry.addLine("done");
                     }
 */
         while (opModeIsActive()) {
-            autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
+            chassis.SetRotation(chassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
             launcher.LauncherRun(0.9422);
             if (!DoneMeasuring) { ring.MeasureDistance(); }
-            telemetry.addData("where you are in strafe", Math.abs(autoChassis.strafePreset - autoChassis.trueStrafe));
+            telemetry.addData("where you are in strafe", Math.abs(chassis.strafePreset - chassis.trueStrafe));
             telemetry.addData("driveopstate", driveOpState);
-            telemetry.addData("IMPORTANT, DRIVE PRESET", autoChassis.drivePreset);
-            telemetry.addData("IMPORTANT, STRAFE PRESET", autoChassis.strafePreset);
+            telemetry.addData("IMPORTANT, DRIVE PRESET", chassis.drivePreset);
+            telemetry.addData("IMPORTANT, STRAFE PRESET", chassis.strafePreset);
             telemetry.addData("Launch Count", launchCount);
             switch (driveOpState) {
                 case FIRSTMOVE:
                     telemetry.addLine("FIRSTMOVE");
 
-                    originalRotation = autoChassis.zAngle;
+                    originalRotation = chassis.zAngle;
 
                     if (servoTimer.time() >= 2) {
 
@@ -426,10 +426,10 @@ public class AutoCode2 extends LinearOpMode {
                     break;
 
                 case PREPMOVEANDLIFT:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(-19., 0.5, 0, 0.000000000000001, autoChassis.zAngle);
+                    chassis.SetAxisMovement();
+                    chassis.ZeroEncoders();
+                    chassis.SetAxisMovement();
+                    chassis.SetPresetMovement(-19., 0.5, 0, 0.000000000000001, chassis.zAngle);
                     servoTimer.reset();
                     driveOpState = OperState.MOVEANDLIFT;
                     break;
@@ -438,22 +438,22 @@ public class AutoCode2 extends LinearOpMode {
                     telemetry.addLine("newsecondmoveE");
                     telemetry.addData("driveStrafe", drivePreset);
                     telemetry.addData("strafePreset", strafePreset);
-                    telemetry.addData("rotate", autoChassis.rotation);
-                    telemetry.addData("drivevalue", autoChassis.trueDrive);
-                    telemetry.addData("strafevalue", autoChassis.trueStrafe);
-                    telemetry.addData("drive", autoChassis.drive);
-                    telemetry.addData("strafe", autoChassis.strafe);
-                    telemetry.addData("back left wheel", autoChassis.backLeft);
-                    telemetry.addData("back right wheel", autoChassis.backRight);
-                    telemetry.addData("front right wheel", autoChassis.frontRight);
-                    telemetry.addData("front left wheel", autoChassis.frontLeft);
-                    telemetry.addData("firstSignumRotate", Math.signum(rotationGoal - autoChassis.zAngle));
-                    telemetry.addData("firstSignumStrafe", Math.signum(strafePreset - autoChassis.trueStrafe));
-                    telemetry.addData("firstSignumDrive", Math.signum(drivePreset - autoChassis.trueDrive));
-                    telemetry.addData("Math.maxRotate", (Math.max(0.2, Math.abs((rotationGoal - autoChassis.zAngle) / 180))));
-                    telemetry.addData("Math.maxStrafe", (Math.max(0.2, Math.abs((strafePreset - autoChassis.trueStrafe) / strafePreset))));
-                    telemetry.addData("Math.maxDrive", (Math.max(0.2, Math.abs((drivePreset - autoChassis.trueDrive) / drivePreset))));
-                    if (autoChassis.MoveToLocation() == true) {
+                    telemetry.addData("rotate", chassis.rotation);
+                    telemetry.addData("drivevalue", chassis.trueDrive);
+                    telemetry.addData("strafevalue", chassis.trueStrafe);
+                    telemetry.addData("drive", chassis.drive);
+                    telemetry.addData("strafe", chassis.strafe);
+                    telemetry.addData("back left wheel", chassis.backLeft);
+                    telemetry.addData("back right wheel", chassis.backRight);
+                    telemetry.addData("front right wheel", chassis.frontRight);
+                    telemetry.addData("front left wheel", chassis.frontLeft);
+                    telemetry.addData("firstSignumRotate", Math.signum(rotationGoal - chassis.zAngle));
+                    telemetry.addData("firstSignumStrafe", Math.signum(strafePreset - chassis.trueStrafe));
+                    telemetry.addData("firstSignumDrive", Math.signum(drivePreset - chassis.trueDrive));
+                    telemetry.addData("Math.maxRotate", (Math.max(0.2, Math.abs((rotationGoal - chassis.zAngle) / 180))));
+                    telemetry.addData("Math.maxStrafe", (Math.max(0.2, Math.abs((strafePreset - chassis.trueStrafe) / strafePreset))));
+                    telemetry.addData("Math.maxDrive", (Math.max(0.2, Math.abs((drivePreset - chassis.trueDrive) / drivePreset))));
+                    if (chassis.MoveToLocation() == true) {
                         telemetry.addLine("done");
                         driveOpState = AutoCode2.OperState.LIFTUP;
                         servoTimer.reset();
@@ -467,20 +467,20 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     break;
                 case PREPMOVERIGHT:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0, 0,moverightstrafe, 0.4, autoChassis.zAngle);
+                    chassis.SetAxisMovement();
+                    chassis.ZeroEncoders();
+                    chassis.SetAxisMovement();
+                    chassis.SetPresetMovement(0, 0,moverightstrafe, 0.4, chassis.zAngle);
                     servoTimer.reset();
                     driveOpState = OperState.MOVERIGHT;
                     break;
 
                 case MOVERIGHT:
-                    telemetry.addData("front left wheel", autoChassis.frontLeft + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (-1 * autoChassis.rotation));
-                    telemetry.addData("back left wheel", autoChassis.backLeft + " = " + (-1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
-                    telemetry.addData("front right wheel", autoChassis.frontRight + " = " + (1 * autoChassis.drive) + " + " + (-1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
-                    telemetry.addData("back right wheel", autoChassis.backRight + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
-                    if (autoChassis.MoveToLocation() == true) {
+                    telemetry.addData("front left wheel", chassis.frontLeft + " = " + (1 * chassis.drive) + " + " + (1 * chassis.strafe) + " + " + (-1 * chassis.rotation));
+                    telemetry.addData("back left wheel", chassis.backLeft + " = " + (-1 * chassis.drive) + " + " + (1 * chassis.strafe) + " + " + (1 * chassis.rotation));
+                    telemetry.addData("front right wheel", chassis.frontRight + " = " + (1 * chassis.drive) + " + " + (-1 * chassis.strafe) + " + " + (1 * chassis.rotation));
+                    telemetry.addData("back right wheel", chassis.backRight + " = " + (1 * chassis.drive) + " + " + (1 * chassis.strafe) + " + " + (1 * chassis.rotation));
+                    if (chassis.MoveToLocation() == true) {
                         driveOpState = OperState.MEASURE;
                         MultipleUsesTimer.reset();
                     }
@@ -492,18 +492,18 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     break;
                 case PREPMOVEBACK:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0, 0, -moverightstrafe, 0.4, autoChassis.zAngle);
+                    chassis.SetAxisMovement();
+                    chassis.ZeroEncoders();
+                    chassis.SetAxisMovement();
+                    chassis.SetPresetMovement(0, 0, -moverightstrafe, 0.4, chassis.zAngle);
                     driveOpState = OperState.MOVEBACK;
                     break;
                 case MOVEBACK:
-                    telemetry.addData("front left wheel", autoChassis.frontLeft + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (-1 * autoChassis.rotation));
-                    telemetry.addData("back left wheel", autoChassis.backLeft + " = " + (-1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
-                    telemetry.addData("front right wheel", autoChassis.frontRight + " = " + (1 * autoChassis.drive) + " + " + (-1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
-                    telemetry.addData("back right wheel", autoChassis.backRight + " = " + (1 * autoChassis.drive) + " + " + (1 * autoChassis.strafe) + " + " + (1 * autoChassis.rotation));
-                    if (autoChassis.MoveToLocation() == true) {
+                    telemetry.addData("front left wheel", chassis.frontLeft + " = " + (1 * chassis.drive) + " + " + (1 * chassis.strafe) + " + " + (-1 * chassis.rotation));
+                    telemetry.addData("back left wheel", chassis.backLeft + " = " + (-1 * chassis.drive) + " + " + (1 * chassis.strafe) + " + " + (1 * chassis.rotation));
+                    telemetry.addData("front right wheel", chassis.frontRight + " = " + (1 * chassis.drive) + " + " + (-1 * chassis.strafe) + " + " + (1 * chassis.rotation));
+                    telemetry.addData("back right wheel", chassis.backRight + " = " + (1 * chassis.drive) + " + " + (1 * chassis.strafe) + " + " + (1 * chassis.rotation));
+                    if (chassis.MoveToLocation() == true) {
                         servoTimer.reset();
                         driveOpState = OperState.LIFTDOWN;
                     }
@@ -569,64 +569,64 @@ public class AutoCode2 extends LinearOpMode {
                     DoneMeasuring = true;
                     break;
                 case PREPA:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(adrive, 1, astrafe, .4, autoChassis.zAngle);
+                    chassis.SetAxisMovement();
+                    chassis.ZeroEncoders();
+                    chassis.SetAxisMovement();
+                    chassis.SetPresetMovement(adrive, 1, astrafe, .4, chassis.zAngle);
                     driveOpState = OperState.GoToTargetZone;
                     break;
                 case PREPB:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(bdrive, 1, bstrafe, .4, autoChassis.zAngle);
+                    chassis.SetAxisMovement();
+                    chassis.ZeroEncoders();
+                    chassis.SetAxisMovement();
+                    chassis.SetPresetMovement(bdrive, 1, bstrafe, .4, chassis.zAngle);
                     driveOpState = OperState.GoToTargetZone;
                     break;
                 case PREPC:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(cdrive, 1, cstrafe, .4, autoChassis.zAngle);
+                    chassis.SetAxisMovement();
+                    chassis.ZeroEncoders();
+                    chassis.SetAxisMovement();
+                    chassis.SetPresetMovement(cdrive, 1, cstrafe, .4, chassis.zAngle);
                     driveOpState = OperState.GoToTargetZone;
                     break;
                 case GoToTargetZone:
-                    autoChassis.rotationPreset -= 0.105;
-                    if (autoChassis.MoveToLocation() == true) {
+                    chassis.rotationPreset -= 0.105;
+                    if (chassis.MoveToLocation() == true) {
                         driveOpState = AutoCode2.OperState.PrepMoveToShooting;
                     }
                     break;
 
                 case MoveToPowerShots:
-                    if (autoChassis.MoveToLocation() == true) {
+                    if (chassis.MoveToLocation() == true) {
                         driveOpState = AutoCode2.OperState.PrepSpinAround;
                     }
                     break;
                 case PrepMoveToShooting:
                     launcher.LauncherToggle();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(shootdrive, 1.2, shootstrafe, .4, autoChassis.zAngle);
+                    chassis.SetAxisMovement();
+                    chassis.ZeroEncoders();
+                    chassis.SetAxisMovement();
+                    chassis.SetPresetMovement(shootdrive, 1.2, shootstrafe, .4, chassis.zAngle);
                     driveOpState = AutoCode2.OperState.MoveToGoals;
                     break;
                 case MoveToGoals:
-                    telemetry.addData("drivevalue", autoChassis.trueDrive);
-                    telemetry.addData("strafevalue", autoChassis.trueStrafe);
-                    telemetry.addData("drive", autoChassis.drive);
-                    telemetry.addData("strafe", autoChassis.strafe);
-                    if (autoChassis.MoveToLocation() == true) {
+                    telemetry.addData("drivevalue", chassis.trueDrive);
+                    telemetry.addData("strafevalue", chassis.trueStrafe);
+                    telemetry.addData("drive", chassis.drive);
+                    telemetry.addData("strafe", chassis.strafe);
+                    if (chassis.MoveToLocation() == true) {
                         driveOpState = AutoCode2.OperState.Launch;
                         servoTimer.reset();
                     }
                     break;
                 case PrepSpinAround:
-                    if ((Math.abs(autoChassis.zAngle - (originalRotation-180)) >= 2)) {
-                        autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, (originalRotation-180)));
-                        autoChassis.Drive();
-                        autoChassis.SetAxisMovement();
-                        autoChassis.ZeroEncoders();
-                        autoChassis.SetAxisMovement();
-                        rotationGoal = autoChassis.zAngle;
+                    if ((Math.abs(chassis.zAngle - (originalRotation-180)) >= 2)) {
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation-180)));
+                        chassis.Drive();
+                        chassis.SetAxisMovement();
+                        chassis.ZeroEncoders();
+                        chassis.SetAxisMovement();
+                        rotationGoal = chassis.zAngle;
                     }
                     else { driveOpState = AutoCode2.OperState.Launch; }
                     break;
@@ -648,20 +648,20 @@ public class AutoCode2 extends LinearOpMode {
                     }
                     break;
                 case PrepStrafeLeft:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(0, 0, strafeslightleft, .35, autoChassis.zAngle);
+                    chassis.SetAxisMovement();
+                    chassis.ZeroEncoders();
+                    chassis.SetAxisMovement();
+                    chassis.SetPresetMovement(0, 0, strafeslightleft, .35, chassis.zAngle);
                     driveOpState = AutoCode2.OperState.MoveToGoals; //we aren't actually moving to the goals, it's just that i don't want to have the same case being used twice. the case should really be renamed to MovingBeforeLaunch or something similar, but I really don't want to spend the time doing that right now. I probably should have really done that instead of writing this long-ass comment, but whatever. Also lmao we should probably removing the me swearing if we end up sending code to the judges for the state tournament.
                     break;
                 case PrepLaunchPark:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(13, 1, 0, .4, autoChassis.zAngle);
+                    chassis.SetAxisMovement();
+                    chassis.ZeroEncoders();
+                    chassis.SetAxisMovement();
+                    chassis.SetPresetMovement(13, 1, 0, .4, chassis.zAngle);
                     driveOpState = AutoCode2.OperState.LaunchPark;
                 case LaunchPark:
-                    if (autoChassis.MoveToLocation() == true) {
+                    if (chassis.MoveToLocation() == true) {
                         telemetry.addLine("done");
                     }
                     break;

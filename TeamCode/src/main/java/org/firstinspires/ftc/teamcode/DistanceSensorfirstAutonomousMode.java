@@ -57,7 +57,7 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
     public void runOpMode() {
         LauncherCode.Launcher launcher = new LauncherCode.Launcher();
         LifterCode.Lifter lift = new LifterCode.Lifter();
-        ChassisMovementCode.Chassis autoChassis = new ChassisMovementCode.Chassis();
+        ChassisMovementCode.Chassis chassis = new ChassisMovementCode.Chassis();
         DistanceSensorfirstAutonomousMode.OperState driveOpState = DistanceSensorfirstAutonomousMode.OperState.NEWSECONDMOVESETUP;
         DistanceSensorClass.RingClass ring = new DistanceSensorClass.RingClass();
 
@@ -67,11 +67,11 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
-        autoChassis.imu = hardwareMap.get(BNO055IMU.class, "imu");
-        autoChassis.front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
-        autoChassis.front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
-        autoChassis.back_left_wheel = hardwareMap.get(DcMotor.class, "back left wheel");
-        autoChassis.back_right_wheel = hardwareMap.get(DcMotor.class, "back right wheel");
+        chassis.imu = hardwareMap.get(BNO055IMU.class, "imu");
+        chassis.front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
+        chassis.front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
+        chassis.back_left_wheel = hardwareMap.get(DcMotor.class, "back left wheel");
+        chassis.back_right_wheel = hardwareMap.get(DcMotor.class, "back right wheel");
         ring.DistanceSensor = hardwareMap.get(DistanceSensor.class, "Distance Sensor");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -79,10 +79,10 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
-        autoChassis.imu.initialize(parameters);
+        chassis.imu.initialize(parameters);
         double drivePreset = 0;
         double strafePreset = 0;
-        double rotationGoal = autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
+        double rotationGoal = chassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
         double originalRotation = rotationGoal;
         double shootWait = 0;
         double rotate = 0;
@@ -96,13 +96,13 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
         double driveValue = 0;
         double strafeValue = 0;
-        autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
+        chassis.SetRotation(chassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
         waitForStart();
         servoTimer.reset();
 
         while (opModeIsActive()) {
 
-            autoChassis.SetRotation(autoChassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
+            chassis.SetRotation(chassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
             launcher.LauncherRun(1);
             ring.MeasureDistance();
 
@@ -118,12 +118,12 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     break;
 
                /* case NEWSECONDMOVESETUP:
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.SetPresetMovement(60, 1,50, 1,autoChassis.zAngle);
+                    chassis.SetAxisMovement();
+                    chassis.ZeroEncoders();
+                    chassis.SetAxisMovement();
+                    chassis.SetPresetMovement(60, 1,50, 1,chassis.zAngle);
                     servoTimer.reset();
-                    autoChassis.movementTimer.reset();
+                    chassis.movementTimer.reset();
                     driveOpState = DistanceSensorfirstAutonomousMode.OperState.NEWSECONDMOVE;
                     break;
 */
@@ -131,57 +131,57 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                     telemetry.addLine("newsecondmoveE");
                     telemetry.addData("driveStrafe", drivePreset);
                     telemetry.addData("strafePreset", strafePreset);
-                    telemetry.addData("rotate", autoChassis.rotation);
-                    telemetry.addData("drivevalue", autoChassis.trueDrive);
-                    telemetry.addData("strafevalue", autoChassis.trueStrafe);
-                    telemetry.addData("drive", autoChassis.drive);
-                    telemetry.addData("strafe", autoChassis.strafe);
-                    telemetry.addData("front left wheel", autoChassis.frontLeft + " = "+(1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(-1*autoChassis.rotation));
-                    telemetry.addData("back left wheel", autoChassis.backLeft + " = "+(-1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
-                    telemetry.addData("front right wheel", autoChassis.frontRight + " = "+(1*autoChassis.drive) +" + "+(-1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
-                    telemetry.addData("back right wheel", autoChassis.backRight + " = "+(1*autoChassis.drive) +" + "+(1*autoChassis.strafe)+" + "+(1*autoChassis.rotation));
-                    telemetry.addData("firstSignumRotate", Math.signum(rotationGoal - autoChassis.zAngle));
-                    telemetry.addData("firstSignumStrafe", Math.signum(strafePreset - autoChassis.trueStrafe));
-                    telemetry.addData("firstSignumDrive", Math.signum(drivePreset - autoChassis.trueDrive));
-                    telemetry.addData("Math.maxRotate", (Math.max(0.2, Math.abs((rotationGoal - autoChassis.zAngle) / 180))));
-                    telemetry.addData("Math.maxStrafe", (Math.max(0.2, Math.abs((strafePreset - autoChassis.trueStrafe) / strafePreset))));
-                    telemetry.addData("Math.maxDrive", (Math.max(0.2, Math.abs((drivePreset - autoChassis.trueDrive) / drivePreset))));
+                    telemetry.addData("rotate", chassis.rotation);
+                    telemetry.addData("drivevalue", chassis.trueDrive);
+                    telemetry.addData("strafevalue", chassis.trueStrafe);
+                    telemetry.addData("drive", chassis.drive);
+                    telemetry.addData("strafe", chassis.strafe);
+                    telemetry.addData("front left wheel", chassis.frontLeft + " = "+(1*chassis.drive) +" + "+(1*chassis.strafe)+" + "+(-1*chassis.rotation));
+                    telemetry.addData("back left wheel", chassis.backLeft + " = "+(-1*chassis.drive) +" + "+(1*chassis.strafe)+" + "+(1*chassis.rotation));
+                    telemetry.addData("front right wheel", chassis.frontRight + " = "+(1*chassis.drive) +" + "+(-1*chassis.strafe)+" + "+(1*chassis.rotation));
+                    telemetry.addData("back right wheel", chassis.backRight + " = "+(1*chassis.drive) +" + "+(1*chassis.strafe)+" + "+(1*chassis.rotation));
+                    telemetry.addData("firstSignumRotate", Math.signum(rotationGoal - chassis.zAngle));
+                    telemetry.addData("firstSignumStrafe", Math.signum(strafePreset - chassis.trueStrafe));
+                    telemetry.addData("firstSignumDrive", Math.signum(drivePreset - chassis.trueDrive));
+                    telemetry.addData("Math.maxRotate", (Math.max(0.2, Math.abs((rotationGoal - chassis.zAngle) / 180))));
+                    telemetry.addData("Math.maxStrafe", (Math.max(0.2, Math.abs((strafePreset - chassis.trueStrafe) / strafePreset))));
+                    telemetry.addData("Math.maxDrive", (Math.max(0.2, Math.abs((drivePreset - chassis.trueDrive) / drivePreset))));
 
-                    if (autoChassis.MoveToLocation() == true) {
+                    if (chassis.MoveToLocation() == true) {
                         telemetry.addLine("done");
                     }
 
                     break;
                 /*
                 case SECONDMOVESETUP:
-                    autoChassis.Encoders();
-                    autoChassis.ZeroEncoders();
-                    autoChassis.Encoders();
-                    autoChassis.SetAxisMovement();
-                    drivePreset = autoChassis.trueDrive - 60;
-                    rotationGoal = autoChassis.zAngle;
+                    chassis.Encoders();
+                    chassis.ZeroEncoders();
+                    chassis.Encoders();
+                    chassis.SetAxisMovement();
+                    drivePreset = chassis.trueDrive - 60;
+                    rotationGoal = chassis.zAngle;
                     driveOpState = DistanceSensorfirstAutonomousMode.OperState.SECONDMOVE;
                     break;
 
                 case SECONDMOVE:
                     telemetry.addLine("SECONDMOVE");
                     telemetry.addData("Drive Preset: ", drivePreset);
-                    telemetry.addData("drive", autoChassis.trueDrive);
-                    autoChassis.Encoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.ForwardAndBackward(drivePreset);
+                    telemetry.addData("drive", chassis.trueDrive);
+                    chassis.Encoders();
+                    chassis.SetAxisMovement();
+                    chassis.ForwardAndBackward(drivePreset);
                     rotationGoal += -0.02;
 
-                    if ((Math.abs(autoChassis.zAngle - rotationGoal) >= 2)) {
-                        autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, rotationGoal));
-                        autoChassis.Drive();
+                    if ((Math.abs(chassis.zAngle - rotationGoal) >= 2)) {
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, rotationGoal));
+                        chassis.Drive();
                     }
 
-                    if (Math.abs(drivePreset - autoChassis.trueDrive) <= 0.2) {
-                        autoChassis.front_left_wheel.setPower(-0.01);
-                        autoChassis.front_right_wheel.setPower(-0.01);
-                        autoChassis.back_right_wheel.setPower(-0.01);
-                        autoChassis.back_left_wheel.setPower(-0.01);
+                    if (Math.abs(drivePreset - chassis.trueDrive) <= 0.2) {
+                        chassis.front_left_wheel.setPower(-0.01);
+                        chassis.front_right_wheel.setPower(-0.01);
+                        chassis.back_right_wheel.setPower(-0.01);
+                        chassis.back_left_wheel.setPower(-0.01);
                         driveOpState = DistanceSensorfirstAutonomousMode.OperState.THIRDMOVESETUP;
                     }
                     break;
@@ -219,19 +219,19 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
                 case THIRDMOVESETUP:
                     telemetry.addLine("THIRDMOVESETUP");
-                    if ((Math.abs(autoChassis.zAngle - rotationGoal) >= 2)) {
-                        autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, rotationGoal));
-                        autoChassis.Drive();
-                        autoChassis.Encoders();
-                        autoChassis.ZeroEncoders();
-                        autoChassis.SetAxisMovement();
-                        rotationGoal = autoChassis.zAngle;
+                    if ((Math.abs(chassis.zAngle - rotationGoal) >= 2)) {
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, rotationGoal));
+                        chassis.Drive();
+                        chassis.Encoders();
+                        chassis.ZeroEncoders();
+                        chassis.SetAxisMovement();
+                        rotationGoal = chassis.zAngle;
                     }
                     else {
-                        autoChassis.front_left_wheel.setPower(-0.01);
-                        autoChassis.front_right_wheel.setPower(-0.01);
-                        autoChassis.back_right_wheel.setPower(-0.01);
-                        autoChassis.back_left_wheel.setPower(-0.01);
+                        chassis.front_left_wheel.setPower(-0.01);
+                        chassis.front_right_wheel.setPower(-0.01);
+                        chassis.back_right_wheel.setPower(-0.01);
+                        chassis.back_left_wheel.setPower(-0.01);
 
                         servoTimer.reset();
 
@@ -255,25 +255,25 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
                 case FOURTHMOVESETUP:
                     telemetry.addLine("FIFTHMOVESETUP");
-                    telemetry.addData("autoChassis.zAngle", autoChassis.zAngle);
+                    telemetry.addData("chassis.zAngle", chassis.zAngle);
                     telemetry.addData("originalRotation",originalRotation);
                     telemetry.addData("goal for rotation", originalRotation-180);
-                    if ((Math.abs(autoChassis.zAngle - (originalRotation-182)) >= 2)) {
-                        autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, (originalRotation-182)));
-                        autoChassis.Drive();
-                        autoChassis.Encoders();
-                        autoChassis.ZeroEncoders();
-                        autoChassis.Encoders();
-                        autoChassis.SetAxisMovement();
-                        rotationGoal = autoChassis.zAngle;
+                    if ((Math.abs(chassis.zAngle - (originalRotation-182)) >= 2)) {
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation-182)));
+                        chassis.Drive();
+                        chassis.Encoders();
+                        chassis.ZeroEncoders();
+                        chassis.Encoders();
+                        chassis.SetAxisMovement();
+                        rotationGoal = chassis.zAngle;
                     }
                     else {
-                        autoChassis.front_left_wheel.setPower(-0.01);
-                        autoChassis.front_right_wheel.setPower(-0.01);
-                        autoChassis.back_right_wheel.setPower(-0.01);
-                        autoChassis.back_left_wheel.setPower(-0.01);
+                        chassis.front_left_wheel.setPower(-0.01);
+                        chassis.front_right_wheel.setPower(-0.01);
+                        chassis.back_right_wheel.setPower(-0.01);
+                        chassis.back_left_wheel.setPower(-0.01);
 
-                        drivePreset = autoChassis.trueStrafe - 50;
+                        drivePreset = chassis.trueStrafe - 50;
 
                         driveOpState = DistanceSensorfirstAutonomousMode.OperState.FOURTHMOVE;
                     }
@@ -282,21 +282,21 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
                 case FOURTHMOVE:
                     telemetry.addLine("FOURTHMOVE");
                     telemetry.addData("Drive Preset: ", drivePreset);
-                    telemetry.addData("strafe", autoChassis.trueStrafe);
-                    autoChassis.Encoders();
-                    autoChassis.SetAxisMovement();
-                    autoChassis.LeftAndRight(drivePreset);
+                    telemetry.addData("strafe", chassis.trueStrafe);
+                    chassis.Encoders();
+                    chassis.SetAxisMovement();
+                    chassis.LeftAndRight(drivePreset);
 
-                    if ((Math.abs(autoChassis.zAngle - rotationGoal) >= 2)) {
-                        autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, rotationGoal));
-                        autoChassis.Drive();
+                    if ((Math.abs(chassis.zAngle - rotationGoal) >= 2)) {
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, rotationGoal));
+                        chassis.Drive();
                     }
 
-                    if (Math.abs(drivePreset - autoChassis.trueStrafe) <= 11) {
-                        autoChassis.front_left_wheel.setPower(-0.01);
-                        autoChassis.front_right_wheel.setPower(-0.01);
-                        autoChassis.back_right_wheel.setPower(-0.01);
-                        autoChassis.back_left_wheel.setPower(-0.01);
+                    if (Math.abs(drivePreset - chassis.trueStrafe) <= 11) {
+                        chassis.front_left_wheel.setPower(-0.01);
+                        chassis.front_right_wheel.setPower(-0.01);
+                        chassis.back_right_wheel.setPower(-0.01);
+                        chassis.back_left_wheel.setPower(-0.01);
                         servoTimer.reset();
                         driveOpState = DistanceSensorfirstAutonomousMode.OperState.SHOOT1;
                     }
@@ -341,21 +341,21 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
                 case FIFTHMOVESETUP:
                     telemetry.addLine("FIFTHMOVESETUP");
-                    if ((Math.abs(autoChassis.zAngle - originalRotation) >= 2)) {
-                        autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, originalRotation));
-                        autoChassis.Drive();
-                        autoChassis.Encoders();
-                        autoChassis.ZeroEncoders();
-                        autoChassis.SetAxisMovement();
-                        rotationGoal = autoChassis.zAngle;
+                    if ((Math.abs(chassis.zAngle - originalRotation) >= 2)) {
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, originalRotation));
+                        chassis.Drive();
+                        chassis.Encoders();
+                        chassis.ZeroEncoders();
+                        chassis.SetAxisMovement();
+                        rotationGoal = chassis.zAngle;
                     }
                     else {
-                        autoChassis.front_left_wheel.setPower(-0.01);
-                        autoChassis.front_right_wheel.setPower(-0.01);
-                        autoChassis.back_right_wheel.setPower(-0.01);
-                        autoChassis.back_left_wheel.setPower(-0.01);
+                        chassis.front_left_wheel.setPower(-0.01);
+                        chassis.front_right_wheel.setPower(-0.01);
+                        chassis.back_right_wheel.setPower(-0.01);
+                        chassis.back_left_wheel.setPower(-0.01);
 
-                        drivePreset = autoChassis.trueDrive + 10;
+                        drivePreset = chassis.trueDrive + 10;
 
                         driveOpState = DistanceSensorfirstAutonomousMode.OperState.FIFTHMOVE;
                     }

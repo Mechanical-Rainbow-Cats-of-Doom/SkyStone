@@ -36,7 +36,7 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
         LauncherCode.LauncherStates launchStates = LauncherCode.LauncherStates.Start;
         LifterCode.Lifter lift = new LifterCode.Lifter();
         NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
-        ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
+        ChassisMovementCode.Chassis chassis = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
         TwentyTwentyOneOpModeCodeCopy.OperState debugOpState = TwentyTwentyOneOpModeCodeCopy.OperState.DEBUGSELECT;
 
@@ -46,18 +46,18 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
 
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
-        chasty.imu = hardwareMap.get(BNO055IMU.class, "imu");
-        chasty.front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
-        chasty.front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
-        chasty.back_left_wheel = hardwareMap.get(DcMotor.class, "back left wheel");
-        chasty.back_right_wheel = hardwareMap.get(DcMotor.class, "back right wheel");
+        chassis.imu = hardwareMap.get(BNO055IMU.class, "imu");
+        chassis.front_left_wheel = hardwareMap.get(DcMotor.class, "front left wheel");
+        chassis.front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
+        chassis.back_left_wheel = hardwareMap.get(DcMotor.class, "back left wheel");
+        chassis.back_right_wheel = hardwareMap.get(DcMotor.class, "back right wheel");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();  //in wrong spot--where is better?
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
-        chasty.imu.initialize(parameters); double drive;
+        chassis.imu.initialize(parameters); double drive;
         double strafe;
         double rotate;
         double movementLength = 0;
@@ -72,7 +72,7 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
         double increaseDecrease = 1;
         boolean aWait = false;
         double autonomousTestStep = 0;
-        double rotationGoal = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
+        double rotationGoal = chassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
         double banana2 = -1;
 
         //double timerStopTime = 0;
@@ -87,9 +87,9 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
             telemetry.addData("Lift Power", lift.LiftPower);
             telemetry.addData("Fork Power", lift.ForkPower);
             telemetry.update();
-            double zAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
-            double yAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).secondAngle;
-            double xAngle = chasty.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).thirdAngle;
+            double zAngle = chassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
+            double yAngle = chassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).secondAngle;
+            double xAngle = chassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).thirdAngle;
             switch (debugOpState) {
                 case DEBUGSELECT:
                     //telemetry.addData("Timer Stop Time: ", timerStopTime);
@@ -194,14 +194,14 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
                     rotate = 0;
 
 
-                    chasty.SetMotors (drive, strafe, rotate);
-                    chasty.Drive();
+                    chassis.SetMotors (drive, strafe, rotate);
+                    chassis.Drive();
 
-                    chasty.Encoders();
-                    chasty.SetAxisMovement();
+                    chassis.Encoders();
+                    chassis.SetAxisMovement();
 
                     if (this.gamepad1.left_trigger != 0) {
-                        chasty.ZeroEncoders();
+                        chassis.ZeroEncoders();
                     }
 
                     if (this.gamepad1.right_trigger != 0) {
@@ -209,13 +209,13 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
                     }
 
                     if (this.gamepad1.a) {
-                        drivePreset = chasty.trueDrive + movementLength;
+                        drivePreset = chassis.trueDrive + movementLength;
                         rotationGoal = zAngle;
                         driveOpState = ChassisMovementCode.OperState.FORWARD;
                     }
 
                     if (this.gamepad1.b) {
-                        drivePreset = chasty.trueStrafe + movementLength;
+                        drivePreset = chassis.trueStrafe + movementLength;
                         rotationGoal = zAngle;
                         driveOpState = ChassisMovementCode.OperState.LATERALMOVEMENT;
                     }
@@ -236,17 +236,17 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
                         drive = 0;
                         strafe = 0;
 
-                        chasty.SetMotors(drive, strafe, rotate);
-                        chasty.Drive();
+                        chassis.SetMotors(drive, strafe, rotate);
+                        chassis.Drive();
 
-                        chasty.SetAxisMovement();
+                        chassis.SetAxisMovement();
 
                         rotationGoal = zAngle;
 
                         if (this.gamepad1.left_trigger != 0) {
-                            chasty.ZeroEncoders();
+                            chassis.ZeroEncoders();
                         }
-                        telemetry.addData("IMU rotation", chasty.imu.getAngularOrientation());
+                        telemetry.addData("IMU rotation", chassis.imu.getAngularOrientation());
                         telemetry.update();
                     }
                     else {
@@ -256,24 +256,24 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
 
                 case FORWARD:
 
-                    chasty.SetAxisMovement();
-                    chasty.Encoders();
-                    chasty.ForwardAndBackward(drivePreset);
+                    chassis.SetAxisMovement();
+                    chassis.Encoders();
+                    chassis.ForwardAndBackward(drivePreset);
 
                     if (this.gamepad1.right_trigger != 0) {
                         driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
                     }
 
                     if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                        //chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
-                        chasty.Drive();
+                        //chassis.SetMotors(0,0,chassis.CorrectRotation(zAngle,rotationGoal));
+                        chassis.Drive();
                     }
 
-                    if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
-                        chasty.front_left_wheel.setPower(0.01);
-                        chasty.front_right_wheel.setPower(0.01);
-                        chasty.back_right_wheel.setPower(0.01);
-                        chasty.back_left_wheel.setPower(0.01);
+                    if (Math.abs(drivePreset - chassis.trueDrive) <= 0.2) {
+                        chassis.front_left_wheel.setPower(0.01);
+                        chassis.front_right_wheel.setPower(0.01);
+                        chassis.back_right_wheel.setPower(0.01);
+                        chassis.back_left_wheel.setPower(0.01);
                         driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
                     }
 
@@ -282,25 +282,25 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
 
                 case LATERALMOVEMENT:
 
-                    chasty.SetAxisMovement();
-                    chasty.Encoders();
-                    chasty.LeftAndRight(drivePreset);
+                    chassis.SetAxisMovement();
+                    chassis.Encoders();
+                    chassis.LeftAndRight(drivePreset);
 
                     if (this.gamepad1.right_trigger != 0) {
                         driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
                     }
 
                     if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                        //chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
-                        chasty.Drive();
+                        //chassis.SetMotors(0,0,chassis.CorrectRotation(zAngle,rotationGoal));
+                        chassis.Drive();
                     }
 
 
-                    if (Math.abs(drivePreset - chasty.trueStrafe) <= 0.2) {
-                        chasty.front_left_wheel.setPower(0.01);
-                        chasty.front_right_wheel.setPower(0.01);
-                        chasty.back_right_wheel.setPower(0.01);
-                        chasty.back_left_wheel.setPower(0.01);
+                    if (Math.abs(drivePreset - chassis.trueStrafe) <= 0.2) {
+                        chassis.front_left_wheel.setPower(0.01);
+                        chassis.front_right_wheel.setPower(0.01);
+                        chassis.back_right_wheel.setPower(0.01);
+                        chassis.back_left_wheel.setPower(0.01);
                         driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
                     }
 
@@ -356,13 +356,13 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
                         telemetry.addLine("DECREASING");
                     }
                     telemetry.addLine("Press right dpad to change FR wheel multiplier");
-                    telemetry.addData("FR wheel multiplier: ", chasty.frontRightMultiplier);
+                    telemetry.addData("FR wheel multiplier: ", chassis.frontRightMultiplier);
                     telemetry.addLine("Press right dpad to change FL wheel multiplier");
-                    telemetry.addData("FL wheel multiplier: ", chasty.frontLeftMultiplier);
+                    telemetry.addData("FL wheel multiplier: ", chassis.frontLeftMultiplier);
                     telemetry.addLine("Press right dpad to change BR wheel multiplier");
-                    telemetry.addData("BR wheel multiplier: ", chasty.backRightMultiplier);
+                    telemetry.addData("BR wheel multiplier: ", chassis.backRightMultiplier);
                     telemetry.addLine("Press right dpad to change BL wheel multiplier");
-                    telemetry.addData("BL wheel multiplier: ", chasty.backLeftMultiplier);
+                    telemetry.addData("BL wheel multiplier: ", chassis.backLeftMultiplier);
                     telemetry.update();
 
                     if ((increaseDecrease == 1) & (!this.gamepad1.a) & (aWait)) {
@@ -377,19 +377,19 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
 
 
                     if ((upWait) & (!this.gamepad1.dpad_up)) {
-                        chasty.frontLeftMultiplier = chasty.frontLeftMultiplier + (0.01 * increaseDecrease);
+                        chassis.frontLeftMultiplier = chassis.frontLeftMultiplier + (0.01 * increaseDecrease);
                         upWait = false;
                     }
                     if ((!this.gamepad1.dpad_down) & (downWait)) {
-                        chasty.backRightMultiplier = chasty.backRightMultiplier + (0.01 * increaseDecrease);
+                        chassis.backRightMultiplier = chassis.backRightMultiplier + (0.01 * increaseDecrease);
                         downWait = false;
                     }
                     if ((!this.gamepad1.dpad_right) & (rightWait)) {
-                        chasty.frontRightMultiplier = chasty.frontRightMultiplier + (0.01 * increaseDecrease);
+                        chassis.frontRightMultiplier = chassis.frontRightMultiplier + (0.01 * increaseDecrease);
                         rightWait = false;
                     }
                     if ((!this.gamepad1.dpad_left) & (leftWait)) {
-                        chasty.backLeftMultiplier = chasty.backLeftMultiplier + (0.01 * increaseDecrease);
+                        chassis.backLeftMultiplier = chassis.backLeftMultiplier + (0.01 * increaseDecrease);
                         leftWait = false;
                     }
 
@@ -417,14 +417,14 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
 
 
                 case FULLDRIVE:
-                    chasty.SetAxisMovement();
+                    chassis.SetAxisMovement();
                     drive = -this.gamepad1.left_stick_y;
                     strafe = -this.gamepad1.left_stick_x;
                     rotate = -this.gamepad1.right_stick_x;
 
 
-                    chasty.SetMotors (drive, strafe, rotate);
-                    chasty.Drive();
+                    chassis.SetMotors (drive, strafe, rotate);
+                    chassis.Drive();
 
 
 

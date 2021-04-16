@@ -110,7 +110,7 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
 
         public double CorrectRotation(double currentRotation, double rotationGoal) {
 
-            rotation = Math.signum(rotationGoal - currentRotation) * (Math.max(2, Math.abs((rotationGoal - currentRotation) / 180)));
+            rotation = Math.signum(rotationGoal - currentRotation) * (Math.max(0.2, Math.abs((rotationGoal - currentRotation) / 180)));
             return (rotation);
         }
 
@@ -325,7 +325,7 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
         boolean aWait = false;
         double autonomousTestStep = 0;
         double rotationGoal = imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;;
-        ChassisMovementCode.Chassis chasty = new ChassisMovementCode.Chassis();
+        ChassisMovementCode.Chassis chassis = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
 
         while (opModeIsActive()) {
@@ -339,23 +339,23 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
                     drive = -this.gamepad1.left_stick_y;
                     strafe = -this.gamepad1.left_stick_x;
                     if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                        rotate = chasty.CorrectRotation(zAngle,rotationGoal);
+                        rotate = chassis.CorrectRotation(zAngle,rotationGoal);
                     }
                     else {
                         rotate = 0;
                     }
 
-                    chasty.SetMotors (drive, strafe, rotate);
-                    chasty.Drive();
+                    chassis.SetMotors (drive, strafe, rotate);
+                    chassis.Drive();
 
 
-                    chasty.Encoders();
-                    chasty.SetAxisMovement();
+                    chassis.Encoders();
+                    chassis.SetAxisMovement();
 
 
 
                     if (this.gamepad1.left_trigger != 0) {
-                        chasty.ZeroEncoders();
+                        chassis.ZeroEncoders();
                     }
 
                     if (this.gamepad1.right_trigger != 0) {
@@ -363,13 +363,13 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
                     }
 
                     if (this.gamepad1.a) {
-                        drivePreset = chasty.trueDrive + movementLength;
+                        drivePreset = chassis.trueDrive + movementLength;
                         rotationGoal = zAngle;
                         driveOpState = ChassisMovementCode.OperState.FORWARD;
                     }
 
                     if (this.gamepad1.b) {
-                        drivePreset = chasty.trueStrafe + movementLength;
+                        drivePreset = chassis.trueStrafe + movementLength;
                         rotationGoal = zAngle;
                         driveOpState = ChassisMovementCode.OperState.LATERALMOVEMENT;
                     }
@@ -390,15 +390,15 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
                         drive = 0;
                         strafe = 0;
 
-                        chasty.SetMotors(drive, strafe, rotate);
-                        chasty.Drive();
+                        chassis.SetMotors(drive, strafe, rotate);
+                        chassis.Drive();
 
-                        chasty.SetAxisMovement();
+                        chassis.SetAxisMovement();
 
                         rotationGoal = zAngle;
 
                         if (this.gamepad1.left_trigger != 0) {
-                            chasty.ZeroEncoders();
+                            chassis.ZeroEncoders();
                         }
                         telemetry.addData("IMU rotation", this.imu.getAngularOrientation());
                         telemetry.update();
@@ -410,20 +410,20 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
 
                 case FORWARD:
 
-                    chasty.SetAxisMovement();
-                    chasty.Encoders();
-                    chasty.ForwardAndBackward(drivePreset);
+                    chassis.SetAxisMovement();
+                    chassis.Encoders();
+                    chassis.ForwardAndBackward(drivePreset);
 
                     if (this.gamepad1.right_trigger != 0) {
                         driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
                     }
 
                     if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                        chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
-                        chasty.Drive();
+                        chassis.SetMotors(0,0,chassis.CorrectRotation(zAngle,rotationGoal));
+                        chassis.Drive();
                     }
 
-                    if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
+                    if (Math.abs(drivePreset - chassis.trueDrive) <= 0.2) {
                         front_left_wheel.setPower(0.01);
                         front_right_wheel.setPower(0.01);
                         back_right_wheel.setPower(0.01);
@@ -436,21 +436,21 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
 
                 case LATERALMOVEMENT:
 
-                    chasty.SetAxisMovement();
-                    chasty.Encoders();
-                    chasty.LeftAndRight(drivePreset);
+                    chassis.SetAxisMovement();
+                    chassis.Encoders();
+                    chassis.LeftAndRight(drivePreset);
 
                     if (this.gamepad1.right_trigger != 0) {
                         driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
                     }
 
                     if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                        chasty.SetMotors(0,0,chasty.CorrectRotation(zAngle,rotationGoal));
-                        chasty.Drive();
+                        chassis.SetMotors(0,0,chassis.CorrectRotation(zAngle,rotationGoal));
+                        chassis.Drive();
                     }
 
 
-                    if (Math.abs(drivePreset - chasty.trueStrafe) <= 0.2) {
+                    if (Math.abs(drivePreset - chassis.trueStrafe) <= 0.2) {
                         front_left_wheel.setPower(0.01);
                         front_right_wheel.setPower(0.01);
                         back_right_wheel.setPower(0.01);
@@ -510,13 +510,13 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
                         telemetry.addLine("DECREASING");
                     }
                     telemetry.addLine("Press right dpad to change FR wheel multiplier");
-                    telemetry.addData("FR wheel multiplier: ", chasty.frontRightMultiplier);
+                    telemetry.addData("FR wheel multiplier: ", chassis.frontRightMultiplier);
                     telemetry.addLine("Press right dpad to change FL wheel multiplier");
-                    telemetry.addData("FL wheel multiplier: ", chasty.frontLeftMultiplier);
+                    telemetry.addData("FL wheel multiplier: ", chassis.frontLeftMultiplier);
                     telemetry.addLine("Press right dpad to change BR wheel multiplier");
-                    telemetry.addData("BR wheel multiplier: ", chasty.backRightMultiplier);
+                    telemetry.addData("BR wheel multiplier: ", chassis.backRightMultiplier);
                     telemetry.addLine("Press right dpad to change BL wheel multiplier");
-                    telemetry.addData("BL wheel multiplier: ", chasty.backLeftMultiplier);
+                    telemetry.addData("BL wheel multiplier: ", chassis.backLeftMultiplier);
                     telemetry.update();
 
                     if ((increaseDecrease == 1) & (!this.gamepad1.a) & (aWait)) {
@@ -531,19 +531,19 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
 
 
                     if ((upWait) & (!this.gamepad1.dpad_up)) {
-                        chasty.frontLeftMultiplier = chasty.frontLeftMultiplier + (0.01 * increaseDecrease);
+                        chassis.frontLeftMultiplier = chassis.frontLeftMultiplier + (0.01 * increaseDecrease);
                         upWait = false;
                     }
                     if ((!this.gamepad1.dpad_down) & (downWait)) {
-                        chasty.backRightMultiplier = chasty.backRightMultiplier + (0.01 * increaseDecrease);
+                        chassis.backRightMultiplier = chassis.backRightMultiplier + (0.01 * increaseDecrease);
                         downWait = false;
                     }
                     if ((!this.gamepad1.dpad_right) & (rightWait)) {
-                        chasty.frontRightMultiplier = chasty.frontRightMultiplier + (0.01 * increaseDecrease);
+                        chassis.frontRightMultiplier = chassis.frontRightMultiplier + (0.01 * increaseDecrease);
                         rightWait = false;
                     }
                     if ((!this.gamepad1.dpad_left) & (leftWait)) {
-                        chasty.backLeftMultiplier = chasty.backLeftMultiplier + (0.01 * increaseDecrease);
+                        chassis.backLeftMultiplier = chassis.backLeftMultiplier + (0.01 * increaseDecrease);
                         leftWait = false;
                     }
 
@@ -572,7 +572,7 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
 
                 case AUTONOMOUSTEST:
                     if (autonomousTestStep == 0) {
-                        drivePreset = chasty.trueDrive + 40;
+                        drivePreset = chassis.trueDrive + 40;
                         rotationGoal = zAngle;
                         autonomousTestStep = 1;
                         if (this.gamepad1.left_trigger != 0) {
@@ -580,20 +580,20 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
                         }
                     }
                     if (autonomousTestStep == 1) {
-                        chasty.SetAxisMovement();
-                        chasty.Encoders();
-                        chasty.ForwardAndBackward(drivePreset);
+                        chassis.SetAxisMovement();
+                        chassis.Encoders();
+                        chassis.ForwardAndBackward(drivePreset);
 
                         if (this.gamepad1.left_trigger != 0) {
                             driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
                         }
 
                         if ((Math.abs(zAngle - rotationGoal) >= 2)) {
-                            chasty.SetMotors(0, 0, chasty.CorrectRotation(zAngle, rotationGoal));
-                            chasty.Drive();
+                            chassis.SetMotors(0, 0, chassis.CorrectRotation(zAngle, rotationGoal));
+                            chassis.Drive();
                         }
 
-                        if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
+                        if (Math.abs(drivePreset - chassis.trueDrive) <= 0.2) {
                             front_left_wheel.setPower(0.01);
                             front_right_wheel.setPower(0.01);
                             back_right_wheel.setPower(0.01);

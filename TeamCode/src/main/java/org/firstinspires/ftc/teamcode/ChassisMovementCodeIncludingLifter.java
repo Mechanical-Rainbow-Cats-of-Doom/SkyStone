@@ -153,7 +153,7 @@ public class ChassisMovementCodeIncludingLifter extends LinearOpMode {
         boolean rightWait = false;
         boolean leftWait = false;
         double drivePreset = 0;
-        ChassisMovementCodeIncludingLifter.Chassis chasty = new ChassisMovementCodeIncludingLifter.Chassis();
+        ChassisMovementCodeIncludingLifter.Chassis chassis = new ChassisMovementCodeIncludingLifter.Chassis();
         ChassisMovementCodeIncludingLifter.OperState driveOpState = ChassisMovementCodeIncludingLifter.OperState.NORMALDRIVE;
         LifterCode.Lifter lift = new LifterCode.Lifter();
         lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
@@ -172,13 +172,13 @@ public class ChassisMovementCodeIncludingLifter extends LinearOpMode {
                     strafe = -this.gamepad1.left_stick_x;
                     rotate = 0;
 
-                    chasty.SetMotors (drive, strafe, rotate);
-                    chasty.Drive();
-                    chasty.Encoders();
-                    chasty.SetAxisMovement();
+                    chassis.SetMotors (drive, strafe, rotate);
+                    chassis.Drive();
+                    chassis.Encoders();
+                    chassis.SetAxisMovement();
 
                     if (this.gamepad1.left_trigger != 0) {
-                        chasty.ZeroEncoders();
+                        chassis.ZeroEncoders();
                     }
 
                     if (this.gamepad1.right_trigger != 0) {
@@ -186,13 +186,13 @@ public class ChassisMovementCodeIncludingLifter extends LinearOpMode {
                     }
 
                     if (this.gamepad1.a) {
-                        drivePreset = chasty.trueDrive + movementLength;
+                        drivePreset = chassis.trueDrive + movementLength;
                         driveOpState = ChassisMovementCodeIncludingLifter.OperState.FORWARD;
                     }
 
                     if (this.gamepad1.b) {
                         driveOpState = ChassisMovementCodeIncludingLifter.OperState.LATERALMOVEMENT;
-                        drivePreset = chasty.trueStrafe + movementLength;
+                        drivePreset = chassis.trueStrafe + movementLength;
                     }
 
                     if (this.gamepad1.y) {
@@ -207,13 +207,13 @@ public class ChassisMovementCodeIncludingLifter extends LinearOpMode {
                         drive = 0;
                         strafe = 0;
 
-                        chasty.SetMotors(drive, strafe, rotate);
-                        chasty.Drive();
-                        chasty.Encoders();
-                        chasty.SetAxisMovement();
+                        chassis.SetMotors(drive, strafe, rotate);
+                        chassis.Drive();
+                        chassis.Encoders();
+                        chassis.SetAxisMovement();
 
                         if (this.gamepad1.left_trigger != 0) {
-                            chasty.ZeroEncoders();
+                            chassis.ZeroEncoders();
                         }
                     }
                     else {
@@ -223,15 +223,15 @@ public class ChassisMovementCodeIncludingLifter extends LinearOpMode {
 
                 case FORWARD:
 
-                    chasty.SetAxisMovement();
-                    chasty.Encoders();
-                    chasty.ForwardAndBackward(drivePreset);
+                    chassis.SetAxisMovement();
+                    chassis.Encoders();
+                    chassis.ForwardAndBackward(drivePreset);
 
                     if (this.gamepad1.right_trigger != 0) {
                         driveOpState = ChassisMovementCodeIncludingLifter.OperState.NORMALDRIVE;
                     }
 
-                    if (Math.abs(drivePreset - chasty.trueDrive) <= 0.2) {
+                    if (Math.abs(drivePreset - chassis.trueDrive) <= 0.2) {
                         front_left_wheel.setPower(0.01);
                         front_right_wheel.setPower(0.01);
                         back_right_wheel.setPower(0.01);
@@ -244,15 +244,15 @@ public class ChassisMovementCodeIncludingLifter extends LinearOpMode {
 
                 case LATERALMOVEMENT:
 
-                    chasty.SetAxisMovement();
-                    chasty.Encoders();
-                    chasty.LeftAndRight(drivePreset);
+                    chassis.SetAxisMovement();
+                    chassis.Encoders();
+                    chassis.LeftAndRight(drivePreset);
 
                     if (this.gamepad1.right_trigger != 0) {
                         driveOpState = ChassisMovementCodeIncludingLifter.OperState.NORMALDRIVE;
                     }
 
-                    if (Math.abs(drivePreset - chasty.trueStrafe) <= 0.2) {
+                    if (Math.abs(drivePreset - chassis.trueStrafe) <= 0.2) {
                         front_left_wheel.setPower(0.01);
                         front_right_wheel.setPower(0.01);
                         back_right_wheel.setPower(0.01);
