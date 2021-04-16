@@ -82,8 +82,6 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
             this.LeftStickValue = -gamepad2.left_stick_y;
             this.RightStickValue = -gamepad2.right_stick_y;
             lift.MoveLift(this.LeftStickValue);
-
-            telemetry.addData("testing LauncherOn:", launcher.launcherOn);
             telemetry.addData("Lift Power", lift.LiftPower);
             telemetry.addData("Fork Power", lift.ForkPower);
             telemetry.update();
