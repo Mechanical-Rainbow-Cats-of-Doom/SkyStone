@@ -24,6 +24,7 @@ public class AutoCode3 extends LinearOpMode {
     private Blinker expansion_Hub_2;
     ElapsedTime servoTimer = new ElapsedTime();
     ElapsedTime NewMeasureTimer = new ElapsedTime();
+    private double RotationPreset = 0;
 
     enum OperState {
         FIRSTMOVE,
@@ -391,6 +392,7 @@ public class AutoCode3 extends LinearOpMode {
         waitForStart();
         servoTimer.reset();
         launcher.Reload();
+        originalRotation = autoChassis.zAngle;
 /*                    if (autoChassis.MoveToLocation() == true) {
                         telemetry.addLine("done");
                     }
@@ -407,13 +409,8 @@ public class AutoCode3 extends LinearOpMode {
             switch (driveOpState) {
                 case FIRSTMOVE:
                     telemetry.addLine("FIRSTMOVE");
-
                     originalRotation = autoChassis.zAngle;
-
-                    if (servoTimer.time() >= 2) {
-
-                        driveOpState = AutoCode3.OperState.PREPMOVEANDLIFT;
-                    }
+                    if (servoTimer.time() >= 2) { driveOpState = AutoCode3.OperState.PREPMOVEANDLIFT; }
                     break;
 
                 case RESETTIMER:
@@ -623,15 +620,16 @@ public class AutoCode3 extends LinearOpMode {
                     }
                     break;
                 case PrepSpinAround:
-                    if ((Math.abs(autoChassis.zAngle - (originalRotation-180)) >= 2)) {
-                        autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, (originalRotation-180)));
+                    if ((Math.abs(autoChassis.zAngle - (originalRotation+90)) >= 2)) {
+                        autoChassis.SetMotors(0, 0, autoChassis.CorrectRotation(autoChassis.zAngle, (originalRotation+90)));
                         autoChassis.Drive();
                         autoChassis.SetAxisMovement();
                         autoChassis.ZeroEncoders();
                         autoChassis.SetAxisMovement();
                         rotationGoal = autoChassis.zAngle;
                     }
-                    else { driveOpState = AutoCode3.OperState.Launch; }
+                    else { //driveOpState = AutoCode3.OperState.Launch;
+                         }
                     break;
                 case Launch:
                     if (launchCount <= 2 && (((Powershots == 1 && launchCount >= 1) && servoTimer.time() >= 0.185) || servoTimer.time() >= 1)) {

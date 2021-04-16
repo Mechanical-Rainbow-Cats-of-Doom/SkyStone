@@ -110,7 +110,7 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
 
         public double CorrectRotation(double currentRotation, double rotationGoal) {
 
-            rotation = Math.signum(rotationGoal - currentRotation) * (Math.max(0.2, Math.abs((rotationGoal - currentRotation) / 180)));
+            rotation = Math.signum(rotationGoal - currentRotation) * (Math.max(3, Math.abs((rotationGoal - currentRotation) / 180)));
             return (rotation);
         }
 
