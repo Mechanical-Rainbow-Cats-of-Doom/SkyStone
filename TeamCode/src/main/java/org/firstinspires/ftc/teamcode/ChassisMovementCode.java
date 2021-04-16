@@ -108,9 +108,9 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
             return (drive);
         }
 
-        public double CorrectRotation(double currentRotation, double rotationGoal) {
+        public double CorrectRotation(double currentRotation, double rotationGoal, double speed) {
 
-            rotation = Math.signum(rotationGoal - currentRotation) * (Math.max(0.2, Math.abs((rotationGoal - currentRotation) / 180)));
+            rotation = Math.signum(rotationGoal - currentRotation) * (Math.max(0.2, speed * Math.abs((rotationGoal - currentRotation) / 180)));
             return (rotation);
         }
 
