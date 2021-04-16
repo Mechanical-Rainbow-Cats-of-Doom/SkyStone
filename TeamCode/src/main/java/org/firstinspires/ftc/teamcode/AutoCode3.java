@@ -433,7 +433,7 @@ public class AutoCode3 extends LinearOpMode {
                     break;
                 case Rotate:
                     if ((Math.abs(chassis.zAngle - (originalRotation+initrotation)) >= 3)) {
-                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation)));
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation),1));
                         chassis.Drive();
                         chassis.SetAxisMovement();
                         chassis.ZeroEncoders();
@@ -651,7 +651,7 @@ public class AutoCode3 extends LinearOpMode {
                     break;
                 case PrepSpinAround:
                     if ((Math.abs(chassis.zAngle - (originalRotation+90)) >= 3)) {
-                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+90)));
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+90),1));
                         chassis.Drive();
                         chassis.SetAxisMovement();
                         chassis.ZeroEncoders();
