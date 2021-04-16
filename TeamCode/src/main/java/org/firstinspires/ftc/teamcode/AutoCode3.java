@@ -87,7 +87,7 @@ public class AutoCode3 extends LinearOpMode {
         LauncherCode.Launcher launcher = new LauncherCode.Launcher();
         LifterCode.Lifter lift = new LifterCode.Lifter();
         ChassisMovementCode.Chassis chassis = new ChassisMovementCode.Chassis();
-        AutoCode3.OperState driveOpState = AutoCode3.OperState.PrepFMove;
+        AutoCode3.OperState driveOpState = AutoCode3.OperState.PrepClose;
         AutoCode3.Menu menu = AutoCode3.Menu.StartLocation;
         DistanceSensorClass.RingClass ring = new DistanceSensorClass.RingClass();
         GrabberCode.Grabber grabber = new GrabberCode.Grabber();
