@@ -398,7 +398,7 @@ public class AutoCode3 extends LinearOpMode {
         waitForStart();
         servoTimer.reset();
         launcher.Reload();
-        grabber.Toggle(gamepad2.right_bumper, true);
+        grabber.Open();
         originalRotation = chassis.zAngle;
         initrotation = -initrotation;
 /*                    if (chassis.MoveToLocation() == true) {
@@ -433,7 +433,7 @@ public class AutoCode3 extends LinearOpMode {
                     break;
                 case Rotate:
                     if ((Math.abs(chassis.zAngle - (originalRotation+initrotation)) >= 3)) {
-                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation),1));
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation),0.55));
                         chassis.Drive();
                         chassis.SetAxisMovement();
                         chassis.ZeroEncoders();

@@ -6,19 +6,19 @@ public class GrabberCode {
         public Servo GrabberRight;
         private boolean GrabberClosed = false;
         private boolean Waiting = false;
-        private void Open() {
+        public void Open() {
             GrabberLeft.setPosition(0.49);
             GrabberRight.setPosition(0.405);
             GrabberClosed = false;
         }
-        private void Close() {
+        public void Close() {
             GrabberLeft.setPosition(0.11);
             GrabberRight.setPosition(.776);
             GrabberClosed = true;
         }
-        public void Toggle(boolean rbump, boolean auto) {
-            if ((rbump && !Waiting) || auto) { Waiting = true; }
-            else if ((Waiting && !rbump) || auto) {
+        public void Toggle(boolean rbump) {
+            if (rbump && !Waiting) { Waiting = true; }
+            else if (Waiting && !rbump)  {
                 Waiting = false;
                 if (GrabberClosed) { this.Open(); }
                 else { this.Close();}
