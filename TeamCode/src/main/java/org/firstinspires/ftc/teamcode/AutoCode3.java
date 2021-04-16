@@ -28,6 +28,7 @@ public class AutoCode3 extends LinearOpMode {
 
     enum OperState {
         FIRSTMOVE,
+        PrepFMove,
         Rotate,
         PREPMOVEANDLIFT,
         LIFTUP,
@@ -83,7 +84,7 @@ public class AutoCode3 extends LinearOpMode {
         LauncherCode.Launcher launcher = new LauncherCode.Launcher();
         LifterCode.Lifter lift = new LifterCode.Lifter();
         ChassisMovementCode.Chassis chassis = new ChassisMovementCode.Chassis();
-        AutoCode3.OperState driveOpState = AutoCode3.OperState.PrepSpinAround;
+        AutoCode3.OperState driveOpState = AutoCode3.OperState.PrepFMove;
         AutoCode3.Menu menu = AutoCode3.Menu.StartLocation;
         DistanceSensorClass.RingClass ring = new DistanceSensorClass.RingClass();
         GrabberCode.Grabber grabber = new GrabberCode.Grabber();
@@ -420,12 +421,16 @@ public class AutoCode3 extends LinearOpMode {
                     if (servoTimer.time() >= 2) { driveOpState = AutoCode3.OperState.PREPMOVEANDLIFT; }
                     break;
                */
-                case FIRSTMOVE:
+                case PrepFMove:
                     chassis.SetAxisMovement();
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
                     chassis.SetPresetMovement(22.5, 1, 0, .4, chassis.zAngle);
-                    driveOpState = OperState.Rotate;
+                    driveOpState = OperState.FIRSTMOVE;
+                    break;
+                case FIRSTMOVE:
+                    if (chassis.MoveToLocation()) { driveOpState = AutoCode3.OperState.Rotate; }
+                    break;
                 case Rotate:
                     if ((Math.abs(chassis.zAngle - (originalRotation+initrotation)) >= 3)) {
                         chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation)));
@@ -435,7 +440,8 @@ public class AutoCode3 extends LinearOpMode {
                         chassis.SetAxisMovement();
                         rotationGoal = chassis.zAngle;
                     }
-                    else {  }
+                    else { }
+                    break;
                 case RESETTIMER:
                     MultipleUsesTimer.reset();
                     driveOpState = AutoCode3.OperState.MEASURE;
