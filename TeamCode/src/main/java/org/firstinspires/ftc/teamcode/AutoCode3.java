@@ -143,6 +143,7 @@ public class AutoCode3 extends LinearOpMode {
         double strafeslightleft = -4.75;
         int launchCount = 0;
         int ringCount = 0;
+        double launchpower = 1;
         ElapsedTime MultipleUsesTimer = new ElapsedTime();
         chassis.SetRotation(chassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         while (!IsMenuDone) {
@@ -303,6 +304,7 @@ public class AutoCode3 extends LinearOpMode {
                         DoneMeasuring = true;
                     }
                     if (Powershots == 1 && !OnRed) { strafeslightleft = -strafeslightleft; }
+                    if (Powershots == 1) { launchpower = 0.9422; }
                     switch (StartLocation) {
                         case 1:
                             moverightstrafe = -6.5;
@@ -411,7 +413,7 @@ public class AutoCode3 extends LinearOpMode {
         while (opModeIsActive()) {
             chassis.SetRotation(chassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
             telemetry.addData("how close", chassis.zAngle - (originalRotation+initrotation));
-            launcher.LauncherRun(0.9422);
+            launcher.LauncherRun(launchpower);
             if (!DoneMeasuring) { ring.MeasureDistance(); }
             telemetry.addData("where you are in strafe", Math.abs(chassis.strafePreset - chassis.trueStrafe));
             telemetry.addData("driveopstate", driveOpState);
