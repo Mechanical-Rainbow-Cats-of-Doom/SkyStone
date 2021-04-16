@@ -445,7 +445,7 @@ public class AutoCode3 extends LinearOpMode {
                     break;
                 case Rotate:
                     if ((Math.abs(chassis.zAngle - (originalRotation+initrotation)) >= 6.5)) {
-                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation),0.55));
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation),0.225));
                         chassis.Drive();
                         chassis.SetAxisMovement();
                         chassis.ZeroEncoders();
