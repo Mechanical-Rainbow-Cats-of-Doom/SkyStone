@@ -13,7 +13,7 @@ public class LauncherCode {
     public static class Launcher {
         public DcMotor LaunchMotor;
         public Servo LaunchServo;
-        public boolean launcherOn = false;
+        private boolean launcherOn = false;
         private double maxPower = 0.9;
 
         public void LauncherToggle() {
