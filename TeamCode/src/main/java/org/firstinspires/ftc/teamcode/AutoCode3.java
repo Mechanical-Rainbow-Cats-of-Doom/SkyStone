@@ -398,7 +398,7 @@ public class AutoCode3 extends LinearOpMode {
         waitForStart();
         servoTimer.reset();
         launcher.Reload();
-        grabber.Toggle(gamepad2.right_bumper);
+        grabber.Toggle(gamepad2.right_bumper, true);
         originalRotation = chassis.zAngle;
         initrotation = -initrotation;
 /*                    if (chassis.MoveToLocation() == true) {

@@ -112,7 +112,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             this.LeftStickValue = -gamepad2.left_stick_y;
             this.RightStickValue = -gamepad2.right_stick_y;
             lift.MoveLift(this.LeftStickValue);
-            grabber.Toggle(gamepad2.right_bumper);
+            grabber.Toggle(gamepad2.right_bumper, false);
             telemetry.addData("zAngle", chassis.zAngle);
             //telemetry.addData("testing LauncherOn:", launcher.launcherOn);
             //telemetry.addData("Lift Power", lift.LiftPower);
