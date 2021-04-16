@@ -368,7 +368,7 @@ public class AutoCode3 extends LinearOpMode {
 
                         case 4:
                             moverightstrafe = 17;
-                            initrotation = -45;
+                            initrotation = -55;
                             adrive = -28;
                             astrafe = -7;
                             bdrive = -51;
