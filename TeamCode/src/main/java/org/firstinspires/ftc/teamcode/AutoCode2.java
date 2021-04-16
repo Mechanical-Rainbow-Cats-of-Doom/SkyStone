@@ -621,7 +621,7 @@ public class AutoCode2 extends LinearOpMode {
                     break;
                 case PrepSpinAround:
                     if ((Math.abs(chassis.zAngle - (originalRotation-180)) >= 2)) {
-                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation-180)));
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation-180),1));
                         chassis.Drive();
                         chassis.SetAxisMovement();
                         chassis.ZeroEncoders();
