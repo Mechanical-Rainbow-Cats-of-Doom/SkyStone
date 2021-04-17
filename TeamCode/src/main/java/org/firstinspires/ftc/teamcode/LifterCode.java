@@ -7,16 +7,16 @@ public class LifterCode {
         public double LiftPower;
         public double ForkPower;
         public DcMotor LiftMotor;
-        public void MoveLift(double LeftStick) {
-            if (LeftStick == 0) {
+        public void MoveLift(double Power) {
+            if (Power == 0) {
                 this.LiftMotor.setPower(-0.1);
                 this.LiftPower = -0.1;
-            } else if (LeftStick < 0) {
-                this.LiftMotor.setPower(LeftStick * -0.46);
-                this.LiftPower = (LeftStick * -0.46);
+            } else if (Power < 0) {
+                this.LiftMotor.setPower(Power * -0.46);
+                this.LiftPower = (Power * -0.46);
             } else {
-                this.LiftMotor.setPower(-LeftStick);
-                this.LiftPower = (LeftStick * -1);
+                this.LiftMotor.setPower(-Power);
+                this.LiftPower = (Power * -1);
             }
         }
 
