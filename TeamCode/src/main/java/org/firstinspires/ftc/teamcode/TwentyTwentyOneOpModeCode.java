@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.lang.Math;
 
@@ -112,7 +113,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
 
         while (opModeIsActive()) {
             ring.MeasureDistance();
-            telemetry.addData("RingHeight", ring.RingCount);
+            telemetry.addData("RingHeight", ring.DistanceSensor.getDistance(DistanceUnit.INCH));
             this.LeftStickValue = -gamepad2.left_stick_y;
             this.RightStickValue = -gamepad2.right_stick_y;
             lift.MoveLift(this.LeftStickValue);

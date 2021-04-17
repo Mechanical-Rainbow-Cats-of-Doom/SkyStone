@@ -8,12 +8,12 @@ public class DistanceSensorClass {
     public static class RingClass {
 
         public DistanceSensor DistanceSensor;
-        private double AveragedArray;
+        public double AveragedArray;
         private double total;
         private int index = 0;
         private int ArraySize = 41; //Allows for easy way to change the size of the array that affects all of the code
         private double[] sensorArray = new double [ArraySize];
-        public int RingCount = 0;
+        private int RingCount = 0;
 
         public void MeasureDistance() {
             //Sets the index for the array, sets to 0 if full
