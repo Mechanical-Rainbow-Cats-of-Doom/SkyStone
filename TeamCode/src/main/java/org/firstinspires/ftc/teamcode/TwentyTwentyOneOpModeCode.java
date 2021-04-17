@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -59,12 +60,12 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         LifterCode.Lifter lift = new LifterCode.Lifter();
         GrabberCode.Grabber grabber = new GrabberCode.Grabber();
         NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
+        DistanceSensorClass.RingClass ring = new DistanceSensorClass.RingClass();
         ChassisMovementCode.Chassis chassis = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
         TwentyTwentyOneOpModeCode.OperState debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGSELECT;
         TwentyTwentyOneOpModeCode.Intake IntakeSwitch = Intake.WaitingForPush;
         TwentyTwentyOneOpModeCode.RingWiper RingWiperSwitch = RingWiper.WaitingForPushY;
-
         Control_Hub = hardwareMap.get(Blinker.class, "Control Hub");
         expansion_Hub_2 = hardwareMap.get(Blinker.class, "Expansion Hub 2");
         lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
@@ -80,6 +81,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         chassis.front_right_wheel = hardwareMap.get(DcMotor.class, "front right wheel");
         chassis.back_left_wheel = hardwareMap.get(DcMotor.class, "back left wheel");
         chassis.back_right_wheel = hardwareMap.get(DcMotor.class, "back right wheel");
+        ring.DistanceSensor = hardwareMap.get(DistanceSensor.class, "Distance Sensor");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();  //in wrong spot--where is better?
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -109,6 +111,8 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            ring.MeasureDistance();
+            telemetry.addData("RingHeight", ring.RingCount);
             this.LeftStickValue = -gamepad2.left_stick_y;
             this.RightStickValue = -gamepad2.right_stick_y;
             lift.MoveLift(this.LeftStickValue);
