@@ -15,7 +15,7 @@ public class DistanceSensorClass {
         private double[] sensorArray = new double [ArraySize];
         private int RingCount = 0;
 
-        public void MeasureDistance() {
+        public void MeasureDistance(boolean oneorthree) {
             //Sets the index for the array, sets to 0 if full
             if (index >= (ArraySize - 1)) {
                 index = 0;
@@ -34,13 +34,13 @@ public class DistanceSensorClass {
             AveragedArray = total / sensorArray.length; //Averages the value spit out of the loop
 
             //This loop uses measured values from the field to determine the amount of rings based off of the averaed valu.
-            if (AveragedArray <= 17.6) {
+            if ((oneorthree && AveragedArray <= 18.9) || (!oneorthree && AveragedArray <= 18)) {
                 RingCount = 4;
             }
-            else if (AveragedArray <= 19) {
+            else if ((oneorthree && AveragedArray < 19.77) || (!oneorthree && AveragedArray < 19.6)) {
                 RingCount = 1;
             }
-            else if (AveragedArray <= 19.7) {
+            else if ((oneorthree && AveragedArray >= 19.77) || (!oneorthree && AveragedArray >= 19.6)) {
                 RingCount = 0;
             }
         }

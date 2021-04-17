@@ -153,6 +153,7 @@ public class AutoCode3 extends LinearOpMode {
         int launchCount = 0;
         int ringCount = 0;
         double launchpower = 1;
+        boolean onodd = false;
         ElapsedTime MultipleUsesTimer = new ElapsedTime();
         chassis.SetRotation(chassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         while (!IsMenuDone) {
@@ -314,11 +315,19 @@ public class AutoCode3 extends LinearOpMode {
                     }
                     if (Powershots == 1 && !OnRed) { strafeslightleft = -strafeslightleft; }
                     if (Powershots == 1) { launchpower = 0.9422; }
-                    if (StartLocation == 3 || StartLocation == 1) { closermove = 0; }
+                    if (StartLocation == 3 || StartLocation == 1) {
+                        closermove = 0;
+                        onodd = true;
+                        rotmove = -25.5;
+                        initrotation = 45;
+                    } else {
+                        initrotation = -64.3;
+                        rotmove = -22.5;
+                    }
+
                     switch (StartLocation) {
                         case 1:
                             moverightstrafe = -6.5;
-                            initrotation = 0;
                             adrive = -28;
                             astrafe = 7;
                             bdrive = -51;
@@ -340,7 +349,6 @@ public class AutoCode3 extends LinearOpMode {
 
                         case 2:
                             moverightstrafe = 17;
-                            initrotation = 0;
                             adrive = -28;
                             astrafe = 30.5;
                             bdrive = -51;
@@ -362,8 +370,6 @@ public class AutoCode3 extends LinearOpMode {
 
                         case 3:
                             moverightstrafe = -6.5;
-                            rotmove = -25.5;
-                            initrotation = 45;
                             adrive = -28;
                             astrafe = -30.5;
                             bdrive = -51;
@@ -385,8 +391,6 @@ public class AutoCode3 extends LinearOpMode {
 
                         case 4:
                             moverightstrafe = 17;
-                            initrotation = -64.3;
-                            rotmove = -22.5;
                             adrive = -28;
                             astrafe = -7;
                             bdrive = -51;
@@ -426,7 +430,7 @@ public class AutoCode3 extends LinearOpMode {
             chassis.SetRotation(chassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
             telemetry.addData("how close", chassis.zAngle - (originalRotation+initrotation));
             launcher.LauncherRun(launchpower);
-            if (!DoneMeasuring) { ring.MeasureDistance(); }
+            if (!DoneMeasuring) { ring.MeasureDistance(onodd); }
             telemetry.addData("where you are in strafe", Math.abs(chassis.strafePreset - chassis.trueStrafe));
             telemetry.addData("driveopstate", driveOpState);
             telemetry.addData("IMPORTANT, DRIVE PRESET", chassis.drivePreset);
@@ -569,9 +573,8 @@ public class AutoCode3 extends LinearOpMode {
                 case MEASURE:
                     if (MultipleUsesTimer.time(TimeUnit.SECONDS) >= 0.57) {
                         ringCount = ring.RingHeight();
-                        //driveOpState = OperState.PrepUnGetCloser;
+                        driveOpState = OperState.PrepUnGetCloser;
                     }
-                    // =25.5 -45
                     break;
                 case PrepUnGetCloser:
                     chassis.SetAxisMovement();
