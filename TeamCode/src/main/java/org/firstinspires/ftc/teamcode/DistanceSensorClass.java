@@ -14,7 +14,6 @@ public class DistanceSensorClass {
         private int ArraySize = 41; //Allows for easy way to change the size of the array that affects all of the code
         private double[] sensorArray = new double [ArraySize];
         private int RingCount = 0;
-
         public void MeasureDistance(boolean oneorthree) {
             //Sets the index for the array, sets to 0 if full
             if (index >= (ArraySize - 1)) {

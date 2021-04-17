@@ -17,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import java.util.concurrent.TimeUnit;
 
 //At this point it's almost entirely created by Ethan
+//38 inches between the robots
 @Autonomous
 public class AutoCode3 extends LinearOpMode {
 
@@ -40,16 +41,9 @@ public class AutoCode3 extends LinearOpMode {
         PrepUnGetCloser,
         UnGetCloser,
         UnRotate,
-        PREPMOVEANDLIFT,
-        LIFTUP,
+        PrepMoveToLine,
+        MoveToLine,
         DECIDE,
-        LIFTDOWN,
-        PREPMOVERIGHT,
-        PREPMOVEBACK,
-        MOVEANDLIFT,
-        MOVERIGHT,
-        MOVEBACK,
-        RESETTIMER,
         MEASURE,
         PREPA,
         PREPB,
@@ -599,10 +593,19 @@ public class AutoCode3 extends LinearOpMode {
                     else {
                         chassis.SetMotors(0,0,0);
                         chassis.Drive();
-                        //driveOpState = OperState.DECIDE;
+                        driveOpState = OperState.PrepMoveToLine;
                     }
                     break;
-
+                case PrepMoveToLine:
+                    chassis.SetAxisMovement();
+                    chassis.ZeroEncoders();
+                    chassis.SetAxisMovement();
+                    chassis.SetPresetMovement(-36, 1, 0, .4, chassis.zAngle);
+                    driveOpState = OperState.MoveToLine;
+                    break;
+                case MoveToLine:
+                    if (chassis.MoveToLocation()) { driveOpState = OperState.DECIDE; }
+                    break;
                     /*
                 case PREPMOVEBACK:
                     chassis.SetAxisMovement();
@@ -633,49 +636,49 @@ public class AutoCode3 extends LinearOpMode {
                 case DECIDE:
                     if (ringCount == 0) {
                         if (Powershots == 1) {
-                            shootdrive = 1;
-                            shootstrafe = 1;
+                            adrive = 1;
+                            astrafe = 1;
                             if (!OnRed) {
-                                shootstrafe = -shootstrafe;
+                                astrafe = -astrafe;
                             }
                         }
                         if (ShootGoals == 1) {
-                            shootdrive = 1;
-                            shootstrafe = 1;
+                            adrive = 1;
+                            astrafe = 1;
                             if (!OnRed) {
-                                shootstrafe = -shootstrafe;
+                                astrafe = -astrafe;
                             }
                         }
                         driveOpState = AutoCode3.OperState.PREPA;
                     } else if (ringCount == 1) {
                         if (Powershots == 1) {
-                            shootdrive = 1;
-                            shootstrafe = 1;
+                            bdrive = 1;
+                            bstrafe = 1;
                             if (!OnRed) {
-                                shootstrafe = -shootstrafe;
+                                bstrafe = -bstrafe;
                             }
                         }
                         if (ShootGoals == 1) {
-                            shootdrive = 1;
-                            shootstrafe = 1;
+                            bdrive = 1;
+                            bstrafe = 1;
                             if (!OnRed) {
-                                shootstrafe = -shootstrafe;
+                                bstrafe = -bstrafe;
                             }
                         }
                         driveOpState = AutoCode3.OperState.PREPB;
                     } else if (ringCount == 4) {
                         if (Powershots == 1) {
-                            shootdrive = 1;
-                            shootstrafe = 1;
+                            cdrive = 1;
+                            cstrafe = 1;
                             if (!OnRed) {
-                                shootstrafe = -shootstrafe;
+                                cstrafe = -cstrafe;
                             }
                         }
                         if (ShootGoals == 1) {
-                            shootdrive = 1;
-                            shootstrafe = 1;
+                            cdrive = 1;
+                            cstrafe = 1;
                             if (!OnRed) {
-                                shootstrafe = -shootstrafe;
+                                cstrafe = -cstrafe;
                             }
                         }
                         driveOpState = AutoCode3.OperState.PREPC;
