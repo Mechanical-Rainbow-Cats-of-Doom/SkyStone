@@ -584,9 +584,8 @@ public class AutoCode3 extends LinearOpMode {
                     driveOpState = OperState.UnGetCloser;
                     break;
                 case UnGetCloser:
-                    if (chassis.MoveToLocation()) {
-                        driveOpState = OperState.UnRotate;
-                    }
+                    if (chassis.MoveToLocation()) { driveOpState = OperState.UnRotate; }
+                    else { telemetry.addData("IMPORTANT, DRIVE PRESET", chassis.drivePreset); }
                     break;
                 case UnRotate:
                     if ((Math.abs(chassis.zAngle - (originalRotation)) >= 1.5)) {
