@@ -441,7 +441,7 @@ public class AutoCode3 extends LinearOpMode {
                     break;
                 case TimeClose:
                     if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.4) { driveOpState = OperState.PrepFMove; }
-                    else { lift.MoveLift(0.27); }
+                    else { lift.MoveLift(0.255); }
                     break;
                 case PrepFMove:
                     lift.MoveLift(0);
@@ -561,7 +561,7 @@ public class AutoCode3 extends LinearOpMode {
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
                     chassis.SetPresetMovement(5.5, 0.64, 0, .4, chassis.zAngle);
-                    driveOpState = OperState.GetCloser;
+                    driveOpState = OperState.UnGetCloser;
                     break;
                 case UnGetCloser:
                     if (chassis.MoveToLocation()) {
