@@ -33,6 +33,11 @@ public class AutoCode3 extends LinearOpMode {
         FIRSTMOVE,
         PrepFMove,
         Rotate,
+        PrepGetCloser,
+        GetCloser,
+        PrepUnGetCloser,
+        UnGetCloser,
+        UnRotate,
         PREPMOVEANDLIFT,
         LIFTUP,
         DECIDE,
@@ -132,6 +137,7 @@ public class AutoCode3 extends LinearOpMode {
         //All Constants For All Moves
         double moverightstrafe = 0;
         double initrotation = 0;
+        double rotmove = 0;
         double adrive = 0;
         double astrafe = 0;
         double bdrive = 0;
@@ -459,13 +465,22 @@ public class AutoCode3 extends LinearOpMode {
                     else {
                         chassis.SetMotors(0,0,0);
                         chassis.Drive();
+                        driveOpState = OperState.PrepGetCloser;
                     }
                     break;
-                case RESETTIMER:
-                    MultipleUsesTimer.reset();
-                    driveOpState = AutoCode3.OperState.MEASURE;
+                case PrepGetCloser:
+                    chassis.SetAxisMovement();
+                    chassis.ZeroEncoders();
+                    chassis.SetAxisMovement();
+                    chassis.SetPresetMovement(-5.5, 0.64, 0, .4, chassis.zAngle);
+                    driveOpState = OperState.GetCloser;
                     break;
-
+                case GetCloser:
+                    if (chassis.MoveToLocation()) {
+                        driveOpState = OperState.MEASURE;
+                        MultipleUsesTimer.reset();
+                    }
+                    break;
                 case Delayer:
                     if (servoTimer.time() >= 13.5) {
                         driveOpState = AutoCode3.OperState.PrepMoveToShooting;
@@ -533,12 +548,43 @@ public class AutoCode3 extends LinearOpMode {
                         MultipleUsesTimer.reset();
                     }
                     break;
+                    */
                 case MEASURE:
                     if (MultipleUsesTimer.time(TimeUnit.SECONDS) >= 0.6) {
                         ringCount = ring.RingHeight();
-                        driveOpState = OperState.PREPMOVEBACK;
+                        driveOpState = OperState.PrepUnGetCloser;
                     }
                     break;
+                case PrepUnGetCloser:
+                    chassis.SetAxisMovement();
+                    chassis.ZeroEncoders();
+                    chassis.SetAxisMovement();
+                    chassis.SetPresetMovement(5.5, 0.64, 0, .4, chassis.zAngle);
+                    driveOpState = OperState.GetCloser;
+                    break;
+                case UnGetCloser:
+                    if (chassis.MoveToLocation()) {
+                        initrotation = -initrotation;
+                        driveOpState = OperState.UnRotate;
+                    }
+                    break;
+                case UnRotate:
+                    if ((Math.abs(chassis.zAngle - (originalRotation+initrotation)) >= 1.5)) {
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation),0.6));
+                        chassis.Drive();
+                        chassis.SetAxisMovement();
+                        chassis.ZeroEncoders();
+                        chassis.SetAxisMovement();
+                        rotationGoal = chassis.zAngle;
+                    }
+                    else {
+                        chassis.SetMotors(0,0,0);
+                        chassis.Drive();
+                        //driveOpState = OperState.DECIDE;
+                    }
+                    break;
+
+                    /*
                 case PREPMOVEBACK:
                     chassis.SetAxisMovement();
                     chassis.ZeroEncoders();

@@ -11,7 +11,7 @@ public class DistanceSensorClass {
         double AveragedArray;
         double total;
         int index = 0;
-        int ArraySize = 50; //Allows for easy way to change the size of the array that affects all of the code
+        int ArraySize = 41; //Allows for easy way to change the size of the array that affects all of the code
         double[] sensorArray = new double [ArraySize];
         int RingCount = 0;
 
