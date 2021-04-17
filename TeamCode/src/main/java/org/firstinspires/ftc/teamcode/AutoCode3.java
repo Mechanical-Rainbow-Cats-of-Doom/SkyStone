@@ -30,6 +30,8 @@ public class AutoCode3 extends LinearOpMode {
     enum OperState {
         PrepClose,
         TimeClose,
+        PrepLift,
+        TimeLift,
         FIRSTMOVE,
         PrepFMove,
         Rotate,
@@ -300,7 +302,7 @@ public class AutoCode3 extends LinearOpMode {
                     DelayAndGo = 0;
                     OnRed = true;
                     strafeslightleft = -4.75;
-                    driveOpState = AutoCode3.OperState.FIRSTMOVE;
+                    driveOpState = AutoCode3.OperState.PrepClose;
                     menu = AutoCode3.Menu.StartLocation;
                     DoneMeasuring = false;
                     break;
@@ -440,8 +442,18 @@ public class AutoCode3 extends LinearOpMode {
                     driveOpState = OperState.TimeClose;
                     break;
                 case TimeClose:
-                    if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.4) { driveOpState = OperState.PrepFMove; }
-                    else { lift.MoveLift(0.22); }
+                    if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.31) { driveOpState = OperState.PrepLift; }
+                    break;
+                case PrepLift:
+                    lift.MoveLift(0.5);
+                    GeneralTimer.reset();
+                    driveOpState = OperState.TimeLift;
+                    break;
+                case TimeLift:
+                    if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.2) {
+                        driveOpState = OperState.PrepFMove;
+                        lift.MoveLift(0);
+                    }
                     break;
                 case PrepFMove:
                     lift.MoveLift(0);
