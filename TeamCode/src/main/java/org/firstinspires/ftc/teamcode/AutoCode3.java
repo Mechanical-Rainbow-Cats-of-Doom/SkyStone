@@ -374,7 +374,7 @@ public class AutoCode3 extends LinearOpMode {
 
                         case 4:
                             moverightstrafe = 17;
-                            initrotation = -55;
+                            initrotation = -64.3;
                             adrive = -28;
                             astrafe = -7;
                             bdrive = -51;
@@ -434,8 +434,10 @@ public class AutoCode3 extends LinearOpMode {
                     break;
                 case TimeClose:
                     if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.4) { driveOpState = OperState.PrepFMove; }
+                    else { lift.MoveLift(0.27); }
                     break;
                 case PrepFMove:
+                    lift.MoveLift(0);
                     chassis.SetAxisMovement();
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
