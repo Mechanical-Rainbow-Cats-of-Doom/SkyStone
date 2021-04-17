@@ -426,6 +426,7 @@ public class AutoCode3 extends LinearOpMode {
             telemetry.addData("IMPORTANT, DRIVE PRESET", chassis.drivePreset);
             telemetry.addData("IMPORTANT, STRAFE PRESET", chassis.strafePreset);
             telemetry.addData("Launch Count", launchCount);
+            telemetry.addData("Ring Count", ringCount);
             switch (driveOpState) {
                /* case FIRSTMOVE:
                     telemetry.addLine("FIRSTMOVE");
