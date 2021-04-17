@@ -104,7 +104,7 @@ public class DistanceSensorfirstAutonomousMode extends LinearOpMode {
 
             chassis.SetRotation(chassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle);
             launcher.LauncherRun(1);
-            ring.MeasureDistance();
+            ring.MeasureDistance(true);
 
             switch(driveOpState) {
                 case FIRSTMOVE:
