@@ -580,7 +580,7 @@ public class AutoCode3 extends LinearOpMode {
                     chassis.SetAxisMovement();
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
-                    chassis.SetPresetMovement(-rotmove, 0.64, 0, .4, chassis.zAngle);
+                    chassis.SetPresetMovement(-closermove, 0.64, 0, .4, chassis.zAngle);
                     driveOpState = OperState.UnGetCloser;
                     break;
                 case UnGetCloser:
