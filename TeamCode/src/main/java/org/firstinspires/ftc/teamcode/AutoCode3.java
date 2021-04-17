@@ -454,7 +454,7 @@ public class AutoCode3 extends LinearOpMode {
                         chassis.SetAxisMovement();
                         rotationGoal = chassis.zAngle;
                     }
-                    else { }
+                    else { chassis.SetMotors(0,0,0); }
                     break;
                 case RESETTIMER:
                     MultipleUsesTimer.reset();
