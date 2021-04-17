@@ -82,8 +82,6 @@ public class TwentyTwentyOneOpModeCodeCopy extends LinearOpMode {
             this.LeftStickValue = -gamepad2.left_stick_y;
             this.RightStickValue = -gamepad2.right_stick_y;
             lift.MoveLift(this.LeftStickValue);
-            telemetry.addData("Lift Power", lift.LiftPower);
-            telemetry.addData("Fork Power", lift.ForkPower);
             telemetry.update();
             double zAngle = chassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).firstAngle;
             double yAngle = chassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.DEGREES).secondAngle;
