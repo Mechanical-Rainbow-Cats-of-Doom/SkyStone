@@ -140,6 +140,7 @@ public class AutoCode3 extends LinearOpMode {
         double moverightstrafe = 0;
         double initrotation = 0;
         double rotmove = 0;
+        double closermove = -5.5;
         double adrive = 0;
         double astrafe = 0;
         double bdrive = 0;
@@ -313,6 +314,7 @@ public class AutoCode3 extends LinearOpMode {
                     }
                     if (Powershots == 1 && !OnRed) { strafeslightleft = -strafeslightleft; }
                     if (Powershots == 1) { launchpower = 0.9422; }
+                    if (StartLocation == 3 || StartLocation == 1) { closermove = 0; }
                     switch (StartLocation) {
                         case 1:
                             moverightstrafe = -6.5;
@@ -360,7 +362,8 @@ public class AutoCode3 extends LinearOpMode {
 
                         case 3:
                             moverightstrafe = -6.5;
-                            initrotation = 0;
+                            rotmove = -25.5;
+                            initrotation = 45;
                             adrive = -28;
                             astrafe = -30.5;
                             bdrive = -51;
@@ -383,6 +386,7 @@ public class AutoCode3 extends LinearOpMode {
                         case 4:
                             moverightstrafe = 17;
                             initrotation = -64.3;
+                            rotmove = -22.5;
                             adrive = -28;
                             astrafe = -7;
                             bdrive = -51;
@@ -445,7 +449,7 @@ public class AutoCode3 extends LinearOpMode {
                     if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.31) { driveOpState = OperState.PrepLift; }
                     break;
                 case PrepLift:
-                    lift.MoveLift(0.5);
+                    lift.MoveLift(0.31);
                     GeneralTimer.reset();
                     driveOpState = OperState.TimeLift;
                     break;
@@ -460,7 +464,7 @@ public class AutoCode3 extends LinearOpMode {
                     chassis.SetAxisMovement();
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
-                    chassis.SetPresetMovement(-22.5, 1, 0, .4, chassis.zAngle);
+                    chassis.SetPresetMovement(rotmove, 1, 0, .4, chassis.zAngle);
                     driveOpState = OperState.FIRSTMOVE;
                     break;
                 case FIRSTMOVE:
@@ -485,7 +489,7 @@ public class AutoCode3 extends LinearOpMode {
                     chassis.SetAxisMovement();
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
-                    chassis.SetPresetMovement(-5.5, 0.64, 0, .4, chassis.zAngle);
+                    chassis.SetPresetMovement(closermove, 0.64, 0, .4, chassis.zAngle);
                     driveOpState = OperState.GetCloser;
                     break;
                 case GetCloser:
@@ -565,8 +569,9 @@ public class AutoCode3 extends LinearOpMode {
                 case MEASURE:
                     if (MultipleUsesTimer.time(TimeUnit.SECONDS) >= 0.57) {
                         ringCount = ring.RingHeight();
-                        driveOpState = OperState.PrepUnGetCloser;
+                        //driveOpState = OperState.PrepUnGetCloser;
                     }
+                    // =25.5 -45
                     break;
                 case PrepUnGetCloser:
                     chassis.SetAxisMovement();
