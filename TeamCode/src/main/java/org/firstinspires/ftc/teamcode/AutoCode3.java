@@ -567,6 +567,7 @@ public class AutoCode3 extends LinearOpMode {
                 case MEASURE:
                     if (MultipleUsesTimer.time(TimeUnit.SECONDS) >= 0.57) {
                         ringCount = ring.RingHeight();
+                        DoneMeasuring = true;
                         driveOpState = OperState.PrepUnGetCloser;
                     }
                     break;
@@ -683,7 +684,6 @@ public class AutoCode3 extends LinearOpMode {
                         }
                         driveOpState = AutoCode3.OperState.PREPC;
                     }
-                    DoneMeasuring = true;
                     break;
                 case PREPA:
                     chassis.SetAxisMovement();
