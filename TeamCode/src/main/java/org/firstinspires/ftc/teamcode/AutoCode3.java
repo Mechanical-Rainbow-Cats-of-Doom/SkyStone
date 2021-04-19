@@ -145,6 +145,7 @@ public class AutoCode3 extends LinearOpMode {
         double shootdrive = 0;
         double shootstrafe = 0;
         double strafeslightleft = -4.75;
+        double targetdrivespeed = 1;
         int launchCount = 0;
         int ringCount = 0;
         double launchpower = 1;
@@ -618,8 +619,8 @@ public class AutoCode3 extends LinearOpMode {
                     }
                     else if (ringCount == 4) {
                         targetdrive = -46;
-                        targetstrafe = 0;
                     }
+                    else { targetdrivespeed = 0.2; }
                     if (StartLocation == 2 || StartLocation == 3) { targetstrafe += 38; }
                     if (OnRed) { targetstrafe = - targetstrafe; }
                     driveOpState = OperState.PrepGoToTargetZone;
@@ -628,7 +629,7 @@ public class AutoCode3 extends LinearOpMode {
                     chassis.SetAxisMovement();
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
-                    chassis.SetPresetMovement(targetdrive, 1, targetstrafe, .56, chassis.zAngle);
+                    chassis.SetPresetMovement(targetdrive, targetdrivespeed, targetstrafe, .61, chassis.zAngle);
                     driveOpState = OperState.GoToTargetZone;
                     break;
                 case GoToTargetZone:
