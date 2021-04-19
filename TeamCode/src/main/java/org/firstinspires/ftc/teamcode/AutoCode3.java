@@ -310,8 +310,8 @@ public class AutoCode3 extends LinearOpMode {
                     }
                     if (Powershots == 1 && !OnRed) { strafeslightleft = -strafeslightleft; }
                     if (Powershots == 1) { launchpower = 0.9422; }
+                    if (!OnRed) { closermove = 0; }
                     if (StartLocation == 3 || StartLocation == 1) {
-                        closermove = 0;
                         onodd = true;
                         rotmove = -25.5;
                         initrotation = 45;
@@ -611,11 +611,11 @@ public class AutoCode3 extends LinearOpMode {
                 case DECIDE:
                     //if ring count is 0, the values are already set to 0
                     if (ringCount == 1) {
-                        targetdrive = -19;
+                        targetdrive = -25;
                         targetstrafe = -22;
                     }
                     else if (ringCount == 4) {
-                        targetdrive = -42;
+                        targetdrive = -46;
                         targetstrafe = 0;
                     }
                     if (StartLocation == 2 || StartLocation == 3) { targetstrafe += 38; }
