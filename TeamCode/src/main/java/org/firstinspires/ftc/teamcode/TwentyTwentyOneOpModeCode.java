@@ -60,7 +60,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         LauncherCode.LauncherStates launchStates = LauncherCode.LauncherStates.Start;
         LifterCode.Lifter lift = new LifterCode.Lifter();
         GrabberCode.Grabber grabber = new GrabberCode.Grabber();
-        NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
+
         ChassisMovementCode.Chassis chassis = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
         TwentyTwentyOneOpModeCode.OperState debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGSELECT;

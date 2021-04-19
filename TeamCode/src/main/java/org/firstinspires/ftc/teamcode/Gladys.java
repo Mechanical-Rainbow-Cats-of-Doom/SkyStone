@@ -37,7 +37,7 @@ public class Gladys extends LinearOpMode {
         LauncherCode.Launcher launcher = new LauncherCode.Launcher();
         LauncherCode.LauncherStates launchStates = LauncherCode.LauncherStates.Start;
         LifterCode.Lifter lift = new LifterCode.Lifter();
-        NihalEthanTest.Launcher Launcher = new NihalEthanTest.Launcher();
+
         ChassisMovementCode.Chassis chassis = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
         Gladys.OperState debugOpState = Gladys.OperState.DEBUGSELECT;
