@@ -310,7 +310,7 @@ public class AutoCode3 extends LinearOpMode {
                     }
                     if (Powershots == 1 && !OnRed) { strafeslightleft = -strafeslightleft; }
                     if (Powershots == 1) { launchpower = 0.9422; }
-                    if (StartLocation == 3 || StartLocation == 1) {
+                    if (!OnRed) {
                         closermove = 0;
                         onodd = true;
                         rotmove = -25.5;
@@ -618,7 +618,7 @@ public class AutoCode3 extends LinearOpMode {
                         targetdrive = 42;
                         targetstrafe = 0;
                     }
-                    if (onodd) { targetstrafe += 38; }
+                    if (!onodd) { targetstrafe += 38; }
                     if (OnRed) { targetstrafe = - targetstrafe; }
                     driveOpState = OperState.PrepGoToTargetZone;
                     break;
