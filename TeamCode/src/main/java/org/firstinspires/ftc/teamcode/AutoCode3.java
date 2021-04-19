@@ -605,7 +605,7 @@ public class AutoCode3 extends LinearOpMode {
                     driveOpState = OperState.MoveToLine;
                     break;
                 case MoveToLine:
-                    if (chassis.MoveToLocation()) { driveOpState = OperState.DECIDE; }
+                    //if (chassis.MoveToLocation()) { driveOpState = OperState.DECIDE; }
                     break;
                     /*
                 case PREPMOVEBACK:
@@ -708,13 +708,13 @@ public class AutoCode3 extends LinearOpMode {
                     break;
                 case GoToTargetZone:
                     chassis.rotationPreset -= 0.105;
-                    if (chassis.MoveToLocation() == true) {
+                    if (chassis.MoveToLocation()) {
                         driveOpState = AutoCode3.OperState.PrepMoveToShooting;
                     }
                     break;
 
                 case MoveToPowerShots:
-                    if (chassis.MoveToLocation() == true) {
+                    if (chassis.MoveToLocation()) {
                         driveOpState = AutoCode3.OperState.PrepSpinAround;
                     }
                     break;
@@ -731,7 +731,7 @@ public class AutoCode3 extends LinearOpMode {
                     telemetry.addData("strafevalue", chassis.trueStrafe);
                     telemetry.addData("drive", chassis.drive);
                     telemetry.addData("strafe", chassis.strafe);
-                    if (chassis.MoveToLocation() == true) {
+                    if (chassis.MoveToLocation()) {
                         driveOpState = AutoCode3.OperState.Launch;
                         servoTimer.reset();
                     }
