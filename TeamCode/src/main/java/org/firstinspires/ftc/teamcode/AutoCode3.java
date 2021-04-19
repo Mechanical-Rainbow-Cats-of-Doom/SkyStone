@@ -605,7 +605,9 @@ public class AutoCode3 extends LinearOpMode {
                     driveOpState = OperState.MoveToLine;
                     break;
                 case MoveToLine:
-                    //if (chassis.MoveToLocation()) { driveOpState = OperState.DECIDE; }
+                    if (chassis.MoveToLocation()) {
+                        //driveOpState = OperState.DECIDE;
+                         }
                     break;
                     /*
                 case PREPMOVEBACK:
