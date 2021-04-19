@@ -310,7 +310,7 @@ public class AutoCode3 extends LinearOpMode {
                     }
                     if (Powershots == 1 && !OnRed) { strafeslightleft = -strafeslightleft; }
                     if (Powershots == 1) { launchpower = 0.9422; }
-                    if (!OnRed) {
+                    if (StartLocation == 3 || StartLocation == 1) {
                         closermove = 0;
                         onodd = true;
                         rotmove = -25.5;
@@ -641,7 +641,7 @@ public class AutoCode3 extends LinearOpMode {
                     break;
                 case Drop:
                     if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.31) {
-                        driveOpState = OperState.PrepMoveToShooting;
+                        //driveOpState = OperState.PrepMoveToShooting;
                     }
                 case MoveToPowerShots:
                     if (chassis.MoveToLocation()) {
@@ -675,7 +675,7 @@ public class AutoCode3 extends LinearOpMode {
                         chassis.SetAxisMovement();
                         rotationGoal = chassis.zAngle;
                     }
-                    else { //driveOpState = AutoCode3.OperState.Launch;
+                    else { driveOpState = AutoCode3.OperState.Launch;
                          }
                     break;
                 case Launch:
