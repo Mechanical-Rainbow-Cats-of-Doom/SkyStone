@@ -636,6 +636,7 @@ public class AutoCode3 extends LinearOpMode {
                     break;
                 case PrepDrop:
                     grabber.Open();
+                    launcher.Reload(); //this is because the launcher isn't always ready by the time it gets to that point
                     GeneralTimer.reset();
                     driveOpState = OperState.Drop;
                     break;
@@ -643,6 +644,7 @@ public class AutoCode3 extends LinearOpMode {
                     if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.31) {
                         //driveOpState = OperState.PrepMoveToShooting;
                     }
+                    break;
                 case MoveToPowerShots:
                     if (chassis.MoveToLocation()) {
                         driveOpState = AutoCode3.OperState.PrepSpinAround;
