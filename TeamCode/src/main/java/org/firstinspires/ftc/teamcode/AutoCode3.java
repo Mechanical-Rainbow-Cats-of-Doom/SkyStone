@@ -4,7 +4,6 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Blinker;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -45,17 +44,19 @@ public class AutoCode3 extends LinearOpMode {
         MoveToLine,
         DECIDE,
         MEASURE,
-        PREPA,
+        PrepGoToTargetZone,
         PREPB,
         PREPC,
         GoToTargetZone,
+        PrepDrop,
+        Drop,
         PrepStrafeLeft,
         PrepLaunchPark,
         PrepMoveToShooting,
         MoveToPowerShots,
         StrafeLeft,
         LaunchPark,
-        MoveToGoals,
+        MoveToShooting,
         NextLocation,
         PrepSpinAround,
         Launch,
@@ -135,8 +136,8 @@ public class AutoCode3 extends LinearOpMode {
         double initrotation = 0;
         double rotmove = 0;
         double closermove = -5.5;
-        double adrive = 0;
-        double astrafe = 0;
+        double targetdrive = 0;
+        double targetstrafe = 0;
         double bdrive = 0;
         double bstrafe = 0;
         double cdrive = 0;
@@ -321,13 +322,6 @@ public class AutoCode3 extends LinearOpMode {
 
                     switch (StartLocation) {
                         case 1:
-                            moverightstrafe = -6.5;
-                            adrive = -28;
-                            astrafe = 7;
-                            bdrive = -51;
-                            bstrafe = -9.5;
-                            cdrive = -72;
-                            cstrafe = 7;
                             if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
                                     shootdrive = 61.87;
@@ -342,13 +336,6 @@ public class AutoCode3 extends LinearOpMode {
                             break;
 
                         case 2:
-                            moverightstrafe = 17;
-                            adrive = -28;
-                            astrafe = 30.5;
-                            bdrive = -51;
-                            bstrafe = 14;
-                            cdrive = -72;
-                            cstrafe = 30.5;
                             if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
                                     shootdrive = 61.87;
@@ -363,13 +350,6 @@ public class AutoCode3 extends LinearOpMode {
                             break;
 
                         case 3:
-                            moverightstrafe = -6.5;
-                            adrive = -28;
-                            astrafe = -30.5;
-                            bdrive = -51;
-                            bstrafe = -14;
-                            cdrive = -72;
-                            cstrafe = -30.5;
                             if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
                                     shootdrive = 61.87;
@@ -384,13 +364,6 @@ public class AutoCode3 extends LinearOpMode {
                             break;
 
                         case 4:
-                            moverightstrafe = 17;
-                            adrive = -28;
-                            astrafe = -7;
-                            bdrive = -51;
-                            bstrafe = 9.5;
-                            cdrive = -72;
-                            cstrafe = -7;
                             if (DelayAndGo == 2) {
                                 if (Powershots == 1) {
                                     shootdrive = 61.87;
@@ -596,6 +569,7 @@ public class AutoCode3 extends LinearOpMode {
                         chassis.Drive();
                         driveOpState = OperState.PrepMoveToLine;
                     }
+                    //42 19 22
                     break;
                 case PrepMoveToLine:
                     chassis.SetAxisMovement();
@@ -605,9 +579,7 @@ public class AutoCode3 extends LinearOpMode {
                     driveOpState = OperState.MoveToLine;
                     break;
                 case MoveToLine:
-                    if (chassis.MoveToLocation()) {
-                        //driveOpState = OperState.DECIDE;
-                         }
+                    if (chassis.MoveToLocation()) { driveOpState = OperState.DECIDE; }
                     break;
                     /*
                 case PREPMOVEBACK:
@@ -637,84 +609,40 @@ public class AutoCode3 extends LinearOpMode {
                     break;
                     */
                 case DECIDE:
-                    if (ringCount == 0) {
-                        if (Powershots == 1) {
-                            adrive = 1;
-                            astrafe = 1;
-                            if (!OnRed) {
-                                astrafe = -astrafe;
-                            }
-                        }
-                        if (ShootGoals == 1) {
-                            adrive = 1;
-                            astrafe = 1;
-                            if (!OnRed) {
-                                astrafe = -astrafe;
-                            }
-                        }
-                        driveOpState = AutoCode3.OperState.PREPA;
-                    } else if (ringCount == 1) {
-                        if (Powershots == 1) {
-                            bdrive = 1;
-                            bstrafe = 1;
-                            if (!OnRed) {
-                                bstrafe = -bstrafe;
-                            }
-                        }
-                        if (ShootGoals == 1) {
-                            bdrive = 1;
-                            bstrafe = 1;
-                            if (!OnRed) {
-                                bstrafe = -bstrafe;
-                            }
-                        }
-                        driveOpState = AutoCode3.OperState.PREPB;
-                    } else if (ringCount == 4) {
-                        if (Powershots == 1) {
-                            cdrive = 1;
-                            cstrafe = 1;
-                            if (!OnRed) {
-                                cstrafe = -cstrafe;
-                            }
-                        }
-                        if (ShootGoals == 1) {
-                            cdrive = 1;
-                            cstrafe = 1;
-                            if (!OnRed) {
-                                cstrafe = -cstrafe;
-                            }
-                        }
-                        driveOpState = AutoCode3.OperState.PREPC;
+                    //if ring count is 0, the values are already set to 0
+                    if (ringCount == 1) {
+                        targetdrive = 19;
+                        targetstrafe = -22;
                     }
+                    else if (ringCount == 4) {
+                        targetdrive = 42;
+                        targetstrafe = 0;
+                    }
+                    if (onodd) { targetstrafe += 38; }
+                    if (OnRed) { targetstrafe = - targetstrafe; }
+                    driveOpState = OperState.PrepGoToTargetZone;
                     break;
-                case PREPA:
+                case PrepGoToTargetZone:
                     chassis.SetAxisMovement();
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
-                    chassis.SetPresetMovement(adrive, 1, astrafe, .4, chassis.zAngle);
-                    driveOpState = OperState.GoToTargetZone;
-                    break;
-                case PREPB:
-                    chassis.SetAxisMovement();
-                    chassis.ZeroEncoders();
-                    chassis.SetAxisMovement();
-                    chassis.SetPresetMovement(bdrive, 1, bstrafe, .4, chassis.zAngle);
-                    driveOpState = OperState.GoToTargetZone;
-                    break;
-                case PREPC:
-                    chassis.SetAxisMovement();
-                    chassis.ZeroEncoders();
-                    chassis.SetAxisMovement();
-                    chassis.SetPresetMovement(cdrive, 1, cstrafe, .4, chassis.zAngle);
+                    chassis.SetPresetMovement(targetdrive, 1, targetstrafe, .7, chassis.zAngle);
                     driveOpState = OperState.GoToTargetZone;
                     break;
                 case GoToTargetZone:
-                    chassis.rotationPreset -= 0.105;
                     if (chassis.MoveToLocation()) {
-                        driveOpState = AutoCode3.OperState.PrepMoveToShooting;
+                        driveOpState = AutoCode3.OperState.PrepDrop;
                     }
                     break;
-
+                case PrepDrop:
+                    grabber.Open();
+                    GeneralTimer.reset();
+                    driveOpState = OperState.Drop;
+                    break;
+                case Drop:
+                    if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.31) {
+                        driveOpState = OperState.PrepMoveToShooting;
+                    }
                 case MoveToPowerShots:
                     if (chassis.MoveToLocation()) {
                         driveOpState = AutoCode3.OperState.PrepSpinAround;
@@ -726,9 +654,9 @@ public class AutoCode3 extends LinearOpMode {
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
                     chassis.SetPresetMovement(shootdrive, 1.2, shootstrafe, .4, chassis.zAngle);
-                    driveOpState = AutoCode3.OperState.MoveToGoals;
+                    driveOpState = AutoCode3.OperState.MoveToShooting;
                     break;
-                case MoveToGoals:
+                case MoveToShooting:
                     telemetry.addData("drivevalue", chassis.trueDrive);
                     telemetry.addData("strafevalue", chassis.trueStrafe);
                     telemetry.addData("drive", chassis.drive);
@@ -772,7 +700,7 @@ public class AutoCode3 extends LinearOpMode {
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
                     chassis.SetPresetMovement(0, 0, strafeslightleft, .35, chassis.zAngle);
-                    driveOpState = AutoCode3.OperState.MoveToGoals; //we aren't actually moving to the goals, it's just that i don't want to have the same case being used twice. the case should really be renamed to MovingBeforeLaunch or something similar, but I really don't want to spend the time doing that right now. I probably should have really done that instead of writing this long-ass comment, but whatever. Also lmao we should probably removing the me swearing if we end up sending code to the judges for the state tournament.
+                    driveOpState = AutoCode3.OperState.MoveToShooting; //we aren't actually moving to the goals, it's just that i don't want to have the same case being used twice. the case should really be renamed to MovingBeforeLaunch or something similar, but I really don't want to spend the time doing that right now. I probably should have really done that instead of writing this long-ass comment, but whatever. Also lmao we should probably removing the me swearing if we end up sending code to the judges for the state tournament.
                     break;
                 case PrepLaunchPark:
                     chassis.SetAxisMovement();
