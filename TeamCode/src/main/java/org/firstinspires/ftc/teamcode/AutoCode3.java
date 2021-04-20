@@ -420,7 +420,7 @@ public class AutoCode3 extends LinearOpMode {
                     driveOpState = OperState.TimeClose;
                     break;
                 case TimeClose:
-                    if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.31) { driveOpState = OperState.PrepLift; }
+                    if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.31) { driveOpState = OperState.PrepFMove; }
                     break;
                 case PrepLift:
                     lift.MoveLift(0.31);
@@ -428,7 +428,7 @@ public class AutoCode3 extends LinearOpMode {
                     driveOpState = OperState.TimeLift;
                     break;
                 case TimeLift:
-                    driveOpState = OperState.PrepFMove;
+                    if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.16) { driveOpState = OperState.PrepMoveToLine; }
                     lift.Stop();
                     break;
                 case PrepFMove:
@@ -539,7 +539,7 @@ public class AutoCode3 extends LinearOpMode {
                     break;
                     */
                 case MEASURE:
-                    if (MultipleUsesTimer.time(TimeUnit.SECONDS) >= 1.5) {
+                    if (MultipleUsesTimer.time(TimeUnit.SECONDS) >= 1.25) {
                         ringCount = ring.RingHeight();
                         DoneMeasuring = true;
                         //driveOpState = OperState.PrepUnGetCloser;
@@ -568,7 +568,7 @@ public class AutoCode3 extends LinearOpMode {
                     else {
                         chassis.SetMotors(0,0,0);
                         chassis.Drive();
-                        driveOpState = OperState.PrepMoveToLine;
+                        driveOpState = OperState.PrepLift;
                     }
                     //42 19 22
                     break;
@@ -620,7 +620,7 @@ public class AutoCode3 extends LinearOpMode {
                     }
                     else { targetdrivespeed = 0; }
                     if (StartLocation == 2 || StartLocation == 3) { targetstrafe += 38; }
-                    if (OnRed) { targetstrafe = - targetstrafe; }
+                    if (OnRed) { targetstrafe = -targetstrafe; }
                     driveOpState = OperState.PrepGoToTargetZone;
                     break;
                 case PrepGoToTargetZone:
@@ -642,7 +642,7 @@ public class AutoCode3 extends LinearOpMode {
                     driveOpState = OperState.Drop;
                     break;
                 case Drop:
-                    if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.31) {
+                    if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.5) {
                         //driveOpState = OperState.PrepMoveToShooting;
                     }
                     break;
@@ -670,7 +670,7 @@ public class AutoCode3 extends LinearOpMode {
                     }
                     break;
                 case PrepSpinAround:
-                    if ((Math.abs(chassis.zAngle - (originalRotation+90)) >= 3)) {
+                    /*if ((Math.abs(chassis.zAngle - (originalRotation+90)) >= 3)) {
                         chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+90),1));
                         chassis.Drive();
                         chassis.SetAxisMovement();
@@ -680,6 +680,7 @@ public class AutoCode3 extends LinearOpMode {
                     }
                     else { driveOpState = AutoCode3.OperState.Launch;
                          }
+                    */
                     break;
                 case Launch:
                     if (launchCount <= 2 && (((Powershots == 1 && launchCount >= 1) && servoTimer.time() >= 0.185) || servoTimer.time() >= 1)) {
