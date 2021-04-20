@@ -428,7 +428,7 @@ public class AutoCode3 extends LinearOpMode {
                     driveOpState = OperState.TimeLift;
                     break;
                 case TimeLift:
-                    if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.125) {
+                    if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.08) {
                         driveOpState = OperState.PrepFMove;
                         lift.Stop();
                     }
