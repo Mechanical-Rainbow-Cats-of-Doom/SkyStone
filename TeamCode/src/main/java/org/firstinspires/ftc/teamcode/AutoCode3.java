@@ -428,7 +428,7 @@ public class AutoCode3 extends LinearOpMode {
                     driveOpState = OperState.TimeLift;
                     break;
                 case TimeLift:
-                    if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.2) {
+                    if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.125) {
                         driveOpState = OperState.PrepFMove;
                         lift.Stop();
                     }
@@ -620,7 +620,7 @@ public class AutoCode3 extends LinearOpMode {
                     else if (ringCount == 4) {
                         targetdrive = -46;
                     }
-                    else { targetdrivespeed = 0.2; }
+                    else { targetdrivespeed = 0; }
                     if (StartLocation == 2 || StartLocation == 3) { targetstrafe += 38; }
                     if (OnRed) { targetstrafe = - targetstrafe; }
                     driveOpState = OperState.PrepGoToTargetZone;
