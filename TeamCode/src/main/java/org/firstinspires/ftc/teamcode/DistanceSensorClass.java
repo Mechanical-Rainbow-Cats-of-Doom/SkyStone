@@ -36,10 +36,10 @@ public class DistanceSensorClass {
             if ((oneorthree && AveragedArray <= 18.9) || (!oneorthree && AveragedArray <= 18)) {
                 RingCount = 4;
             }
-            else if ((oneorthree && AveragedArray < 19.89) || (!oneorthree && AveragedArray < 19.8)) {
+            else if ((oneorthree && AveragedArray < 19.77) || (!oneorthree && AveragedArray < 19.6)) {
                 RingCount = 1;
             }
-            else if ((oneorthree && AveragedArray >= 19.89) || (!oneorthree && AveragedArray >= 19.8)) {
+            else if ((oneorthree && AveragedArray >= 19.77) || (!oneorthree && AveragedArray >= 19.6)) {
                 RingCount = 0;
             }
         }
