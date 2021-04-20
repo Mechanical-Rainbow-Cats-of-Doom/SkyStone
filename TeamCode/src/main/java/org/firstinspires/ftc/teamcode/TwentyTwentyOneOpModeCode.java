@@ -60,7 +60,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         LauncherCode.LauncherStates launchStates = LauncherCode.LauncherStates.Start;
         LifterCode.Lifter lift = new LifterCode.Lifter();
         GrabberCode.Grabber grabber = new GrabberCode.Grabber();
-
+        DistanceSensorClass.RingClass ring = new DistanceSensorClass.RingClass();
         ChassisMovementCode.Chassis chassis = new ChassisMovementCode.Chassis();
         ChassisMovementCode.OperState driveOpState = ChassisMovementCode.OperState.NORMALDRIVE;
         TwentyTwentyOneOpModeCode.OperState debugOpState = TwentyTwentyOneOpModeCode.OperState.DEBUGSELECT;
@@ -71,6 +71,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         lift.LiftMotor = hardwareMap.get(DcMotor.class, "LiftMotor");
         launcher.LaunchMotor = hardwareMap.get(DcMotor.class, "LaunchMotor");
         launcher.LaunchServo = hardwareMap.get(Servo.class, "LaunchServo");
+        ring.DistanceSensor = hardwareMap.get(DistanceSensor.class, "Distance Sensor");
         WiperServo = hardwareMap.get(Servo.class, "WiperServo");
         IntakeMotor = hardwareMap.get(DcMotor.class, "IntakeMotor");
         IntakeMotor2 = hardwareMap.get(DcMotor.class, "IntakeMotor2");
@@ -115,6 +116,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             lift.MoveLift(this.LeftStickValue);
             grabber.Toggle(gamepad2.right_bumper);
             telemetry.addData("zAngle", chassis.zAngle);
+            telemetry.addData("distance sensor", ring.AveragedArray);
             //telemetry.addData("testing LauncherOn:", launcher.launcherOn);
             //telemetry.addData("Lift Power", lift.LiftPower);
             //telemetry.addData("Fork Power", lift.ForkPower);
