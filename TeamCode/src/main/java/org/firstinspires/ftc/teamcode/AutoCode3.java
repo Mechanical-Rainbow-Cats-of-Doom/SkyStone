@@ -311,16 +311,14 @@ public class AutoCode3 extends LinearOpMode {
                     }
                     if (Powershots == 1 && !OnRed) { strafeslightleft = -strafeslightleft; }
                     if (Powershots == 1) { launchpower = 0.9422; }
-                    if (!OnRed) {
-                        closermove = -4.78;
-                    }
-                    if (StartLocation == 3 || StartLocation == 1) {
-                        onodd = true;
+                    if (StartLocation == 1 || StartLocation == 3) { onodd = true; }
+                    if (onodd) {
                         rotmove = -25.5;
                         initrotation = 45;
                     } else {
-                        initrotation = -64.3;
+                        initrotation = -67.3;
                         rotmove = -22.5;
+                        closermove = -4.78;
                     }
 
                     switch (StartLocation) {

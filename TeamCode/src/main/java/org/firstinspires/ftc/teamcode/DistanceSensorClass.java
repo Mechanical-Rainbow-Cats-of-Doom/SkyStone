@@ -33,13 +33,13 @@ public class DistanceSensorClass {
             AveragedArray = total / sensorArray.length; //Averages the value spit out of the loop
 
             //This loop uses measured values from the field to determine the amount of rings based off of the averaed valu.
-            if ((oneorthree && AveragedArray <= 18.9) || (!oneorthree && AveragedArray <= 18)) {
+            if ((oneorthree && AveragedArray <= 17.5) || (!oneorthree && AveragedArray <= 18)) {
                 RingCount = 4;
             }
-            else if ((oneorthree && AveragedArray < 19.77) || (!oneorthree && AveragedArray < 19.6)) {
+            else if ((oneorthree && AveragedArray < 19.2) || (!oneorthree && AveragedArray < 19.6)) {
                 RingCount = 1;
             }
-            else if ((oneorthree && AveragedArray >= 19.77) || (!oneorthree && AveragedArray >= 19.6)) {
+            else if ((oneorthree && AveragedArray >= 19.2) || (!oneorthree && AveragedArray >= 19.6)) {
                 RingCount = 0;
             }
         }
