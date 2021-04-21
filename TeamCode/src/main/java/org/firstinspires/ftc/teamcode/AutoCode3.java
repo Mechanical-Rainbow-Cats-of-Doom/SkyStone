@@ -310,7 +310,7 @@ public class AutoCode3 extends LinearOpMode {
                         driveOpState = AutoCode3.OperState.Delayer;
                         DoneMeasuring = true;
                     }
-                    else { shootspeed = 1.23; }
+                    else { shootspeed = 1.33; }
                     if (Powershots == 1 && !OnRed) { strafeslightleft = -strafeslightleft; }
                     if (Powershots == 1) { launchpower = 0.9422; }
                     if (StartLocation == 1 || StartLocation == 3) { onodd = true; }
@@ -329,6 +329,7 @@ public class AutoCode3 extends LinearOpMode {
                                 if (Powershots == 1) {
                                     shootdrive = 61.87;
                                     shootstrafe = 40;
+                                    shootdrive -= 1.32;
                                 }
                                 
                                 if (ShootGoals == 1) {
@@ -344,13 +345,13 @@ public class AutoCode3 extends LinearOpMode {
                                 if (Powershots == 1) {
                                     shootdrive = 61.87;
                                     shootstrafe = 14.5;
+                                    shootdrive -= 1.32;
                                 }
                                 
                                 if (ShootGoals == 1) {
                                     shootdrive = 56.5;
                                     shootstrafe = -4;
                                 }
-                                shootdrive -= 1.32;
                             }
                             break;
 
@@ -359,13 +360,13 @@ public class AutoCode3 extends LinearOpMode {
                                 if (Powershots == 1) {
                                     shootdrive = 61.87;
                                     shootstrafe = -.5;
+                                    shootdrive -= 1.32;
                                 }
                                 
                                 if (ShootGoals == 1) {
                                     shootdrive = 56.5;
                                     shootstrafe = 22.5;
                                 }
-                                shootdrive -= 1.32;
                             }
                             break;
 
@@ -374,13 +375,13 @@ public class AutoCode3 extends LinearOpMode {
                                 if (Powershots == 1) {
                                     shootdrive = 61.87;
                                     shootstrafe = -24;
+                                    shootdrive -= 1.32;
                                 }
                                 
                                 if (ShootGoals == 1) {
                                     shootdrive = 56.5;
                                     shootstrafe = -4;
                                 }
-                                shootdrive -= 1.32;
                             }
                             break;
                     }
@@ -636,12 +637,12 @@ public class AutoCode3 extends LinearOpMode {
                     else if (ringCount == 4) {
                         targetdrive = -46;
                         if (Powershots == 1) {
-                            shootdrive = 0;
-                            shootstrafe = 0;
+                            shootdrive = 48.5;
+                            shootstrafe = -21.5;
                         }
                         else if (ShootGoals == 1) {
-                            shootdrive = 0;
-                            shootstrafe = 0;
+                            shootdrive = 52.5;
+                            shootstrafe = -21.5;
                         }
                     }
                     else {
@@ -651,8 +652,8 @@ public class AutoCode3 extends LinearOpMode {
                             shootstrafe = -43.5;
                         }
                         else if (ShootGoals == 1) {
-                            shootdrive = 0;
-                            shootstrafe = 0;
+                            shootdrive = 6.5;
+                            shootstrafe = -21.25;
                         }
                     }
                     if (StartLocation == 2 || StartLocation == 3) { targetstrafe += 38; }
