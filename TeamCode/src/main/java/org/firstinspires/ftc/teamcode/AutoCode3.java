@@ -310,7 +310,7 @@ public class AutoCode3 extends LinearOpMode {
                         driveOpState = AutoCode3.OperState.Delayer;
                         DoneMeasuring = true;
                     }
-                    else { shootspeed = 1; }
+                    else { shootspeed = 1.23; }
                     if (Powershots == 1 && !OnRed) { strafeslightleft = -strafeslightleft; }
                     if (Powershots == 1) { launchpower = 0.9422; }
                     if (StartLocation == 1 || StartLocation == 3) { onodd = true; }
@@ -661,7 +661,7 @@ public class AutoCode3 extends LinearOpMode {
                     chassis.SetAxisMovement();
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
-                    chassis.SetPresetMovement(targetdrive, targetdrivespeed, targetstrafe, 1, chassis.zAngle);
+                    chassis.SetPresetMovement(targetdrive, targetdrivespeed, targetstrafe, shootspeed, chassis.zAngle);
                     driveOpState = OperState.GoToTargetZone;
                     break;
                 case GoToTargetZone:
@@ -695,13 +695,16 @@ public class AutoCode3 extends LinearOpMode {
                     telemetry.addData("strafe", chassis.strafe);
                     if (chassis.MoveToLocation()) {
                         if (DelayAndGo == 2) { driveOpState = AutoCode3.OperState.Launch; }
-                        else { driveOpState = OperState.SpinAround; }
+                        else {
+                            driveOpState = OperState.SpinAround;
+                            originalRotation = chassis.zAngle;
+                        }
                         servoTimer.reset();
                     }
                     break;
                 case SpinAround:
-                    if ((Math.abs(chassis.zAngle - (originalRotation+180)) >= 1.5)) {
-                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation),0.66));
+                    if ((Math.abs(chassis.zAngle - (originalRotation+180)) >= 3)) {
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation),1));
                         chassis.Drive();
                         chassis.SetAxisMovement();
                         chassis.ZeroEncoders();
