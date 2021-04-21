@@ -452,7 +452,7 @@ public class AutoCode3 extends LinearOpMode {
                     break;
                 case Rotate:
                     if ((Math.abs(chassis.zAngle - (originalRotation+initrotation)) >= 1.5)) {
-                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation),1));
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation),2));
                         chassis.Drive();
                         chassis.SetAxisMovement();
                         chassis.ZeroEncoders();
@@ -568,7 +568,7 @@ public class AutoCode3 extends LinearOpMode {
                     break;
                 case UnRotate:
                     if ((Math.abs(chassis.zAngle - (originalRotation)) >= 1.5)) {
-                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation),0.6));
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation),2));
                         chassis.Drive();
                         chassis.SetAxisMovement();
                         chassis.ZeroEncoders();
@@ -647,7 +647,7 @@ public class AutoCode3 extends LinearOpMode {
                     else {
                         targetdrivespeed = 0;
                         if (Powershots == 1) {
-                            shootdrive = 3.5;
+                            shootdrive = 2.5;
                             shootstrafe = -43.5;
                         }
                         else if (ShootGoals == 1) {
@@ -704,9 +704,14 @@ public class AutoCode3 extends LinearOpMode {
                         servoTimer.reset();
                     }
                     break;
+                case StrafeLeft:
+                    if (chassis.MoveToLocation()) {
+                        driveOpState = AutoCode3.OperState.Launch;
+                    }
+                    break;
                 case SpinAround:
                     if ((Math.abs(chassis.zAngle - (originalRotation+180)) >= 3)) {
-                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation),1));
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+180),2));
                         chassis.Drive();
                         chassis.SetAxisMovement();
                         chassis.ZeroEncoders();
@@ -741,7 +746,7 @@ public class AutoCode3 extends LinearOpMode {
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
                     chassis.SetPresetMovement(0, 0, strafeslightleft, .35, chassis.zAngle);
-                    driveOpState = AutoCode3.OperState.MoveToShooting; //we aren't actually moving to the goals, it's just that i don't want to have the same case being used twice. the case should really be renamed to MovingBeforeLaunch or something similar, but I really don't want to spend the time doing that right now. I probably should have really done that instead of writing this long-ass comment, but whatever. Also lmao we should probably removing the me swearing if we end up sending code to the judges for the state tournament.
+                    driveOpState = AutoCode3.OperState.StrafeLeft; //we aren't actually moving to the goals, it's just that i don't want to have the same case being used twice. the case should really be renamed to MovingBeforeLaunch or something similar, but I really don't want to spend the time doing that right now. I probably should have really done that instead of writing this long-ass comment, but whatever. Also lmao we should probably removing the me swearing if we end up sending code to the judges for the state tournament.
                     break;
                 case PrepLaunchPark:
                     chassis.SetAxisMovement();
@@ -749,6 +754,7 @@ public class AutoCode3 extends LinearOpMode {
                     chassis.SetAxisMovement();
                     chassis.SetPresetMovement(13, 1, 0, .4, chassis.zAngle);
                     driveOpState = AutoCode3.OperState.LaunchPark;
+                    break;
                 case LaunchPark:
                     if (chassis.MoveToLocation() == true) {
                         telemetry.addLine("done");
