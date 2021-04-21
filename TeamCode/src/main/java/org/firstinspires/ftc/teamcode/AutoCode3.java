@@ -411,6 +411,8 @@ public class AutoCode3 extends LinearOpMode {
             telemetry.addData("IMPORTANT, STRAFE PRESET", chassis.strafePreset);
             telemetry.addData("Launch Count", launchCount);
             telemetry.addData("Ring Count", ringCount);
+            telemetry.addData("og rotation", originalRotation);
+            telemetry.addData("zangle", chassis.zAngle);
             switch (driveOpState) {
                /* case FIRSTMOVE:
                     telemetry.addLine("FIRSTMOVE");
@@ -450,7 +452,7 @@ public class AutoCode3 extends LinearOpMode {
                     break;
                 case Rotate:
                     if ((Math.abs(chassis.zAngle - (originalRotation+initrotation)) >= 1.5)) {
-                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation),0.6));
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation),1));
                         chassis.Drive();
                         chassis.SetAxisMovement();
                         chassis.ZeroEncoders();
