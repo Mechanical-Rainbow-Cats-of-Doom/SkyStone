@@ -58,7 +58,7 @@ public class AutoCode3 extends LinearOpMode {
         LaunchPark,
         MoveToShooting,
         NextLocation,
-        PrepSpinAround,
+        SpinAround,
         Launch,
         Delayer,
         Reload
@@ -150,6 +150,7 @@ public class AutoCode3 extends LinearOpMode {
         int ringCount = 0;
         double launchpower = 1;
         boolean onodd = false;
+        double shootspeed = 0.4;
         ElapsedTime MultipleUsesTimer = new ElapsedTime();
         chassis.SetRotation(chassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         while (!IsMenuDone) {
@@ -309,6 +310,7 @@ public class AutoCode3 extends LinearOpMode {
                         driveOpState = AutoCode3.OperState.Delayer;
                         DoneMeasuring = true;
                     }
+                    else { shootspeed = 0.75; }
                     if (Powershots == 1 && !OnRed) { strafeslightleft = -strafeslightleft; }
                     if (Powershots == 1) { launchpower = 0.9422; }
                     if (StartLocation == 1 || StartLocation == 3) { onodd = true; }
@@ -570,7 +572,7 @@ public class AutoCode3 extends LinearOpMode {
                     else {
                         chassis.SetMotors(0,0,0);
                         chassis.Drive();
-                        driveOpState = OperState.PrepLift;
+                        driveOpState = OperState.PrepMoveToLine;
                     }
                     //42 19 22
                     break;
@@ -616,11 +618,37 @@ public class AutoCode3 extends LinearOpMode {
                     if (ringCount == 1) {
                         targetdrive = -25;
                         targetstrafe = -22;
+                        if (Powershots == 1) {
+                            shootdrive = 0;
+                            shootstrafe = 0;
+                        }
+                        else if (ShootGoals == 1) {
+                            shootdrive = 0;
+                            shootstrafe = 0;
+                        }
                     }
                     else if (ringCount == 4) {
                         targetdrive = -46;
+                        if (Powershots == 1) {
+                            shootdrive = 0;
+                            shootstrafe = 0;
+                        }
+                        else if (ShootGoals == 1) {
+                            shootdrive = 0;
+                            shootstrafe = 0;
+                        }
                     }
-                    else { targetdrivespeed = 0; }
+                    else {
+                        targetdrivespeed = 0;
+                        if (Powershots == 1) {
+                            shootdrive = 5;
+                            shootstrafe = -43.5;
+                        }
+                        else if (ShootGoals == 1) {
+                            shootdrive = 0;
+                            shootstrafe = 0;
+                        }
+                    }
                     if (StartLocation == 2 || StartLocation == 3) { targetstrafe += 38; }
                     if (OnRed) { targetstrafe = -targetstrafe; }
                     driveOpState = OperState.PrepGoToTargetZone;
@@ -645,12 +673,7 @@ public class AutoCode3 extends LinearOpMode {
                     break;
                 case Drop:
                     if (GeneralTimer.time(TimeUnit.SECONDS) >= 0.5) {
-                        //driveOpState = OperState.PrepMoveToShooting;
-                    }
-                    break;
-                case MoveToPowerShots:
-                    if (chassis.MoveToLocation()) {
-                        driveOpState = AutoCode3.OperState.PrepSpinAround;
+                        driveOpState = OperState.PrepMoveToShooting;
                     }
                     break;
                 case PrepMoveToShooting:
@@ -658,7 +681,7 @@ public class AutoCode3 extends LinearOpMode {
                     chassis.SetAxisMovement();
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
-                    chassis.SetPresetMovement(shootdrive, 1.2, shootstrafe, .4, chassis.zAngle);
+                    chassis.SetPresetMovement(shootdrive, 1.2, shootstrafe, shootspeed, chassis.zAngle);
                     driveOpState = AutoCode3.OperState.MoveToShooting;
                     break;
                 case MoveToShooting:
@@ -667,22 +690,25 @@ public class AutoCode3 extends LinearOpMode {
                     telemetry.addData("drive", chassis.drive);
                     telemetry.addData("strafe", chassis.strafe);
                     if (chassis.MoveToLocation()) {
-                        driveOpState = AutoCode3.OperState.Launch;
+                        if (DelayAndGo == 2) { driveOpState = AutoCode3.OperState.Launch; }
+                        else { driveOpState = OperState.SpinAround; }
                         servoTimer.reset();
                     }
                     break;
-                case PrepSpinAround:
-                    /*if ((Math.abs(chassis.zAngle - (originalRotation+90)) >= 3)) {
-                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+90),1));
+                case SpinAround:
+                    if ((Math.abs(chassis.zAngle - (originalRotation+180)) >= 1.5)) {
+                        chassis.SetMotors(0, 0, chassis.CorrectRotation(chassis.zAngle, (originalRotation+initrotation),0.66));
                         chassis.Drive();
                         chassis.SetAxisMovement();
                         chassis.ZeroEncoders();
                         chassis.SetAxisMovement();
                         rotationGoal = chassis.zAngle;
                     }
-                    else { driveOpState = AutoCode3.OperState.Launch;
-                         }
-                    */
+                    else {
+                        chassis.SetMotors(0,0,0);
+                        chassis.Drive();
+                        driveOpState = OperState.Launch;
+                    }
                     break;
                 case Launch:
                     if (launchCount <= 2 && (((Powershots == 1 && launchCount >= 1) && servoTimer.time() >= 0.185) || servoTimer.time() >= 1)) {
