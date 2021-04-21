@@ -310,7 +310,7 @@ public class AutoCode3 extends LinearOpMode {
                         driveOpState = AutoCode3.OperState.Delayer;
                         DoneMeasuring = true;
                     }
-                    else { shootspeed = 0.75; }
+                    else { shootspeed = 1; }
                     if (Powershots == 1 && !OnRed) { strafeslightleft = -strafeslightleft; }
                     if (Powershots == 1) { launchpower = 0.9422; }
                     if (StartLocation == 1 || StartLocation == 3) { onodd = true; }
@@ -335,6 +335,7 @@ public class AutoCode3 extends LinearOpMode {
                                     shootdrive = 56.5;
                                     shootstrafe = 22.5;
                                 }
+                                shootdrive -= 1.32;
                             }
                             break;
 
@@ -349,6 +350,7 @@ public class AutoCode3 extends LinearOpMode {
                                     shootdrive = 56.5;
                                     shootstrafe = -4;
                                 }
+                                shootdrive -= 1.32;
                             }
                             break;
 
@@ -363,6 +365,7 @@ public class AutoCode3 extends LinearOpMode {
                                     shootdrive = 56.5;
                                     shootstrafe = 22.5;
                                 }
+                                shootdrive -= 1.32;
                             }
                             break;
 
@@ -377,6 +380,7 @@ public class AutoCode3 extends LinearOpMode {
                                     shootdrive = 56.5;
                                     shootstrafe = -4;
                                 }
+                                shootdrive -= 1.32;
                             }
                             break;
                     }
@@ -641,7 +645,7 @@ public class AutoCode3 extends LinearOpMode {
                     else {
                         targetdrivespeed = 0;
                         if (Powershots == 1) {
-                            shootdrive = 5;
+                            shootdrive = 3.5;
                             shootstrafe = -43.5;
                         }
                         else if (ShootGoals == 1) {
@@ -657,7 +661,7 @@ public class AutoCode3 extends LinearOpMode {
                     chassis.SetAxisMovement();
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
-                    chassis.SetPresetMovement(targetdrive, targetdrivespeed, targetstrafe, .61, chassis.zAngle);
+                    chassis.SetPresetMovement(targetdrive, targetdrivespeed, targetstrafe, 1, chassis.zAngle);
                     driveOpState = OperState.GoToTargetZone;
                     break;
                 case GoToTargetZone:
