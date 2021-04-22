@@ -329,14 +329,12 @@ public class AutoCode3 extends LinearOpMode {
                                 if (Powershots == 1) {
                                     shootdrive = 61.87;
                                     shootstrafe = 40;
-                                    shootdrive -= 1.32;
                                 }
                                 
                                 if (ShootGoals == 1) {
                                     shootdrive = 56.5;
                                     shootstrafe = 22.5;
                                 }
-                                shootdrive -= 1.32;
                             }
                             break;
 
@@ -345,7 +343,6 @@ public class AutoCode3 extends LinearOpMode {
                                 if (Powershots == 1) {
                                     shootdrive = 61.87;
                                     shootstrafe = 14.5;
-                                    shootdrive -= 1.32;
                                 }
                                 
                                 if (ShootGoals == 1) {
@@ -360,7 +357,6 @@ public class AutoCode3 extends LinearOpMode {
                                 if (Powershots == 1) {
                                     shootdrive = 61.87;
                                     shootstrafe = -.5;
-                                    shootdrive -= 1.32;
                                 }
                                 
                                 if (ShootGoals == 1) {
@@ -375,7 +371,6 @@ public class AutoCode3 extends LinearOpMode {
                                 if (Powershots == 1) {
                                     shootdrive = 61.87;
                                     shootstrafe = -24;
-                                    shootdrive -= 1.32;
                                 }
                                 
                                 if (ShootGoals == 1) {
@@ -385,6 +380,7 @@ public class AutoCode3 extends LinearOpMode {
                             }
                             break;
                     }
+                    if (Powershots == 1) { shootdrive -= 1.32; }
                     telemetry.addLine("Choices have been saved. You may now tell the ref you are ready.");
                     telemetry.update();
                     IsMenuDone = true;
@@ -657,7 +653,10 @@ public class AutoCode3 extends LinearOpMode {
                         }
                     }
                     if (StartLocation == 2 || StartLocation == 3) { targetstrafe += 38; }
-                    if (OnRed) { targetstrafe = -targetstrafe; }
+                    if (OnRed) {
+                        targetstrafe = -targetstrafe;
+                        shootstrafe = -shootstrafe;
+                    }
                     driveOpState = OperState.PrepGoToTargetZone;
                     break;
                 case PrepGoToTargetZone:
