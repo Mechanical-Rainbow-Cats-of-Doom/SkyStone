@@ -627,7 +627,7 @@ public class AutoCode3 extends LinearOpMode {
                         targetstrafe = -22;
                         if (Powershots == 1) {
                             shootdrive = 27.5;
-                            shootstrafe = -17;
+                            shootstrafe = -24.5;
                         }
                         else if (ShootGoals == 1) {
                             shootdrive = 27.5;
