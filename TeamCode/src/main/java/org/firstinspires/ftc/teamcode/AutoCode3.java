@@ -27,7 +27,7 @@ public class AutoCode3 extends LinearOpMode {
 
     private double RotationPreset = 0;
 
-    enum OperState {
+    private enum OperState {
         PrepClose,
         TimeClose,
         PrepLift,
@@ -64,7 +64,7 @@ public class AutoCode3 extends LinearOpMode {
         Reload
     }
 
-    enum Menu {
+    private enum Menu {
         StartLocation,
         DelayAndGo,
         ButtonWaiter0,

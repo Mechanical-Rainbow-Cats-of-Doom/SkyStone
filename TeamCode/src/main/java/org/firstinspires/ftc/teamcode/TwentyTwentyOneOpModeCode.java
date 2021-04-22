@@ -34,11 +34,11 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     ElapsedTime mytimer = new ElapsedTime();
     ElapsedTime debugTimer = new ElapsedTime();
 
-    enum OperState {
+    private enum OperState {
         DEBUGSELECT,
         DEBUGONE
     }
-    enum Intake {
+    private enum Intake {
         WaitingForPush,
         WaitingForRelease,
         ChangeValue,
@@ -48,7 +48,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
         WaitingForDownRelease,
         SwitchIntakeDirection
     }
-    enum RingWiper {
+    private enum RingWiper {
         WaitingForPushY,
         WaitingForReleaseY,
         ToggleValue,
