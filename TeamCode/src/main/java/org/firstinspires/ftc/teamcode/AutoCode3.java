@@ -626,12 +626,12 @@ public class AutoCode3 extends LinearOpMode {
                         targetdrive = -25;
                         targetstrafe = -22;
                         if (Powershots == 1) {
-                            shootdrive = 0;
-                            shootstrafe = 0;
+                            shootdrive = 27.5;
+                            shootstrafe = -17;
                         }
                         else if (ShootGoals == 1) {
-                            shootdrive = 0;
-                            shootstrafe = 0;
+                            shootdrive = 27.5;
+                            shootstrafe = .5;
                         }
                     }
                     else if (ringCount == 4) {
