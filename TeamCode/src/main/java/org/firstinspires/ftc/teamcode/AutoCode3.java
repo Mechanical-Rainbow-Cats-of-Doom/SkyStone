@@ -638,10 +638,10 @@ public class AutoCode3 extends LinearOpMode {
                         targetdrive = -46;
                         if (Powershots == 1) {
                             shootdrive = 48.5;
-                            shootstrafe = -21.5;
+                            shootstrafe = -46.5;
                         }
                         else if (ShootGoals == 1) {
-                            shootdrive = 52.5;
+                            shootdrive = 48.5;
                             shootstrafe = -21.5;
                         }
                     }
@@ -649,11 +649,11 @@ public class AutoCode3 extends LinearOpMode {
                         targetdrivespeed = 0;
                         if (Powershots == 1) {
                             shootdrive = 2.5;
-                            shootstrafe = -43.5;
+                            shootstrafe = -46.5;
                         }
                         else if (ShootGoals == 1) {
-                            shootdrive = 6.5;
-                            shootstrafe = -21.25;
+                            shootdrive = 2.5;
+                            shootstrafe = -21.5;
                         }
                     }
                     if (StartLocation == 2 || StartLocation == 3) { targetstrafe += 38; }
