@@ -655,7 +655,7 @@ public class AutoCode3 extends LinearOpMode {
                     if (StartLocation == 2 || StartLocation == 3) { targetstrafe += 38; }
                     if (OnRed) {
                         targetstrafe = -targetstrafe;
-                        shootstrafe += 11.5;
+                        shootstrafe += 19.5;
                         shootstrafe = -shootstrafe;
                     }
                     driveOpState = OperState.PrepGoToTargetZone;
