@@ -124,7 +124,7 @@ public class ChassisMovementCode { //PATRICK IS RACIST AAA DONT LET HIM SEE THIS
                 strafePreset = 0.0000000000000000000000001;
             }
 
-            if (Math.abs(drivePreset - trueDrive) >= .5) {
+            if (Math.abs(drivePreset - trueDrive) >= 2) {
                 drive = Math.signum(drivePreset - trueDrive) * Math.max(0.2, driveSpeedMultiplier * Math.abs((drivePreset - trueDrive) / drivePreset));
             } else {isDrive = 1; drive = 0;}
 
