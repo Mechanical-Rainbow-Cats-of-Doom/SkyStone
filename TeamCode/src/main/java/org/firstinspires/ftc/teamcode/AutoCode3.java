@@ -151,6 +151,7 @@ public class AutoCode3 extends LinearOpMode {
         double launchpower = 1;
         boolean onodd = false;
         double shootspeed = 0.4;
+        double launchparkdrive = 13;
         ElapsedTime MultipleUsesTimer = new ElapsedTime();
         chassis.SetRotation(chassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         while (!IsMenuDone) {
@@ -334,6 +335,8 @@ public class AutoCode3 extends LinearOpMode {
                                 if (ShootGoals == 1) {
                                     shootdrive = 56.5;
                                     shootstrafe = 22.5;
+                                    shootdrive += 34;
+                                    launchparkdrive += 34;
                                 }
                             }
                             break;
@@ -348,6 +351,8 @@ public class AutoCode3 extends LinearOpMode {
                                 if (ShootGoals == 1) {
                                     shootdrive = 56.5;
                                     shootstrafe = -4;
+                                    shootdrive += 34;
+                                    launchparkdrive += 34;
                                 }
                             }
                             break;
@@ -362,6 +367,8 @@ public class AutoCode3 extends LinearOpMode {
                                 if (ShootGoals == 1) {
                                     shootdrive = 56.5;
                                     shootstrafe = 22.5;
+                                    shootdrive += 34;
+                                    launchparkdrive += 34;
                                 }
                             }
                             break;
@@ -376,6 +383,8 @@ public class AutoCode3 extends LinearOpMode {
                                 if (ShootGoals == 1) {
                                     shootdrive = 56.5;
                                     shootstrafe = -4;
+                                    shootdrive += 34;
+                                    launchparkdrive += 34;
                                 }
                             }
                             break;
@@ -655,8 +664,17 @@ public class AutoCode3 extends LinearOpMode {
                     if (StartLocation == 2 || StartLocation == 3) { targetstrafe += 38; }
                     if (OnRed) {
                         targetstrafe = -targetstrafe;
-                        shootstrafe += 19.5;
+                        if (Powershots == 1) {
+                            shootstrafe += 19.5;
+                        }
+                        else {
+                            shootstrafe += 7.5;
+                        }
                         shootstrafe = -shootstrafe;
+                    }
+                    if (ShootGoals == 1) {
+                        shootdrive += 34;
+                        launchparkdrive += 34;
                     }
                     driveOpState = OperState.PrepGoToTargetZone;
                     break;
@@ -753,7 +771,7 @@ public class AutoCode3 extends LinearOpMode {
                     chassis.SetAxisMovement();
                     chassis.ZeroEncoders();
                     chassis.SetAxisMovement();
-                    chassis.SetPresetMovement(13, 1, 0, .4, chassis.zAngle);
+                    chassis.SetPresetMovement(launchparkdrive, 1, 0, .4, chassis.zAngle);
                     driveOpState = AutoCode3.OperState.LaunchPark;
                     break;
                 case LaunchPark:
