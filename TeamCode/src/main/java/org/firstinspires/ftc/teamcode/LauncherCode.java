@@ -30,11 +30,11 @@ public class LauncherCode {
         }
 
         public void Shoot() {
-            LaunchServo.setPosition(0.7);
+            LaunchServo.setPosition(0.72);
         }
 
         public void Reload() {
-            LaunchServo.setPosition(0.9);
+            LaunchServo.setPosition(0.98);
         }
     }
 

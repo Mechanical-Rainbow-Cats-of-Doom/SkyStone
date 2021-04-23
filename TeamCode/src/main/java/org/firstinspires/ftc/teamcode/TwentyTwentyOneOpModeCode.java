@@ -109,7 +109,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
 
         //double timerStopTime = 0;
         waitForStart();
-
+        launcher.Reload();
         while (opModeIsActive()) {
             this.LeftStickValue = -gamepad2.left_stick_y;
             this.RightStickValue = -gamepad2.right_stick_y;
