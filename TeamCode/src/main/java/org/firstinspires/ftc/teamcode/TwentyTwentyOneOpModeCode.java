@@ -33,7 +33,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
     private Blinker expansion_Hub_2;
     ElapsedTime mytimer = new ElapsedTime();
     ElapsedTime debugTimer = new ElapsedTime();
-
+    private double launchpower = 1;
     private enum OperState {
         DEBUGSELECT,
         DEBUGONE
@@ -114,7 +114,10 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             this.LeftStickValue = -gamepad2.left_stick_y;
             this.RightStickValue = -gamepad2.right_stick_y;
             lift.MoveLift(this.LeftStickValue);
+            telemetry.addData("drive", chassis.trueDrive);
             grabber.Toggle(gamepad2.right_bumper);
+            if (gamepad2.left_bumper) { launchpower = 0.9422; }
+            else { launchpower = 1; }
             telemetry.addData("zAngle", chassis.zAngle);
             telemetry.addData("distance sensor", ring.AveragedArray);
             //telemetry.addData("testing LauncherOn:", launcher.launcherOn);
@@ -204,7 +207,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
                     launchStates = LauncherCode.LauncherStates.Start;
                     break;
             }
-            launcher.LauncherRun(1);
+            launcher.LauncherRun(launchpower);
             switch (driveOpState) {
                 case NORMALDRIVE:
 

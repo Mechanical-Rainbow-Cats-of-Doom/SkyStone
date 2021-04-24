@@ -34,7 +34,7 @@ public class LauncherCode {
         }
 
         public void Reload() {
-            LaunchServo.setPosition(0.98);
+            LaunchServo.setPosition(0.99);
         }
     }
 
