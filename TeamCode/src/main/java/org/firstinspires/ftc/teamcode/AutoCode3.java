@@ -313,7 +313,7 @@ public class AutoCode3 extends LinearOpMode {
                     }
                     else { shootspeed = 1.33; }
                     if (Powershots == 1 && !OnRed) { strafeslightleft = -strafeslightleft; }
-                    if (Powershots == 1) { launchpower = 0.9422; }
+                    if (Powershots == 1) { launchpower = 0.939; }
                     if (StartLocation == 1 || StartLocation == 3) { onodd = true; }
                     if (onodd) {
                         rotmove = -25.5;

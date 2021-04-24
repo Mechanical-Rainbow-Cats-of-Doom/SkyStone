@@ -394,7 +394,7 @@ public class AutoCode2 extends LinearOpMode {
 */
         while (opModeIsActive()) {
             chassis.SetRotation(chassis.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
-            launcher.LauncherRun(0.9422);
+            launcher.LauncherRun(0.939);
             //if (!DoneMeasuring) { ring.MeasureDistance(); }
             telemetry.addData("where you are in strafe", Math.abs(chassis.strafePreset - chassis.trueStrafe));
             telemetry.addData("driveopstate", driveOpState);
