@@ -32,7 +32,7 @@ public class DistanceSensorClass {
             }
             AveragedArray = total / sensorArray.length; //Averages the value spit out of the loop
 
-            //This loop uses measured values from the field to determine the amount of rings based off of the averaed valu.
+            //This if else statment change determines the height of the ring stack on the field based off of height and starting location.
             if ((oneorthree && AveragedArray <= 17.5) || (!oneorthree && AveragedArray <= 18)) {
                 RingCount = 4;
             }
