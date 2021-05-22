@@ -116,7 +116,7 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
             lift.MoveLift(this.LeftStickValue);
             telemetry.addData("drive", chassis.trueDrive);
             grabber.Toggle(gamepad2.right_bumper);
-            if (gamepad2.left_bumper) { launchpower = 0.939; }
+            if (gamepad2.left_bumper) { launchpower = 0.9; }
             else { launchpower = 1; }
             telemetry.addData("zAngle", chassis.zAngle);
             telemetry.addData("distance sensor", ring.AveragedArray);
@@ -223,7 +223,8 @@ public class TwentyTwentyOneOpModeCode extends LinearOpMode {
 
 
                     //chassis.SetMotors (drive, strafe, rotate);
-                    chassis.SetIMUMotors(drive,strafe,rotate,chassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle);
+                    //chassis.SetIMUMotors(drive,strafe,rotate,chassis.imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle);
+                    chassis.SetMotors(drive,strafe,rotate);
                     chassis.Drive();
 
                     chassis.Encoders();
